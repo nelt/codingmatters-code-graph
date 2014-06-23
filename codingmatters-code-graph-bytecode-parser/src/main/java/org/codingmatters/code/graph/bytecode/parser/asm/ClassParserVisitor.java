@@ -9,10 +9,10 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,15 +59,39 @@ public class ClassParserVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         try {
-            this.nodeProducer.aMethod(new MethodNode(new MethodRef(this.methodName(this.currentClassName, name))));
+            this.nodeProducer.aMethod(new MethodNode(new MethodRef(this.methodName(this.currentClassName, name, desc))));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
-        return super.visitMethod(access, name, desc, signature, exceptions);
+        return new MethodVisitor(Opcodes.ASM5) {
+            
+            @Override
+            public void visitParameter(String name, int access) {
+                System.out.println("parameter: " + name);
+                super.visitParameter(name, access);
+            }
+        };
     }
 
-    private String methodName(String currentClassName, String rawMethodName) {
-        return currentClassName + "#" + rawMethodName + "()";
+    private String methodName(String currentClassName, String rawMethodName, String methodDesc) {
+        StringBuilder name = new StringBuilder(currentClassName)
+                .append("#").append(rawMethodName);
+
+        name.append("(");
+        List<Type> args = Arrays.asList(Type.getArgumentTypes(methodDesc));
+        boolean first = true;
+        for (Type arg : args) {
+            if(! first) {
+                name.append(", ");
+            } else {
+                first = false;
+            }
+            name.append(arg.toString());
+        }
+        name.append(")");
+        name.append(":").append(Type.getReturnType(methodDesc));
+        
+        return name.toString();
     }
 
     private String fieldName(String className, String rawFieldName) {

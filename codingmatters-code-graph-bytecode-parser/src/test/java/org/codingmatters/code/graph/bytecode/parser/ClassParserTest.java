@@ -36,7 +36,7 @@ public class ClassParserTest extends AbstractClassParserTest {
         this.getParser().parse(EmptyClass.class);
         this.assertProduced(
                 Nodes.classNode(new ClassRef(EmptyClass.class.getName())),
-                Nodes.methodNode(new MethodRef(EmptyClass.class.getName() + "#<init>()"))
+                Nodes.methodNode(new MethodRef(EmptyClass.class.getName() + "#<init>():V"))
         );
     }
 
@@ -46,7 +46,7 @@ public class ClassParserTest extends AbstractClassParserTest {
         this.assertProduced(
                 Nodes.classNode(new ClassRef(ClassWithField.class.getName())),
                 Nodes.fieldNode(new FieldRef(ClassWithField.class.getName() + "#field")),
-                Nodes.methodNode(new MethodRef(ClassWithField.class.getName() + "#<init>()"))
+                Nodes.methodNode(new MethodRef(ClassWithField.class.getName() + "#<init>():V"))
         );
     }
 
@@ -55,8 +55,8 @@ public class ClassParserTest extends AbstractClassParserTest {
         this.getParser().parse(ClassWithMethod.class);
         this.assertProduced(
                 Nodes.classNode(new ClassRef(ClassWithMethod.class.getName())),
-                Nodes.methodNode(new MethodRef(ClassWithMethod.class.getName() + "#<init>()")),
-                Nodes.methodNode(new MethodRef(ClassWithMethod.class.getName() + "#method()"))
+                Nodes.methodNode(new MethodRef(ClassWithMethod.class.getName() + "#<init>():V")),
+                Nodes.methodNode(new MethodRef(ClassWithMethod.class.getName() + "#method(Ljava/lang/Integer;, Ljava/util/List;):Ljava/lang/String;"))
         );
     }
 }

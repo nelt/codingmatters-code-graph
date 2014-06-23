@@ -68,7 +68,7 @@ public class AbstractClassParserTest {
         objects = objects != null ? objects : new Object[0];
         Assert.assertEquals("unexpected produced count", objects.length, this.produced.size());
         for(int i = 0 ; i < objects.length ; i++) {
-            Assert.assertEquals("unexpected " + (i+1) + "th produced", this.produced.get(i),(objects[i]));
+            Assert.assertEquals("unexpected " + (i+1) + "th produced", (objects[i]), this.produced.get(i));
         }
     }
 
