@@ -5,6 +5,7 @@ import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
+import org.codingmatters.code.graph.api.predicates.UsesPredicate;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
@@ -24,39 +25,71 @@ import java.util.List;
  */
 public class AbstractClassParserTest {
 
+    public static final NodeProducer NOOP_NODE_PRODUCER = new NodeProducer() {
+        @Override
+        public void aClass(ClassNode node) throws ProducerException {}
+        @Override
+        public void aField(FieldNode node) throws ProducerException {}
+        @Override
+        public void aMethod(MethodNode node) throws ProducerException {}
+    };
+    
+    public static final PredicateProducer NOOP_PREDICATE_PRODUCER = new PredicateProducer() {
+        @Override
+        public void newHasMethod(HasMethodPredicate predicate) throws ProducerException {}
+        @Override
+        public void newHasField(HasFieldPredicate predicate) throws ProducerException {}
+        @Override
+        public void usage(UsesPredicate predicate) throws ProducerException {}
+    };
+    
     private ClassParser parser;
     private List<Object> produced = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
-        NodeProducer nodeProducer = new NodeProducer() {
-            @Override
-            public void aClass(ClassNode node) throws ProducerException {
-                produced.add(node);
-            }
-
-            @Override
-            public void aField(FieldNode node) throws ProducerException {
-                produced.add(node);
-            }
-
-            @Override
-            public void aMethod(MethodNode node) throws ProducerException {
-                produced.add(node);
-            }
-        };
-        PredicateProducer predicateProducer = new PredicateProducer() {
-            @Override
-            public void newHasMethod(HasMethodPredicate predicate) throws ProducerException {
-                produced.add(predicate);
-            }
-
-            @Override
-            public void newHasField(HasFieldPredicate predicate) throws ProducerException {
-                produced.add(predicate);
-            }
-        };
+        NodeProducer nodeProducer = this.getNodeProducer();
+        PredicateProducer predicateProducer = this.getPredicateProducer();
+        
         this.parser = new ClassParser(nodeProducer, predicateProducer);
+    }
+
+    protected NodeProducer getNodeProducer() {
+        return new NodeProducer() {
+                @Override
+                public void aClass(ClassNode node) throws ProducerException {
+                    produced.add(node);
+                }
+    
+                @Override
+                public void aField(FieldNode node) throws ProducerException {
+                    produced.add(node);
+                }
+    
+                @Override
+                public void aMethod(MethodNode node) throws ProducerException {
+                    produced.add(node);
+                }
+            };
+    }
+
+    protected PredicateProducer getPredicateProducer() {
+        return new PredicateProducer() {
+                @Override
+                public void newHasMethod(HasMethodPredicate predicate) throws ProducerException {
+                    produced.add(predicate);
+                }
+    
+                @Override
+                public void newHasField(HasFieldPredicate predicate) throws ProducerException {
+                    produced.add(predicate);
+                }
+
+            @Override
+            public void usage(UsesPredicate predicate) throws ProducerException {
+                produced.add(predicate);
+            }
+        };
     }
 
     @After

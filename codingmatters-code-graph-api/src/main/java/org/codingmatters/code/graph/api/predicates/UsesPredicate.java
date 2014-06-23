@@ -38,4 +38,12 @@ public class UsesPredicate {
         result = 31 * result + (used != null ? used.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "UsesPredicate{" +
+                "used=" + used +
+                ", user=" + user +
+                '}';
+    }
 }

@@ -58,19 +58,13 @@ public class ClassParserVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        MethodRef methodRef = new MethodRef(this.methodName(this.currentClassName, name, desc));
         try {
-            this.nodeProducer.aMethod(new MethodNode(new MethodRef(this.methodName(this.currentClassName, name, desc))));
+            this.nodeProducer.aMethod(new MethodNode(methodRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
-        return new MethodVisitor(Opcodes.ASM5) {
-            
-            @Override
-            public void visitParameter(String name, int access) {
-                System.out.println("parameter: " + name);
-                super.visitParameter(name, access);
-            }
-        };
+        return new MethodParserVisitor(methodRef, this.predicateProducer, this.errorReporter);
     }
 
     private String methodName(String currentClassName, String rawMethodName, String methodDesc) {

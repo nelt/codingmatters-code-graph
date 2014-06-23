@@ -29,7 +29,14 @@ import java.util.List;
  * Time: 14:39
  * To change this template use File | Settings | File Templates.
  */
-public class ClassParserTest extends AbstractClassParserTest {
+public class ClassParserNodeTest extends AbstractClassParserTest {
+
+    
+
+    @Override
+    protected PredicateProducer getPredicateProducer() {
+        return NOOP_PREDICATE_PRODUCER;
+    }
 
     @Test
     public void testEmptyClass() throws Exception {
