@@ -11,9 +11,6 @@ import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.objectweb.asm.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created with IntelliJ IDEA.
  * User: nel
@@ -36,7 +33,7 @@ public class ClassParserVisitor extends ClassVisitor {
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        this.currentClassName = this.className(name);
+        this.currentClassName = name;
         try {
             this.nodeProducer.aClass(Nodes.classNode(new ClassRef(this.currentClassName)));
         } catch (ProducerException e) {
@@ -49,7 +46,7 @@ public class ClassParserVisitor extends ClassVisitor {
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         try {
-            this.nodeProducer.aField(new FieldNode(new FieldRef(this.fieldName(this.currentClassName, name))));
+            this.nodeProducer.aField(new FieldNode(new FieldRef(NameUtil.fieldName(this.currentClassName, name))));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
@@ -58,42 +55,13 @@ public class ClassParserVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        MethodRef methodRef = new MethodRef(this.methodName(this.currentClassName, name, desc));
+        MethodRef methodRef = new MethodRef(NameUtil.methodName(this.currentClassName, name, desc));
         try {
             this.nodeProducer.aMethod(new MethodNode(methodRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
         return new MethodParserVisitor(methodRef, this.predicateProducer, this.errorReporter);
-    }
-
-    private String methodName(String currentClassName, String rawMethodName, String methodDesc) {
-        StringBuilder name = new StringBuilder(currentClassName)
-                .append("#").append(rawMethodName);
-
-        name.append("(");
-        List<Type> args = Arrays.asList(Type.getArgumentTypes(methodDesc));
-        boolean first = true;
-        for (Type arg : args) {
-            if(! first) {
-                name.append(", ");
-            } else {
-                first = false;
-            }
-            name.append(arg.toString());
-        }
-        name.append(")");
-        name.append(":").append(Type.getReturnType(methodDesc));
-        
-        return name.toString();
-    }
-
-    private String fieldName(String className, String rawFieldName) {
-        return className + "#" + rawFieldName;
-    }
-
-    private String className(String name) {
-        return name.replaceAll("/", ".");
     }
 
     static public interface ParsingErrorReporter {

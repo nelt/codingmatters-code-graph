@@ -1,6 +1,5 @@
 package org.codingmatters.code.graph.bytecode.parser.asm;
 
-import org.codingmatters.code.graph.api.Predicates;
 import org.codingmatters.code.graph.api.predicates.UsesPredicate;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
@@ -18,6 +17,7 @@ import org.objectweb.asm.Opcodes;
  * To change this template use File | Settings | File Templates.
  */
 public class MethodParserVisitor extends MethodVisitor {
+
     private final MethodRef methodRef;
     private final PredicateProducer predicateProducer;
     private final ClassParserVisitor.ParsingErrorReporter errorReporter;
@@ -56,12 +56,23 @@ public class MethodParserVisitor extends MethodVisitor {
     }
 
     private String fieldName(String owner, String name) {
-        return owner.replaceAll("/", ".") + "#" + name;
+        return NameUtil.fieldName(owner, name);
     }
+    
+    
 
     @Override
     public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-        
+        try {
+            this.predicateProducer.usage(
+                    new UsesPredicate(
+                            this.methodRef, 
+                            new MethodRef(NameUtil.methodName(owner, name, desc))
+                    )
+            );
+        } catch (ProducerException e) {
+            this.errorReporter.report(e);
+        }
         super.visitMethodInsn(opcode, owner, name, desc, itf);
     }
     

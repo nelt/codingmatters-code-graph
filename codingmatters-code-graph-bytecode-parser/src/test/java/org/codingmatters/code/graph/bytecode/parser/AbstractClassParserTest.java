@@ -25,6 +25,10 @@ import java.util.List;
  */
 public class AbstractClassParserTest {
 
+    public static String className(Class clazz) {
+        return clazz.getName().replaceAll("\\.", "/");
+    }
+    
     public static final NodeProducer NOOP_NODE_PRODUCER = new NodeProducer() {
         @Override
         public void aClass(ClassNode node) throws ProducerException {}

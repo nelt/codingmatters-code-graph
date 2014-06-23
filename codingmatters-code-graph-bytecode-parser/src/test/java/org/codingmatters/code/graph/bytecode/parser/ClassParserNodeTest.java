@@ -31,8 +31,6 @@ import java.util.List;
  */
 public class ClassParserNodeTest extends AbstractClassParserTest {
 
-    
-
     @Override
     protected PredicateProducer getPredicateProducer() {
         return NOOP_PREDICATE_PRODUCER;
@@ -41,9 +39,10 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
     @Test
     public void testEmptyClass() throws Exception {
         this.getParser().parse(EmptyClass.class);
+        Class clazz = EmptyClass.class;
         this.assertProduced(
-                Nodes.classNode(new ClassRef(EmptyClass.class.getName())),
-                Nodes.methodNode(new MethodRef(EmptyClass.class.getName() + "#<init>():V"))
+                Nodes.classNode(new ClassRef(className(clazz))),
+                Nodes.methodNode(new MethodRef(className(EmptyClass.class) + "#<init>()V"))
         );
     }
 
@@ -51,9 +50,9 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
     public void testClassWithField() throws Exception {
         this.getParser().parse(ClassWithField.class);
         this.assertProduced(
-                Nodes.classNode(new ClassRef(ClassWithField.class.getName())),
-                Nodes.fieldNode(new FieldRef(ClassWithField.class.getName() + "#field")),
-                Nodes.methodNode(new MethodRef(ClassWithField.class.getName() + "#<init>():V"))
+                Nodes.classNode(new ClassRef(className(ClassWithField.class))),
+                Nodes.fieldNode(new FieldRef(className(ClassWithField.class) + "#field")),
+                Nodes.methodNode(new MethodRef(className(ClassWithField.class) + "#<init>()V"))
         );
     }
 
@@ -61,9 +60,9 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
     public void testtestClassWithMethod() throws Exception {
         this.getParser().parse(ClassWithMethod.class);
         this.assertProduced(
-                Nodes.classNode(new ClassRef(ClassWithMethod.class.getName())),
-                Nodes.methodNode(new MethodRef(ClassWithMethod.class.getName() + "#<init>():V")),
-                Nodes.methodNode(new MethodRef(ClassWithMethod.class.getName() + "#method(Ljava/lang/Integer;, Ljava/util/List;):Ljava/lang/String;"))
+                Nodes.classNode(new ClassRef(className(ClassWithMethod.class))),
+                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#<init>()V")),
+                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;"))
         );
     }
 }
