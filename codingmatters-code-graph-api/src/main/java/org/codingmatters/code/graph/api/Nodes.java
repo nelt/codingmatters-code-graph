@@ -14,7 +14,7 @@ import org.codingmatters.code.graph.api.references.MethodRef;
  * Time: 14:05
  * To change this template use File | Settings | File Templates.
  */
-public final class Nodes {
+public class Nodes {
     static public ClassNode classNode(ClassRef ref) {
         return new ClassNode(ref);
     }
