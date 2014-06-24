@@ -26,4 +26,6 @@ public class Nodes {
     static public FieldNode fieldNode(FieldRef ref) {
         return new FieldNode(ref);
     }
+    
+    private Nodes() {}
 }
