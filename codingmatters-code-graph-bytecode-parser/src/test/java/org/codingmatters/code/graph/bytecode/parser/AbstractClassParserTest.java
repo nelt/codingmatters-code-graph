@@ -102,6 +102,7 @@ public class AbstractClassParserTest {
     }
 
     protected void assertProduced(Object... objects) {
+        System.out.println(this.produced);
         objects = objects != null ? objects : new Object[0];
         Assert.assertEquals("unexpected produced count", objects.length, this.produced.size());
         for(int i = 0 ; i < objects.length ; i++) {

@@ -38,4 +38,12 @@ public class HasMethodPredicate {
         result = 31 * result + (method != null ? method.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "HasMethodPredicate{" +
+                "cls=" + cls +
+                ", method=" + method +
+                '}';
+    }
 }

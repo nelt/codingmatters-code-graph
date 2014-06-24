@@ -3,6 +3,8 @@ package org.codingmatters.code.graph.bytecode.parser.asm;
 import org.codingmatters.code.graph.api.Nodes;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
+import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
+import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
@@ -46,7 +48,9 @@ public class ClassParserVisitor extends ClassVisitor {
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         try {
-            this.nodeProducer.aField(new FieldNode(new FieldRef(NameUtil.fieldName(this.currentClassName, name))));
+            FieldRef fieldRef = new FieldRef(NameUtil.fieldName(this.currentClassName, name));
+            this.nodeProducer.aField(new FieldNode(fieldRef));
+            this.predicateProducer.newHasField(new HasFieldPredicate(new ClassRef(this.currentClassName), fieldRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
@@ -58,6 +62,7 @@ public class ClassParserVisitor extends ClassVisitor {
         MethodRef methodRef = new MethodRef(NameUtil.methodName(this.currentClassName, name, desc));
         try {
             this.nodeProducer.aMethod(new MethodNode(methodRef));
+            this.predicateProducer.newHasMethod(new HasMethodPredicate(new ClassRef(this.currentClassName), methodRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }

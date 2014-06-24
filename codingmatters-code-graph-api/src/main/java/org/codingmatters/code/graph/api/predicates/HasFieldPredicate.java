@@ -38,4 +38,12 @@ public class HasFieldPredicate {
         result = 31 * result + (field != null ? field.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "HasFieldPredicate{" +
+                "cls=" + cls +
+                ", field=" + field +
+                '}';
+    }
 }
