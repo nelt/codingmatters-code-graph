@@ -16,6 +16,10 @@ public class ClassNode {
         this.ref = ref;
     }
 
+    public ClassRef getRef() {
+        return this.ref;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -39,4 +43,5 @@ public class ClassNode {
                 "ref=" + ref +
                 '}';
     }
+
 }

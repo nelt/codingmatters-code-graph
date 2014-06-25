@@ -50,7 +50,7 @@ public class ClassParserVisitor extends ClassVisitor {
         try {
             FieldRef fieldRef = new FieldRef(NameUtil.fieldName(this.currentClassName, name));
             this.nodeProducer.aField(new FieldNode(fieldRef));
-            this.predicateProducer.newHasField(new HasFieldPredicate(new ClassRef(this.currentClassName), fieldRef));
+            this.predicateProducer.hasField(new HasFieldPredicate(new ClassRef(this.currentClassName), fieldRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
@@ -62,7 +62,7 @@ public class ClassParserVisitor extends ClassVisitor {
         MethodRef methodRef = new MethodRef(NameUtil.methodName(this.currentClassName, name, desc));
         try {
             this.nodeProducer.aMethod(new MethodNode(methodRef));
-            this.predicateProducer.newHasMethod(new HasMethodPredicate(new ClassRef(this.currentClassName), methodRef));
+            this.predicateProducer.hasMethod(new HasMethodPredicate(new ClassRef(this.currentClassName), methodRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }

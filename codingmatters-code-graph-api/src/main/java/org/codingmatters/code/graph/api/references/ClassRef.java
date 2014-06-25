@@ -7,11 +7,15 @@ package org.codingmatters.code.graph.api.references;
  * Time: 14:08
  * To change this template use File | Settings | File Templates.
  */
-public class ClassRef {
+public class ClassRef implements Ref {
     private final String name;
 
     public ClassRef(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

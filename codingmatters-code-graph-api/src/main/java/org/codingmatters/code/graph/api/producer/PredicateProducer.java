@@ -13,7 +13,7 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
  * To change this template use File | Settings | File Templates.
  */
 public interface PredicateProducer {
-    public void newHasMethod(HasMethodPredicate predicate) throws ProducerException;
-    public void newHasField(HasFieldPredicate predicate) throws ProducerException;
+    public void hasField(HasFieldPredicate predicate) throws ProducerException;
+    public void hasMethod(HasMethodPredicate predicate) throws ProducerException;
     public void usage(UsesPredicate predicate) throws ProducerException;
 }

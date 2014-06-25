@@ -39,4 +39,8 @@ public class FieldNode {
                 "ref=" + ref +
                 '}';
     }
+
+    public FieldRef getRef() {
+        return ref;
+    }
 }

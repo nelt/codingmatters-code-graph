@@ -40,9 +40,9 @@ public class AbstractClassParserTest {
     
     public static final PredicateProducer NOOP_PREDICATE_PRODUCER = new PredicateProducer() {
         @Override
-        public void newHasMethod(HasMethodPredicate predicate) throws ProducerException {}
+        public void hasMethod(HasMethodPredicate predicate) throws ProducerException {}
         @Override
-        public void newHasField(HasFieldPredicate predicate) throws ProducerException {}
+        public void hasField(HasFieldPredicate predicate) throws ProducerException {}
         @Override
         public void usage(UsesPredicate predicate) throws ProducerException {}
     };
@@ -80,12 +80,12 @@ public class AbstractClassParserTest {
     protected PredicateProducer getPredicateProducer() {
         return new PredicateProducer() {
                 @Override
-                public void newHasMethod(HasMethodPredicate predicate) throws ProducerException {
+                public void hasMethod(HasMethodPredicate predicate) throws ProducerException {
                     produced.add(predicate);
                 }
     
                 @Override
-                public void newHasField(HasFieldPredicate predicate) throws ProducerException {
+                public void hasField(HasFieldPredicate predicate) throws ProducerException {
                     produced.add(predicate);
                 }
 
@@ -102,7 +102,6 @@ public class AbstractClassParserTest {
     }
 
     protected void assertProduced(Object... objects) {
-        System.out.println(this.produced);
         objects = objects != null ? objects : new Object[0];
         Assert.assertEquals("unexpected produced count", objects.length, this.produced.size());
         for(int i = 0 ; i < objects.length ; i++) {

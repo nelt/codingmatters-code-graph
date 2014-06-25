@@ -38,4 +38,8 @@ public class FieldRef implements UsableRef {
                 "name='" + name + '\'' +
                 '}';
     }
+
+    public String getName() {
+        return name;
+    }
 }

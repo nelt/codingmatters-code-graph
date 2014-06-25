@@ -9,18 +9,18 @@
         <artifactId>codingmatters-code-graph</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    
-    <artifactId>codingmatters-code-graph-bytecode-parser</artifactId>
+
+    <artifactId>codingmatters-code-graph-neo4j-storage</artifactId>
     
     <dependencies>
         <dependency>
             <groupId>org.codingmatters.code.graph</groupId>
             <artifactId>codingmatters-code-graph-api</artifactId>
         </dependency>
-
+        
         <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
         </dependency>
         
         <dependency>
@@ -28,6 +28,21 @@
             <artifactId>codingmatters-code-graph-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     
 </project>

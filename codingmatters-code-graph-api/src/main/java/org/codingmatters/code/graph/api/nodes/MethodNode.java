@@ -39,4 +39,8 @@ public class MethodNode {
                 "ref=" + ref +
                 '}';
     }
+
+    public MethodRef getRef() {
+        return ref;
+    }
 }

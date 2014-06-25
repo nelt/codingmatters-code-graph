@@ -38,4 +38,8 @@ public class MethodRef implements UsableRef {
                 "name='" + name + '\'' +
                 '}';
     }
+
+    public String getName() {
+        return name;
+    }
 }
