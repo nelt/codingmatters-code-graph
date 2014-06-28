@@ -6,11 +6,9 @@ import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.junit.Assert;
 import org.junit.Before;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.*;
 
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,7 +43,7 @@ public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
     }
 
 
-    protected void assertUniqueNodeWithLabelAndName(Label label, String name) {
+    protected Node assertUniqueNodeWithLabelAndName(Label label, String name) {
         try(
                 Transaction tx = this.getGraphDb().beginTx();
                 ResourceIterator<Node> nodes = this.getGraphDb().findNodesByLabelAndProperty(
@@ -53,8 +51,25 @@ public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
                         "name", name
                 ).iterator();
         ) {
-            nodes.next();
-            Assert.assertFalse(nodes.hasNext());
+            Node result = nodes.next();
+            Assert.assertFalse("duplicated node with label " + label + " and name " + name, nodes.hasNext());
+            return result;
+        }
+    }
+    
+    protected Relationship assertUniqueRelationship(Node source, RelationshipType relationshipType, Node target) {
+        try(
+                Transaction tx = this.getGraphDb().beginTx()
+        ) {
+            Relationship found = null;
+            for (Relationship relationship : source.getRelationships(Direction.OUTGOING, relationshipType)) {
+                if(relationship.getEndNode().equals(target)) {
+                    Assert.assertNull("duplicate relationship " + relationshipType, found);
+                    found = relationship;
+                }
+            }
+            Assert.assertNotNull("no such relationship " + source + " -" + relationshipType + "-> " + target, found);
+            return found;
         }
     }
 

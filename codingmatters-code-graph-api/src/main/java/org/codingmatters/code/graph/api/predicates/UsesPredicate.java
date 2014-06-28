@@ -19,6 +19,14 @@ public class UsesPredicate {
         this.used = used;
     }
 
+    public UsableRef getUsed() {
+        return used;
+    }
+
+    public MethodRef getUser() {
+        return user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

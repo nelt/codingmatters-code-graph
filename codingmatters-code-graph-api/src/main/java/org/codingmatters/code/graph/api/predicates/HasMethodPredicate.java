@@ -19,6 +19,14 @@ public class HasMethodPredicate {
         this.method = method;
     }
 
+    public ClassRef getCls() {
+        return cls;
+    }
+
+    public MethodRef getMethod() {
+        return method;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

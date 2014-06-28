@@ -19,6 +19,14 @@ public class HasFieldPredicate {
         this.field = field;
     }
 
+    public ClassRef getCls() {
+        return cls;
+    }
+
+    public FieldRef getField() {
+        return field;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
