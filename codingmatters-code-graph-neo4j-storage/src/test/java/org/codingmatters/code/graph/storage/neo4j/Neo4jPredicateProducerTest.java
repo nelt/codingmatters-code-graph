@@ -1,6 +1,7 @@
 package org.codingmatters.code.graph.storage.neo4j;
 
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
+import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.predicates.UsesPredicate;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
@@ -49,6 +50,16 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
         assertUniqueRelationship(clsNode, Codec.RelationshipType.HAS_METHOD, methodNode);
+    }
+
+    @Test
+    public void testHasInnerClass() throws Exception {
+        this.producer.hasInner(new HasInnerClassPredicate(CLASS_REF, INNER_CLASS_REF));
+
+        Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        Node innerClsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, INNER_CLASS_REF.getName());
+        assertUniqueRelationship(clsNode, Codec.RelationshipType.HAS_INNER_CLASS, innerClsNode);
+
     }
     
     @Test

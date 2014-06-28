@@ -101,17 +101,4 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
 
     }
 
-    static private UsesPredicate usesDefaultConstructorPredicate(Class clazz) {
-        return Predicates.uses(
-                new MethodRef(className(clazz) + "#<init>()V"),
-                new MethodRef("java/lang/Object#<init>()V")
-        );
-    }
-    
-    static private HasMethodPredicate hasDefaultConstructor(Class clazz) {
-        return Predicates.hasMethod(
-                new ClassRef(className(clazz)),
-                new MethodRef(className(clazz) + "#<init>()V")
-        );
-    }
 }

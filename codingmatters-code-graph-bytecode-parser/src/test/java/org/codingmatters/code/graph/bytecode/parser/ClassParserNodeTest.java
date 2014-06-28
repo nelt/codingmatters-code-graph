@@ -42,9 +42,10 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
         Class clazz = EmptyClass.class;
         this.assertProduced(
                 Nodes.classNode(new ClassRef(className(clazz))),
-                Nodes.methodNode(new MethodRef(className(EmptyClass.class) + "#<init>()V"))
+                defaultConstructorNode(clazz)
         );
     }
+
 
     @Test
     public void testClassWithField() throws Exception {
@@ -52,16 +53,16 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
         this.assertProduced(
                 Nodes.classNode(new ClassRef(className(ClassWithField.class))),
                 Nodes.fieldNode(new FieldRef(className(ClassWithField.class) + "#field")),
-                Nodes.methodNode(new MethodRef(className(ClassWithField.class) + "#<init>()V"))
+                defaultConstructorNode(ClassWithField.class)
         );
     }
 
     @Test
-    public void testtestClassWithMethod() throws Exception {
+    public void testClassWithMethod() throws Exception {
         this.getParser().parse(ClassWithMethod.class);
         this.assertProduced(
                 Nodes.classNode(new ClassRef(className(ClassWithMethod.class))),
-                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#<init>()V")),
+                defaultConstructorNode(ClassWithMethod.class),
                 Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;"))
         );
     }

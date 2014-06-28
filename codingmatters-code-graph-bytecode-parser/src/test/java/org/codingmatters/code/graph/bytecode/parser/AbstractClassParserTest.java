@@ -1,14 +1,19 @@
 package org.codingmatters.code.graph.bytecode.parser;
 
+import org.codingmatters.code.graph.api.Nodes;
+import org.codingmatters.code.graph.api.Predicates;
 import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
+import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.predicates.UsesPredicate;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
+import org.codingmatters.code.graph.api.references.ClassRef;
+import org.codingmatters.code.graph.api.references.MethodRef;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,6 +46,8 @@ public class AbstractClassParserTest {
     public static final PredicateProducer NOOP_PREDICATE_PRODUCER = new PredicateProducer() {
         @Override
         public void hasMethod(HasMethodPredicate predicate) throws ProducerException {}
+        @Override
+        public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {}
         @Override
         public void hasField(HasFieldPredicate predicate) throws ProducerException {}
         @Override
@@ -83,8 +90,13 @@ public class AbstractClassParserTest {
                 public void hasMethod(HasMethodPredicate predicate) throws ProducerException {
                     produced.add(predicate);
                 }
-    
-                @Override
+
+            @Override
+            public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {
+                produced.add(predicate);
+            }
+
+            @Override
                 public void hasField(HasFieldPredicate predicate) throws ProducerException {
                     produced.add(predicate);
                 }
@@ -111,5 +123,27 @@ public class AbstractClassParserTest {
 
     public ClassParser getParser() {
         return parser;
+    }
+
+
+
+
+    static protected MethodNode defaultConstructorNode(Class clazz) {
+        return Nodes.methodNode(new MethodRef(className(clazz) + "#<init>()V"));
+    }
+
+
+    static protected UsesPredicate usesDefaultConstructorPredicate(Class clazz) {
+        return Predicates.uses(
+                new MethodRef(className(clazz) + "#<init>()V"),
+                new MethodRef("java/lang/Object#<init>()V")
+        );
+    }
+
+    static protected HasMethodPredicate hasDefaultConstructor(Class clazz) {
+        return Predicates.hasMethod(
+                new ClassRef(className(clazz)),
+                new MethodRef(className(clazz) + "#<init>()V")
+        );
     }
 }

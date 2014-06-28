@@ -25,7 +25,7 @@ public interface Codec {
     }
     
     enum RelationshipType implements org.neo4j.graphdb.RelationshipType {
-        HAS_FIELD, HAS_METHOD, USES
+        HAS_FIELD, HAS_METHOD, HAS_INNER_CLASS, USES
     }
     
     final class Dictionnary {

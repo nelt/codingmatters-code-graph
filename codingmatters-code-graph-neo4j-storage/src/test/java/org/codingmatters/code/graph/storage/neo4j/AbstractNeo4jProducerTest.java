@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
 
     public static final ClassRef CLASS_REF = new ClassRef("path/to/Class");
+    public static final ClassRef INNER_CLASS_REF = new ClassRef("path/to/Class$Inner");
     public static final FieldRef FIELD_REF = new FieldRef("path/to/Class#field");
     public static final MethodRef METHOD_REF = new MethodRef("path/to/Class#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;");
     public static final MethodRef USED_METHOD_REF = new MethodRef("path/to/Class#usedMethod(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;");
