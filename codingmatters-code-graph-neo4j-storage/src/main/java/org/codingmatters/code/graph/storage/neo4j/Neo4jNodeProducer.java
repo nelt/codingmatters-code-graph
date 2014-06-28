@@ -6,7 +6,6 @@ import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
-import org.codingmatters.code.graph.storage.neo4j.internal.Queries;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
@@ -20,17 +19,17 @@ import org.neo4j.graphdb.Transaction;
  */
 public class Neo4jNodeProducer implements NodeProducer {
     private final GraphDatabaseService graphDb;
-    private final ExecutionEngine engine;
+    private final Codec.Querier querier;
 
     public Neo4jNodeProducer(GraphDatabaseService graphDb, ExecutionEngine engine) {
         this.graphDb = graphDb;
-        this.engine = engine;
+        this.querier = new Codec.Querier(engine);
     }
 
     @Override
     public void aClass(ClassNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            Queries.mergeRefNodes(this.engine, node.getRef());
+            this.querier.mergeRefNodes(node.getRef());
             tx.success();
         }
     }
@@ -38,7 +37,7 @@ public class Neo4jNodeProducer implements NodeProducer {
     @Override
     public void aField(FieldNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            Queries.mergeRefNodes(this.engine, node.getRef());
+            this.querier.mergeRefNodes(node.getRef());
             tx.success();
         }
     }
@@ -46,7 +45,7 @@ public class Neo4jNodeProducer implements NodeProducer {
     @Override
     public void aMethod(MethodNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            Queries.mergeRefNodes(this.engine, node.getRef());
+            this.querier.mergeRefNodes(node.getRef());
             tx.success();
         }
     }

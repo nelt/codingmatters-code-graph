@@ -4,8 +4,13 @@ import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.api.references.Ref;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.cypher.ExecutionEngine;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import scala.collection.Iterator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,6 +39,44 @@ public interface Codec {
             } else {
                 return null;
             }
+        }
+    }
+    
+    class Querier {
+        
+        private final ExecutionEngine engine;
+    
+        public Querier(ExecutionEngine engine) {
+            this.engine = engine;
+        }
+        
+        public Iterator<Node> mergeRefNodes(Ref ref) {
+            Map<String, Object> parameters = new HashMap<>();
+            
+            String queryString = String.format(
+                    "MERGE (n:%s {name: {name}}) " +
+                            "RETURN n", 
+                    Dictionnary.label(ref).name());
+            parameters.put("name", ref.getName());
+            
+            return this.engine.execute(queryString, parameters).columnAs("n");
+        }
+    
+        public Iterator<Relationship> mergeRelationship(Ref source, org.neo4j.graphdb.RelationshipType relationshipType, Ref target) {
+            Map<String, Object> parameters = new HashMap<>();
+            
+            String queryString = String.format(
+                    "MATCH (source:%s {name: {sourceName}}), (target:%s {name: {targetName}}) " +
+                            "MERGE (source)-[r:%s]->(target) " +
+                            "RETURN r",
+                    Dictionnary.label(source),
+                    Dictionnary.label(target),
+                    relationshipType.name()
+            );
+            parameters.put("sourceName", source.getName());
+            parameters.put("targetName", target.getName());
+            
+            return this.engine.execute(queryString, parameters).columnAs("r");
         }
     }
 }
