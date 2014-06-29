@@ -15,6 +15,8 @@ import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.objectweb.asm.*;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: nel
@@ -27,16 +29,19 @@ public class ClassParserVisitor extends ClassVisitor {
     private final PredicateProducer predicateProducer;
     private final ParsingErrorReporter errorReporter;
     private ClassNode currentClassNode;
-
-    public ClassParserVisitor(NodeProducer nodeProducer, PredicateProducer predicateProducer, ParsingErrorReporter errorReporter) {
+    private final ByteCodeResolver resolver;
+    
+    public ClassParserVisitor(NodeProducer nodeProducer, PredicateProducer predicateProducer, ParsingErrorReporter errorReporter, ByteCodeResolver resolver) {
         super(Opcodes.ASM5);
         this.nodeProducer = nodeProducer;
         this.predicateProducer = predicateProducer;
         this.errorReporter = errorReporter;
+        this.resolver = resolver;
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        System.out.println("visiting class " + name);
         try {
             this.currentClassNode = Nodes.classNode(new ClassRef(name));
             this.nodeProducer.aClass(this.currentClassNode);
@@ -73,12 +78,17 @@ public class ClassParserVisitor extends ClassVisitor {
 
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
+        if(name.equals(this.currentClassNode.getRef().getName())) return;
         try {
+            ClassReader classReader = this.resolver.resolve(name.replaceAll("/", "."));
+            classReader.accept(new ClassParserVisitor(this.nodeProducer, this.predicateProducer, this.errorReporter, resolver), 0);
+            
             ClassNode innerClassNode = Nodes.classNode(new ClassRef(name));
-            this.nodeProducer.aClass(innerClassNode);
             this.predicateProducer.hasInner(Predicates.hasInner(this.currentClassNode.getRef(), innerClassNode.getRef()));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
+        } catch (IOException e) {
+            this.errorReporter.report(new ProducerException("error resolving inner class " + outerName, e));
         }
     }
 

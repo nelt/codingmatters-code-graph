@@ -8,4 +8,7 @@ package org.codingmatters.code.graph.api.producer.exception;
  * To change this template use File | Settings | File Templates.
  */
 public class ProducerException extends Exception {
+    public ProducerException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

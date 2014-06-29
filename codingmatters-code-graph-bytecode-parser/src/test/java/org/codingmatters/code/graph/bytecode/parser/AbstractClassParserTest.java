@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,6 +30,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class AbstractClassParserTest {
+
+    public static final MethodRef OBJCT_CONSTRUCTOR_REF = new MethodRef("java/lang/Object#<init>()V");
 
     public static String className(Class clazz) {
         return clazz.getName().replaceAll("\\.", "/");
@@ -115,10 +118,28 @@ public class AbstractClassParserTest {
 
     protected void assertProduced(Object... objects) {
         objects = objects != null ? objects : new Object[0];
+        if(objects.length != this.produced.size()) {
+            throw new AssertionError("different produced size, " +
+                    "expected size <" + objects.length + "> but was <" + this.produced.size() + ">" +
+                    this.expectedWasArraysMessage("", objects)
+            );
+        }
         Assert.assertEquals("unexpected produced count", objects.length, this.produced.size());
         for(int i = 0 ; i < objects.length ; i++) {
-            Assert.assertEquals("unexpected " + (i+1) + "th produced", (objects[i]), this.produced.get(i));
+            if(! this.produced.get(i).equals(objects[i])) {
+                throw new AssertionError(
+                    "unexpected " + (i+1) + "th produced:\n" +
+                    "excpected: <" + objects[i] + ">\n" +
+                    "but was  : <" + this.produced.get(i) + "\n" +
+                    this.expectedWasArraysMessage("\t", objects)
+                );
+            }
         }
+    }
+
+    private String expectedWasArraysMessage(String prefix, Object[] objects) {
+        return "\n" + prefix + "expected <" + Arrays.asList(objects) + ">" +
+                "\n" + prefix + "but was  <" + this.produced + ">";
     }
 
     public ClassParser getParser() {
@@ -136,7 +157,7 @@ public class AbstractClassParserTest {
     static protected UsesPredicate usesDefaultConstructorPredicate(Class clazz) {
         return Predicates.uses(
                 new MethodRef(className(clazz) + "#<init>()V"),
-                new MethodRef("java/lang/Object#<init>()V")
+                OBJCT_CONSTRUCTOR_REF
         );
     }
 
