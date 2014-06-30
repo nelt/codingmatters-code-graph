@@ -50,8 +50,8 @@ public class UsesPredicate {
     @Override
     public String toString() {
         return "UsesPredicate{" +
-                "used=" + used +
-                ", user=" + user +
+                "user=" + user +
+                ", used=" + used +
                 '}';
     }
 }
