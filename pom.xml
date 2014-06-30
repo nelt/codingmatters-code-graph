@@ -70,7 +70,6 @@
     <modules>
         <module>codingmatters-code-graph-api</module>
         <module>codingmatters-code-graph-bytecode-parser</module>
-        <module>codingmatters-code-graph-test-resources</module>
         <module>codingmatters-code-graph-neo4j-storage</module>
     </modules>
 </project>
