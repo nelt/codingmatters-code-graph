@@ -5,15 +5,13 @@ import org.codingmatters.code.graph.api.Predicates;
 import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
-import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
-import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
+import org.codingmatters.code.graph.bytecode.parser.parsed.ClassWithMethod;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -51,6 +49,8 @@ public class AbstractClassParserTest {
         public void hasMethod(HasMethodPredicate predicate) throws ProducerException {}
         @Override
         public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {}
+        @Override
+        public void hasParent(ExtendsPredicate predicate) throws ProducerException {}
         @Override
         public void hasField(HasFieldPredicate predicate) throws ProducerException {}
         @Override
@@ -96,6 +96,11 @@ public class AbstractClassParserTest {
 
             @Override
             public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {
+                produced.add(predicate);
+            }
+
+            @Override
+            public void hasParent(ExtendsPredicate predicate) throws ProducerException {
                 produced.add(predicate);
             }
 
@@ -148,6 +153,9 @@ public class AbstractClassParserTest {
 
 
 
+    static protected ExtendsPredicate defaultExtends(Class clazz) {
+        return new ExtendsPredicate(new ClassRef(className(clazz)), new ClassRef(className(Object.class)));
+    }
 
     static protected MethodNode defaultConstructorNode(Class clazz) {
         return Nodes.methodNode(new MethodRef(className(clazz) + "#<init>()V"));

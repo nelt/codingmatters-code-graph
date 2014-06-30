@@ -3,10 +3,7 @@ package org.codingmatters.code.graph.bytecode.parser;
 import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
-import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
-import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
@@ -33,8 +30,10 @@ public class AnonymousClassTest extends AbstractClassParserTest {
         
         this.assertProduced(
                 new ClassNode(CLASS_REF),
+                defaultExtends(ClassWithAnonymousClass.class),
 
                 new ClassNode(ANONYMOUS_CLASS_REF),
+                new ExtendsPredicate(ANONYMOUS_CLASS_REF, new ClassRef(className(Object.class))),
                 new FieldNode(new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")),
                 new HasFieldPredicate(
                         ANONYMOUS_CLASS_REF, new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")

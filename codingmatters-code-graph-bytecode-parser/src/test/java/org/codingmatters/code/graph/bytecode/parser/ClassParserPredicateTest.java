@@ -1,6 +1,7 @@
 package org.codingmatters.code.graph.bytecode.parser;
 
 import org.codingmatters.code.graph.api.Predicates;
+import org.codingmatters.code.graph.api.predicates.ExtendsPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.predicates.UsesPredicate;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
@@ -27,6 +28,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     public void testClassWithField() throws Exception {
         this.getParser().parse(ClassWithField.class);
         this.assertProduced(
+                defaultExtends(ClassWithField.class),
                 Predicates.hasField(
                         new ClassRef(className(ClassWithField.class)),
                         new FieldRef(className(ClassWithField.class) + "#field")
@@ -40,6 +42,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     public void testClassWithMethod() throws Exception {
         this.getParser().parse(ClassWithMethod.class);
         this.assertProduced(
+                defaultExtends(ClassWithMethod.class),
                 hasDefaultConstructor(ClassWithMethod.class),
                 usesDefaultConstructorPredicate(ClassWithMethod.class),
                 Predicates.hasMethod(
@@ -49,10 +52,12 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
         );
     }
 
+
     @Test
     public void testClassWithMethodReadingField() throws Exception {
         this.getParser().parse(ClassWithMethodReadingField.class);
         this.assertProduced(
+                defaultExtends(ClassWithMethodReadingField.class),
                 hasDefaultConstructor(ClassWithMethodReadingField.class),
                 usesDefaultConstructorPredicate(ClassWithMethodReadingField.class),
                 Predicates.hasMethod(
@@ -70,6 +75,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     public void testClassWithMethodWritingField() throws Exception {
         this.getParser().parse(ClassWithMethodWritingField.class);
         this.assertProduced(
+                defaultExtends(ClassWithMethodWritingField.class),
                 hasDefaultConstructor(ClassWithMethodWritingField.class),
                 usesDefaultConstructorPredicate(ClassWithMethodWritingField.class),
                 Predicates.hasMethod(
@@ -87,6 +93,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     public void testClassWithMethodInvokingMethod() throws Exception {
         this.getParser().parse(ClassWithMethodInvokingMethod.class);
         this.assertProduced(
+                defaultExtends(ClassWithMethodInvokingMethod.class),
                 hasDefaultConstructor(ClassWithMethodInvokingMethod.class),
                 usesDefaultConstructorPredicate(ClassWithMethodInvokingMethod.class),
                 Predicates.hasMethod(

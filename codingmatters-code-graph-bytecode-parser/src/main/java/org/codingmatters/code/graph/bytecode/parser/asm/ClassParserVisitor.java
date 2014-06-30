@@ -5,6 +5,7 @@ import org.codingmatters.code.graph.api.Predicates;
 import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
+import org.codingmatters.code.graph.api.predicates.ExtendsPredicate;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
@@ -44,6 +45,7 @@ public class ClassParserVisitor extends ClassVisitor {
         try {
             this.currentClassNode = Nodes.classNode(new ClassRef(name));
             this.nodeProducer.aClass(this.currentClassNode);
+            this.predicateProducer.hasParent(new ExtendsPredicate(this.currentClassNode.getRef(), new ClassRef(superName)));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }

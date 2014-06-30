@@ -1,10 +1,7 @@
 package org.codingmatters.code.graph.api;
 
-import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.references.FieldRef;
-import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 
@@ -24,6 +21,9 @@ public class Predicates {
     }
     static public HasInnerClassPredicate hasInner(ClassRef cls, ClassRef inner) {
         return new HasInnerClassPredicate(cls, inner);
+    }
+    static public ExtendsPredicate extendsClass(ClassRef cls, ClassRef superClass) {
+        return new ExtendsPredicate(cls, superClass);
     }
     static public UsesPredicate uses(MethodRef user, MethodRef used) {
         return new UsesPredicate(user, used);

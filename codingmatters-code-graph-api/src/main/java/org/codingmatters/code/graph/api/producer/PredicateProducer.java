@@ -1,9 +1,6 @@
 package org.codingmatters.code.graph.api.producer;
 
-import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 
 /**
@@ -14,6 +11,7 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
  * To change this template use File | Settings | File Templates.
  */
 public interface PredicateProducer {
+    public void hasParent(ExtendsPredicate predicate) throws ProducerException;
     public void hasField(HasFieldPredicate predicate) throws ProducerException;
     public void hasMethod(HasMethodPredicate predicate) throws ProducerException;
     public void hasInner(HasInnerClassPredicate predicate) throws ProducerException;
