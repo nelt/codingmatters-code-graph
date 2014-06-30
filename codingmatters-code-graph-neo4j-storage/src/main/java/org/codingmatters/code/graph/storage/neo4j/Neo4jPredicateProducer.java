@@ -1,9 +1,6 @@
 package org.codingmatters.code.graph.storage.neo4j;
 
-import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
-import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
@@ -53,6 +50,16 @@ public class Neo4jPredicateProducer implements PredicateProducer {
             this.querier.mergeRefNodes(predicate.getCls());
             this.querier.mergeRefNodes(predicate.getInner());
             this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_INNER_CLASS, predicate.getInner());
+            tx.success();
+        }
+    }
+
+    @Override
+    public void hasParent(ExtendsPredicate predicate) throws ProducerException {
+        try(Transaction tx = this.graphDb.beginTx()) {
+            this.querier.mergeRefNodes(predicate.getCls());
+            this.querier.mergeRefNodes(predicate.getExtended());
+            this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.EXTENDS, predicate.getExtended());
             tx.success();
         }
     }

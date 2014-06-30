@@ -11,21 +11,20 @@ import org.codingmatters.code.graph.api.references.ClassRef;
  */
 public class ExtendsPredicate {
     private final ClassRef cls;
-    private final ClassRef parent;
+    private final ClassRef extended;
 
-    public ExtendsPredicate(ClassRef cls, ClassRef parent) {
+    public ExtendsPredicate(ClassRef cls, ClassRef extended) {
         this.cls = cls;
-        this.parent = parent;
+        this.extended = extended;
     }
 
     public ClassRef getCls() {
         return cls;
     }
 
-    public ClassRef getParent() {
-        return parent;
+    public ClassRef getExtended() {
+        return extended;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -35,7 +34,7 @@ public class ExtendsPredicate {
         ExtendsPredicate that = (ExtendsPredicate) o;
 
         if (cls != null ? !cls.equals(that.cls) : that.cls != null) return false;
-        if (parent != null ? !parent.equals(that.parent) : that.parent != null) return false;
+        if (extended != null ? !extended.equals(that.extended) : that.extended != null) return false;
 
         return true;
     }
@@ -43,7 +42,7 @@ public class ExtendsPredicate {
     @Override
     public int hashCode() {
         int result = cls != null ? cls.hashCode() : 0;
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (extended != null ? extended.hashCode() : 0);
         return result;
     }
 
@@ -51,7 +50,7 @@ public class ExtendsPredicate {
     public String toString() {
         return "ExtendsPredicate{" +
                 "cls=" + cls +
-                ", parent=" + parent +
+                ", extended=" + extended +
                 '}';
     }
 }

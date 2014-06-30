@@ -1,9 +1,6 @@
 package org.codingmatters.code.graph.storage.neo4j;
 
-import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
-import org.codingmatters.code.graph.api.predicates.HasInnerClassPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.junit.Assert;
@@ -80,5 +77,15 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
         Node usedMethodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, USED_METHOD_REF.getName());
         assertUniqueRelationship(methodNode , Codec.RelationshipType.USES , usedMethodNode);
+    }
+
+    @Test
+    public void testExtends() throws Exception {
+        this.producer.hasParent(new ExtendsPredicate(CLASS_REF, ANOTHER_CLASS_REF));
+        this.producer.hasParent(new ExtendsPredicate(CLASS_REF, ANOTHER_CLASS_REF));
+
+        Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        Node extendedClsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, ANOTHER_CLASS_REF.getName());
+        assertUniqueRelationship(clsNode, Codec.RelationshipType.EXTENDS, extendedClsNode);
     }
 }
