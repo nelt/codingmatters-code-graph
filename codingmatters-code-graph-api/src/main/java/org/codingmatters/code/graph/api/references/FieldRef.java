@@ -7,39 +7,13 @@ package org.codingmatters.code.graph.api.references;
  * Time: 14:09
  * To change this template use File | Settings | File Templates.
  */
-public class FieldRef implements UsableRef {
-    
-    private final String name;
-    
-    public FieldRef(String name) {
-        this.name = name;
+public class FieldRef extends AbstractRef implements UsableRef {
+
+    public FieldRef(String shortName) {
+        super(shortName);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FieldRef fieldRef = (FieldRef) o;
-
-        if (name != null ? !name.equals(fieldRef.name) : fieldRef.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "FieldRef{" +
-                "name='" + name + '\'' +
-                '}';
-    }
-
-    public String getName() {
-        return name;
+    public FieldRef(String source, String shortName) {
+        super(source, shortName);
     }
 }

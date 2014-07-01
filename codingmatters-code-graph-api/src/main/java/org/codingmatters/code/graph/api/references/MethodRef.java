@@ -7,39 +7,12 @@ package org.codingmatters.code.graph.api.references;
  * Time: 14:12
  * To change this template use File | Settings | File Templates.
  */
-public class MethodRef implements UsableRef {
-
-    private final String name;
-
-    public MethodRef(String name) {
-        this.name = name;
+public class MethodRef extends AbstractRef implements UsableRef {
+    public MethodRef(String shortName) {
+        super(shortName);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MethodRef methodRef = (MethodRef) o;
-
-        if (name != null ? !name.equals(methodRef.name) : methodRef.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "MethodRef{" +
-                "name='" + name + '\'' +
-                '}';
-    }
-
-    public String getName() {
-        return name;
+    public MethodRef(String source, String shortName) {
+        super(source, shortName);
     }
 }

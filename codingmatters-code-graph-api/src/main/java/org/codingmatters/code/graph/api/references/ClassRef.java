@@ -7,38 +7,14 @@ package org.codingmatters.code.graph.api.references;
  * Time: 14:08
  * To change this template use File | Settings | File Templates.
  */
-public class ClassRef implements Ref {
-    private final String name;
+public class ClassRef extends AbstractRef {
 
-    public ClassRef(String name) {
-        this.name = name;
+    public ClassRef(String shortName) {
+        super(shortName);
     }
 
-    public String getName() {
-        return name;
+    public ClassRef(String source, String shortName) {
+        super(source, shortName);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ClassRef classRef = (ClassRef) o;
-
-        if (name != null ? !name.equals(classRef.name) : classRef.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "ClassRef{" +
-                "name='" + name + '\'' +
-                '}';
-    }
+    
 }

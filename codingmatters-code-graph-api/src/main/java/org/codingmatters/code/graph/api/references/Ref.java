@@ -9,4 +9,6 @@ package org.codingmatters.code.graph.api.references;
  */
 public interface Ref {
     String getName();
+    String getSource();
+    String getShortName();
 }
