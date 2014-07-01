@@ -1,6 +1,7 @@
 package org.codingmatters.code.graph.bytecode.parser.resolver;
 
 import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,12 @@ public class JarResolverTest {
     public void setUp() throws Exception {
         this.resolver = new JarResolver(new JarFile(ClassResourcesHelper.makeTemporaryJar(EmptyClass.class)));
     }
-    
+
+    @After
+    public void tearDown() throws Exception {
+        this.resolver.close();
+    }
+
     @Test
     public void testExistingClass() throws Exception {
         ClassReader actual = this.resolver.resolve(EmptyClass.class.getName());
