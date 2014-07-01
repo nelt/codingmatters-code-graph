@@ -81,15 +81,10 @@ public class ClassParserVisitor extends ClassVisitor {
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         if(name.equals(this.currentClassNode.getRef().getName())) return;
         try {
-            ClassReader classReader = this.resolver.resolve(name.replaceAll("/", "."));
-            classReader.accept(new ClassParserVisitor(this.nodeProducer, this.predicateProducer, this.errorReporter, resolver), 0);
-            
             ClassNode innerClassNode = Nodes.classNode(new ClassRef(name));
             this.predicateProducer.hasInner(Predicates.hasInner(this.currentClassNode.getRef(), innerClassNode.getRef()));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
-        } catch (IOException e) {
-            this.errorReporter.report(new ProducerException("error resolving inner class " + outerName, e));
         }
     }
 

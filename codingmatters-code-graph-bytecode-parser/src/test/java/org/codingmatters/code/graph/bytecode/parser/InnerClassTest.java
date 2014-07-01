@@ -25,19 +25,27 @@ public class InnerClassTest extends AbstractClassParserTest {
     @Test
     public void testClassWithInnerClass() throws Exception {
         this.getParser().parse(ClassWithInnerClass.class);
-
+        
         this.assertProduced(
                 Nodes.classNode(CLASS_REF),
                 defaultExtends(ClassWithInnerClass.class),
-                Nodes.classNode(INNER_CLASS_REF),
-                defaultExtends(ClassWithInnerClass.Inner.class),
-                Nodes.methodNode(INNER_CLASS_CONSTRUCTOR_REF),
-                Predicates.hasMethod(INNER_CLASS_REF, INNER_CLASS_CONSTRUCTOR_REF),
-                Predicates.uses(INNER_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF),
                 Predicates.hasInner(CLASS_REF, INNER_CLASS_REF),
                 Nodes.methodNode(CLASS_CONSTRUCTOR_REF),
                 Predicates.hasMethod(CLASS_REF, CLASS_CONSTRUCTOR_REF),
                 Predicates.uses(CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF)
+            );
+    }
+
+    @Test
+    public void testInnerClass() throws Exception {
+        this.getParser().parse(ClassWithInnerClass.class.getName() + "$Inner");
+
+        this.assertProduced(
+                Nodes.classNode(INNER_CLASS_REF),
+                defaultExtends(ClassWithInnerClass.Inner.class),
+                Nodes.methodNode(INNER_CLASS_CONSTRUCTOR_REF),
+                Predicates.hasMethod(INNER_CLASS_REF, INNER_CLASS_CONSTRUCTOR_REF),
+                Predicates.uses(INNER_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF)
         );
     }
 }

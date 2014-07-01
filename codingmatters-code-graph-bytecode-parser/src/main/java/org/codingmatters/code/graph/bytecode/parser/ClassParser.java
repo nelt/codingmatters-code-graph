@@ -5,9 +5,9 @@ import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
 import org.codingmatters.code.graph.bytecode.parser.asm.ClassParserVisitor;
+import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParserException;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParsingError;
-import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
 
@@ -28,17 +28,16 @@ public class ClassParser {
             parsingError(e);
         }
     };
-    private final ByteCodeResolver resolver = new ByteCodeResolver() {
-        @Override
-        public ClassReader resolve(String name) throws IOException {
-            return new ClassReader(name);
-        }
-    };
+    private final ByteCodeResolver resolver;
 
     public ClassParser(NodeProducer nodeProducer, PredicateProducer predicateProducer) {
+        this(nodeProducer, predicateProducer, new SystemResourcesResolver());
+    }
+    
+    public ClassParser(NodeProducer nodeProducer, PredicateProducer predicateProducer, ByteCodeResolver resolver) {
         this.nodeProducer = nodeProducer;
         this.predicateProducer = predicateProducer;
-        
+        this.resolver = resolver;
         this.visitor = new ClassParserVisitor(this.nodeProducer, this.predicateProducer, this.errorReporter, resolver);
     }
 
