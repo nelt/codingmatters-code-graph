@@ -19,8 +19,6 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class ClassParser {
-    private final NodeProducer nodeProducer;
-    private final PredicateProducer predicateProducer;
     private final ClassParserVisitor visitor;
     private final ClassParserVisitor.ParsingErrorReporter errorReporter = new ClassParserVisitor.ParsingErrorReporter() {
         @Override
@@ -30,15 +28,9 @@ public class ClassParser {
     };
     private final ByteCodeResolver resolver;
 
-    public ClassParser(NodeProducer nodeProducer, PredicateProducer predicateProducer) {
-        this(nodeProducer, predicateProducer, new SystemResourcesResolver());
-    }
-    
-    public ClassParser(NodeProducer nodeProducer, PredicateProducer predicateProducer, ByteCodeResolver resolver) {
-        this.nodeProducer = nodeProducer;
-        this.predicateProducer = predicateProducer;
+    public ClassParser(NodeProducer nodeProducer, PredicateProducer predicateProducer, ByteCodeResolver resolver, String source) {
         this.resolver = resolver;
-        this.visitor = new ClassParserVisitor(this.nodeProducer, this.predicateProducer, this.errorReporter, resolver);
+        this.visitor = new ClassParserVisitor(nodeProducer, predicateProducer, this.errorReporter, source);
     }
 
     public void parse(Class aClass) throws ClassParserException {

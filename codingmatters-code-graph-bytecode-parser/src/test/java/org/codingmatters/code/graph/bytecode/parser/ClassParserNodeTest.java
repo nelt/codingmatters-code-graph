@@ -39,10 +39,9 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
     @Test
     public void testEmptyClass() throws Exception {
         this.getParser().parse(EmptyClass.class);
-        Class clazz = EmptyClass.class;
         this.assertProduced(
-                Nodes.classNode(new ClassRef(className(clazz))),
-                defaultConstructorNode(clazz)
+                Nodes.classNode(new ClassRef(className(EmptyClass.class))),
+                defaultConstructorNode(EmptyClass.class)
         );
     }
 

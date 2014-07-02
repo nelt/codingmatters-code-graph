@@ -30,22 +30,22 @@ public class ClassParserVisitor extends ClassVisitor {
     private final PredicateProducer predicateProducer;
     private final ParsingErrorReporter errorReporter;
     private ClassNode currentClassNode;
-    private final ByteCodeResolver resolver;
-    
-    public ClassParserVisitor(NodeProducer nodeProducer, PredicateProducer predicateProducer, ParsingErrorReporter errorReporter, ByteCodeResolver resolver) {
+    private final String source;
+
+    public ClassParserVisitor(NodeProducer nodeProducer, PredicateProducer predicateProducer, ParsingErrorReporter errorReporter, String source) {
         super(Opcodes.ASM5);
         this.nodeProducer = nodeProducer;
         this.predicateProducer = predicateProducer;
         this.errorReporter = errorReporter;
-        this.resolver = resolver;
+        this.source = source;
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         try {
-            this.currentClassNode = Nodes.classNode(new ClassRef(name));
+            this.currentClassNode = Nodes.classNode(this.createClassRef(name));
             this.nodeProducer.aClass(this.currentClassNode);
-            this.predicateProducer.hasParent(new ExtendsPredicate(this.currentClassNode.getRef(), new ClassRef(superName)));
+            this.predicateProducer.hasParent(new ExtendsPredicate(this.currentClassNode.getRef(), this.createClassRef(superName)));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
@@ -56,9 +56,9 @@ public class ClassParserVisitor extends ClassVisitor {
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         try {
-            FieldRef fieldRef = new FieldRef(NameUtil.fieldName(this.currentClassNode.getRef().getName(), name));
+            FieldRef fieldRef = this.createFieldRef(NameUtil.fieldName(this.currentClassNode.getRef().getName(), name));
             this.nodeProducer.aField(new FieldNode(fieldRef));
-            this.predicateProducer.hasField(new HasFieldPredicate(new ClassRef(this.currentClassNode.getRef().getName()), fieldRef));
+            this.predicateProducer.hasField(new HasFieldPredicate(this.createClassRef(this.currentClassNode.getRef().getName()), fieldRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
@@ -67,27 +67,41 @@ public class ClassParserVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        MethodRef methodRef = new MethodRef(NameUtil.methodName(this.currentClassNode.getRef().getName(), name, desc));
+        MethodRef methodRef = this.createMethodRef(NameUtil.methodName(this.currentClassNode.getRef().getShortName(), name, desc));
         try {
             this.nodeProducer.aMethod(new MethodNode(methodRef));
-            this.predicateProducer.hasMethod(new HasMethodPredicate(new ClassRef(this.currentClassNode.getRef().getName()), methodRef));
+            this.predicateProducer.hasMethod(
+                    new HasMethodPredicate(this.currentClassNode.getRef(), methodRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
-        return new MethodParserVisitor(methodRef, this.predicateProducer, this.errorReporter);
+        return new MethodParserVisitor(methodRef, this.predicateProducer, this.errorReporter,  this.source);
     }
 
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         if(name.equals(this.currentClassNode.getRef().getName())) return;
         try {
-            ClassNode innerClassNode = Nodes.classNode(new ClassRef(name));
+            ClassNode innerClassNode = Nodes.classNode(this.createClassRef(name));
             this.predicateProducer.hasInner(Predicates.hasInner(this.currentClassNode.getRef(), innerClassNode.getRef()));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
     }
 
+
+    private ClassRef createClassRef(String name) {
+        return new ClassRef(this.source, name);
+    }
+
+    private FieldRef createFieldRef(String name) {
+        return new FieldRef(this.source, name);
+    }
+
+    private MethodRef createMethodRef(String name) {
+        return new MethodRef(this.source, name);
+    }
+    
     static public interface ParsingErrorReporter {
         void report(ProducerException e);
     }

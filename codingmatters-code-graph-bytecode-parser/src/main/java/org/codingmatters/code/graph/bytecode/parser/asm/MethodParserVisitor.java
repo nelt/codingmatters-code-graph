@@ -21,13 +21,15 @@ public class MethodParserVisitor extends MethodVisitor {
     private final MethodRef methodRef;
     private final PredicateProducer predicateProducer;
     private final ClassParserVisitor.ParsingErrorReporter errorReporter;
+    private final String source;
     private int currentLine;
 
-    public MethodParserVisitor(MethodRef methodRef, PredicateProducer predicateProducer, ClassParserVisitor.ParsingErrorReporter errorReporter) {
+    public MethodParserVisitor(MethodRef methodRef, PredicateProducer predicateProducer, ClassParserVisitor.ParsingErrorReporter errorReporter, String source) {
         super(Opcodes.ASM5);
         this.methodRef = methodRef;
         this.predicateProducer = predicateProducer;
         this.errorReporter = errorReporter;
+        this.source = source;
     }
 
 
@@ -41,13 +43,13 @@ public class MethodParserVisitor extends MethodVisitor {
     public void visitFieldInsn(int opcode, String owner, String name, String desc) {
         if(Opcodes.GETFIELD == opcode) {
             try {
-                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(fieldName(owner, name))));
+                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));
             } catch (ProducerException e) {
                 this.errorReporter.report(e);
             }
         } else if(Opcodes.PUTFIELD == opcode) {
             try {
-                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(fieldName(owner, name))));
+                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));
             } catch (ProducerException e) {
                 this.errorReporter.report(e);
             }
@@ -67,7 +69,7 @@ public class MethodParserVisitor extends MethodVisitor {
             this.predicateProducer.usage(
                     new UsesPredicate(
                             this.methodRef, 
-                            new MethodRef(NameUtil.methodName(owner, name, desc))
+                            new MethodRef(this.source, NameUtil.methodName(owner, name, desc))
                     )
             );
         } catch (ProducerException e) {

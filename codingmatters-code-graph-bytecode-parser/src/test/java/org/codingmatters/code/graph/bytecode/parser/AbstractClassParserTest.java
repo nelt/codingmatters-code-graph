@@ -12,6 +12,7 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.bytecode.parser.parsed.ClassWithMethod;
+import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -65,7 +66,11 @@ public class AbstractClassParserTest {
         NodeProducer nodeProducer = this.getNodeProducer();
         PredicateProducer predicateProducer = this.getPredicateProducer();
         
-        this.parser = new ClassParser(nodeProducer, predicateProducer);
+        this.parser = new ClassParser(nodeProducer, predicateProducer, new SystemResourcesResolver(), this.parserSource());
+    }
+    
+    protected String parserSource() {
+        return null;
     }
 
     protected NodeProducer getNodeProducer() {
