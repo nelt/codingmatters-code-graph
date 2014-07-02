@@ -27,8 +27,8 @@ public class Neo4jPredicateProducer implements PredicateProducer {
     @Override
     public void hasField(HasFieldPredicate predicate) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(predicate.getCls()).next();
-            this.querier.mergeRefNodes(predicate.getField()).next();
+            this.querier.mergeRefNode(predicate.getCls()).next();
+            this.querier.mergeRefNode(predicate.getField()).next();
             this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_FIELD, predicate.getField());
             tx.success();
         }
@@ -37,8 +37,8 @@ public class Neo4jPredicateProducer implements PredicateProducer {
     @Override
     public void hasMethod(HasMethodPredicate predicate) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(predicate.getCls());
-            this.querier.mergeRefNodes(predicate.getMethod());
+            this.querier.mergeRefNode(predicate.getCls());
+            this.querier.mergeRefNode(predicate.getMethod());
             this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_METHOD, predicate.getMethod());
             tx.success();
         }
@@ -47,8 +47,8 @@ public class Neo4jPredicateProducer implements PredicateProducer {
     @Override
     public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(predicate.getCls());
-            this.querier.mergeRefNodes(predicate.getInner());
+            this.querier.mergeRefNode(predicate.getCls());
+            this.querier.mergeRefNode(predicate.getInner());
             this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_INNER_CLASS, predicate.getInner());
             tx.success();
         }
@@ -57,8 +57,8 @@ public class Neo4jPredicateProducer implements PredicateProducer {
     @Override
     public void hasParent(ExtendsPredicate predicate) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(predicate.getCls());
-            this.querier.mergeRefNodes(predicate.getExtended());
+            this.querier.mergeRefNode(predicate.getCls());
+            this.querier.mergeRefNode(predicate.getExtended());
             this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.EXTENDS, predicate.getExtended());
             tx.success();
         }
@@ -67,8 +67,8 @@ public class Neo4jPredicateProducer implements PredicateProducer {
     @Override
     public void usage(UsesPredicate predicate) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(predicate.getUser());
-            this.querier.mergeRefNodes(predicate.getUsed());
+            this.querier.mergeRefNode(predicate.getUser());
+            this.querier.mergeRefNode(predicate.getUsed());
             this.querier.mergeRelationship(predicate.getUser(), Codec.RelationshipType.USES, predicate.getUsed());
             tx.success();
         }

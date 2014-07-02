@@ -26,7 +26,6 @@ public class Neo4jNodeProducerTest extends AbstractNeo4jProducerTest {
         this.producer = new Neo4jNodeProducer(this.getGraphDb(), new ExecutionEngine(this.getGraphDb(), StringLogger.SYSTEM));
     }
     
-
     @Test
     public void testAClass() throws Exception {
         this.producer.aClass(new ClassNode(CLASS_REF));        
@@ -50,5 +49,4 @@ public class Neo4jNodeProducerTest extends AbstractNeo4jProducerTest {
         
         assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
     }
-    
 }

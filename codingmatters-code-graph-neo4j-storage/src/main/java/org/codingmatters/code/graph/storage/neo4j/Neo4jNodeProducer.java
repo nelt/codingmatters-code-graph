@@ -29,7 +29,7 @@ public class Neo4jNodeProducer implements NodeProducer {
     @Override
     public void aClass(ClassNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(node.getRef());
+            this.querier.mergeRefNode(node.getRef());
             tx.success();
         }
     }
@@ -37,7 +37,7 @@ public class Neo4jNodeProducer implements NodeProducer {
     @Override
     public void aField(FieldNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(node.getRef());
+            this.querier.mergeRefNode(node.getRef());
             tx.success();
         }
     }
@@ -45,7 +45,7 @@ public class Neo4jNodeProducer implements NodeProducer {
     @Override
     public void aMethod(MethodNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNodes(node.getRef());
+            this.querier.mergeRefNode(node.getRef());
             tx.success();
         }
     }

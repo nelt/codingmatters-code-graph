@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.neo4j.graphdb.*;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,13 +22,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
 
-    public static final ClassRef CLASS_REF = new ClassRef("path/to/Class");
-    public static final ClassRef ANOTHER_CLASS_REF = new ClassRef("path/to/AnotherClass");
-    public static final ClassRef INNER_CLASS_REF = new ClassRef("path/to/Class$Inner");
-    public static final FieldRef FIELD_REF = new FieldRef("path/to/Class#field");
-    public static final MethodRef METHOD_REF = new MethodRef("path/to/Class#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;");
-    public static final MethodRef USED_METHOD_REF = new MethodRef("path/to/Class#usedMethod(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;");
-
+    public static final ClassRef CLASS_REF = new ClassRef("source", "path/to/Class");
+    public static final ClassRef ANOTHER_CLASS_REF = new ClassRef("source", "path/to/AnotherClass");
+    public static final ClassRef INNER_CLASS_REF = new ClassRef("source", "path/to/Class$Inner");
+    public static final FieldRef FIELD_REF = new FieldRef("source", "path/to/Class#field");
+    public static final MethodRef METHOD_REF = new MethodRef("source", "path/to/Class#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;");
+    public static final MethodRef USED_METHOD_REF = new MethodRef("source", "path/to/Class#usedMethod(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;");
 
     @Before
     public void setUpIndexes() throws Exception {
@@ -44,7 +45,6 @@ public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
         }
     }
 
-
     protected Node assertUniqueNodeWithLabelAndName(Label label, String name) {
         try(
                 Transaction tx = this.getGraphDb().beginTx();
@@ -58,21 +58,38 @@ public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
             return result;
         }
     }
-    
-    protected Relationship assertUniqueRelationship(Node source, RelationshipType relationshipType, Node target) {
+
+    protected void assertNoSuchRelationship(Node source, RelationshipType relationshipType, Node target) {
         try(
                 Transaction tx = this.getGraphDb().beginTx()
         ) {
-            Relationship found = null;
+            Assert.assertFalse("relationship exists " + source + " -" + relationshipType + "-> " + target, source.getRelationships(Direction.OUTGOING, relationshipType).iterator().hasNext());
+        }
+    }
+    
+    protected List<Relationship> assertRelationshipExists(Node source, RelationshipType relationshipType, Node target) {
+        try(
+                Transaction tx = this.getGraphDb().beginTx()
+        ) {
+            List<Relationship> found = new LinkedList<>();
             for (Relationship relationship : source.getRelationships(Direction.OUTGOING, relationshipType)) {
                 if(relationship.getEndNode().equals(target)) {
-                    Assert.assertNull("duplicate relationship " + relationshipType, found);
-                    found = relationship;
+                    found.add(relationship);
                 }
             }
-            Assert.assertNotNull("no such relationship " + source + " -" + relationshipType + "-> " + target, found);
+            Assert.assertFalse("no such relationship " + source + " -" + relationshipType + "-> " + target, found.isEmpty());
             return found;
         }
+    }
+
+    protected List<Relationship> assertRelationshipCount(int expectedCount, Node source, RelationshipType relationshipType, Node target) {
+        List<Relationship> found = this.assertRelationshipExists(source, relationshipType, target);
+        Assert.assertEquals("wrong count for relationship " + source + " -" + relationshipType + "-> " + target, expectedCount, found.size());
+        return found;
+    }
+    
+    protected Relationship assertUniqueRelationship(Node source, RelationshipType relationshipType, Node target) {
+        return this.assertRelationshipCount(1, source, relationshipType, target).get(0);
     }
 
 }

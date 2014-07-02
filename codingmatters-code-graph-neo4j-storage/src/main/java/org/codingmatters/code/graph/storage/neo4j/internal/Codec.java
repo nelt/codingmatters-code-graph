@@ -50,7 +50,7 @@ public interface Codec {
             this.engine = engine;
         }
         
-        public Iterator<Node> mergeRefNodes(Ref ref) {
+        public Iterator<Node> mergeRefNode(Ref ref) {
             Map<String, Object> parameters = new HashMap<>();
             
             String queryString = String.format(
@@ -62,7 +62,7 @@ public interface Codec {
             return this.engine.execute(queryString, parameters).columnAs("n");
         }
     
-        public Iterator<Relationship> mergeRelationship(Ref source, org.neo4j.graphdb.RelationshipType relationshipType, Ref target) {
+        public Iterator<Relationship> mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
             Map<String, Object> parameters = new HashMap<>();
             
             String queryString = String.format(
