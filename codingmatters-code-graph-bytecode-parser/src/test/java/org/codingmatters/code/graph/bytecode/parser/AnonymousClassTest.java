@@ -28,26 +28,26 @@ public class AnonymousClassTest extends AbstractClassParserTest {
     public void testClassWithAnonymousClass() throws Exception {
         this.getParser().parse(ClassWithAnonymousClass.class);
         
-        this.assertProduced(
+        this.assertProducedExactly(
                 new ClassNode(CLASS_REF),
                 defaultExtends(ClassWithAnonymousClass.class),
-                
+
                 new HasInnerClassPredicate(CLASS_REF, ANONYMOUS_CLASS_REF),
-                
+
                 new MethodNode(CLASS_CONSTRUCTOR_REF),
                 new HasMethodPredicate(CLASS_REF, CLASS_CONSTRUCTOR_REF),
                 new UsesPredicate(CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF),
                 new MethodNode(new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V")),
                 new HasMethodPredicate(CLASS_REF, new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V")),
                 new UsesPredicate(new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V"), ANONYMOUS_CLASS_CONSTRUCTOR_REF)
-            );
+        );
     }
     
     @Test
     public void testAnonymousClass() throws Exception {
         this.getParser().parse(ClassWithAnonymousClass.class.getName() + "$1");
 
-        this.assertProduced(
+        this.assertProducedExactly(
                 new ClassNode(ANONYMOUS_CLASS_REF),
                 new ExtendsPredicate(ANONYMOUS_CLASS_REF, new ClassRef(className(Object.class))),
                 new FieldNode(new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")),
@@ -58,8 +58,8 @@ public class AnonymousClassTest extends AbstractClassParserTest {
                 new HasMethodPredicate(ANONYMOUS_CLASS_REF, ANONYMOUS_CLASS_CONSTRUCTOR_REF),
                 new UsesPredicate(ANONYMOUS_CLASS_CONSTRUCTOR_REF, new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")),
                 new UsesPredicate(ANONYMOUS_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF),
-                new MethodNode(new MethodRef(ANONYMOUS_CLASS_REF.getName() +"#run()V")),
-                new HasMethodPredicate(ANONYMOUS_CLASS_REF, new MethodRef(ANONYMOUS_CLASS_REF.getName() +"#run()V"))
+                new MethodNode(new MethodRef(ANONYMOUS_CLASS_REF.getName() + "#run()V")),
+                new HasMethodPredicate(ANONYMOUS_CLASS_REF, new MethodRef(ANONYMOUS_CLASS_REF.getName() + "#run()V"))
         );
     }
 }

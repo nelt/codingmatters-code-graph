@@ -23,7 +23,7 @@ public class RefSourceParserTest extends AbstractClassParserTest {
     @Test
     public void testEmptyClass() throws Exception {
         this.getParser().parse(EmptyClass.class);
-        this.assertProduced(
+        this.assertProducedExactly(
                 Nodes.classNode(new ClassRef("source", className(EmptyClass.class))),
                 Predicates.extendsClass(new ClassRef("source", className(EmptyClass.class)), new ClassRef("source", "java/lang/Object")),
                 Nodes.methodNode(new MethodRef("source", className(EmptyClass.class) + "#<init>()V")),

@@ -1,6 +1,7 @@
 package org.codingmatters.code.graph.bytecode.parser.resolver;
 
 import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
+import org.codingmatters.code.graph.bytecode.parser.util.ClassResourcesHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +9,6 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
-import java.util.jar.JarFile;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +22,7 @@ public class JarResolverTest {
 
     @Before
     public void setUp() throws Exception {
-        this.resolver = new JarResolver(new JarFile(ClassResourcesHelper.makeTemporaryJar(EmptyClass.class)));
+        this.resolver = new JarResolver(ClassResourcesHelper.makeTemporaryJarFile(EmptyClass.class));
     }
 
     @After

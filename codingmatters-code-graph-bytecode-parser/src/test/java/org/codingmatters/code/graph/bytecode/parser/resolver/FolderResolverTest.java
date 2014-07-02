@@ -1,6 +1,7 @@
 package org.codingmatters.code.graph.bytecode.parser.resolver;
 
 import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
+import org.codingmatters.code.graph.bytecode.parser.util.ClassResourcesHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

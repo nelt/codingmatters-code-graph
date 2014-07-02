@@ -11,12 +11,14 @@ import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
+import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
 import org.codingmatters.code.graph.bytecode.parser.parsed.ClassWithMethod;
 import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,9 +68,13 @@ public class AbstractClassParserTest {
         NodeProducer nodeProducer = this.getNodeProducer();
         PredicateProducer predicateProducer = this.getPredicateProducer();
         
-        this.parser = new ClassParser(nodeProducer, predicateProducer, new SystemResourcesResolver(), this.parserSource());
+        this.parser = new ClassParser(nodeProducer, predicateProducer, createResolver(), this.parserSource());
     }
-    
+
+    protected ByteCodeResolver createResolver() throws IOException {
+        return new SystemResourcesResolver();
+    }
+
     protected String parserSource() {
         return null;
     }
@@ -125,8 +131,12 @@ public class AbstractClassParserTest {
     public void tearDown() throws Exception {
         this.produced.clear();
     }
+    
+    protected void assertProduced(Object object) {
+        Assert.assertTrue("not produced " + object, this.produced.contains(object));
+    }
 
-    protected void assertProduced(Object... objects) {
+    protected void assertProducedExactly(Object... objects) {
         objects = objects != null ? objects : new Object[0];
         if(objects.length != this.produced.size()) {
             throw new AssertionError("different produced size, " +

@@ -4,6 +4,7 @@ import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
 import org.objectweb.asm.ClassReader;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -18,15 +19,15 @@ import java.util.jar.JarFile;
 public class JarResolver implements ByteCodeResolver, Closeable {
     private final JarFile jar;
 
-    public JarResolver(JarFile jar) {
-        this.jar = jar;
+    public JarResolver(File jar) throws IOException {
+        this.jar = new JarFile(jar);
     }
 
     @Override
     public ClassReader resolve(String name) throws IOException {
         JarEntry entry = this.jar.getJarEntry(name.replace('.', '/') + ".class");
         if(entry == null) {
-            throw new IOException("no such class " + name + "in jar file");
+            throw new IOException("no such class " + name + " in jar file");
         }
         return new ClassReader(this.jar.getInputStream(entry));
     }

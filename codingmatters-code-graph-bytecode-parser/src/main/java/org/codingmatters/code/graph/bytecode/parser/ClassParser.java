@@ -5,11 +5,15 @@ import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
 import org.codingmatters.code.graph.bytecode.parser.asm.ClassParserVisitor;
-import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
+import org.codingmatters.code.graph.bytecode.parser.resolver.JarResolver;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParserException;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParsingError;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,8 +52,8 @@ public class ClassParser {
         }
     }
 
-
     private void parsingError(ProducerException e) {
         throw new ClassParsingError(e);
     }
+
 }

@@ -28,7 +28,7 @@ public class SubclassingTest extends AbstractClassParserTest {
     public void testEmptySubclass() throws Exception {
         this.getParser().parse(EmptySubclass.class);
         
-        this.assertProduced(
+        this.assertProducedExactly(
                 new ClassNode(EMPTY_SUBCLASS_REF),
                 new ExtendsPredicate(EMPTY_SUBCLASS_REF, EMPTY_CLASS_REF),
                 new MethodNode(EMPTY_SUBCLASS_CONSTRUCTOR_REF),

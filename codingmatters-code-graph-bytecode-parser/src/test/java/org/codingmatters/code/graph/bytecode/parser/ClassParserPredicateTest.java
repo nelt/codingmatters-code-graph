@@ -1,9 +1,6 @@
 package org.codingmatters.code.graph.bytecode.parser;
 
 import org.codingmatters.code.graph.api.Predicates;
-import org.codingmatters.code.graph.api.predicates.ExtendsPredicate;
-import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
-import org.codingmatters.code.graph.api.predicates.UsesPredicate;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
@@ -27,7 +24,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     @Test
     public void testClassWithField() throws Exception {
         this.getParser().parse(ClassWithField.class);
-        this.assertProduced(
+        this.assertProducedExactly(
                 defaultExtends(ClassWithField.class),
                 Predicates.hasField(
                         new ClassRef(className(ClassWithField.class)),
@@ -35,13 +32,13 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
                 ),
                 hasDefaultConstructor(ClassWithField.class),
                 usesDefaultConstructorPredicate(ClassWithField.class)
-            );
+        );
     }
 
     @Test
     public void testClassWithMethod() throws Exception {
         this.getParser().parse(ClassWithMethod.class);
-        this.assertProduced(
+        this.assertProducedExactly(
                 defaultExtends(ClassWithMethod.class),
                 hasDefaultConstructor(ClassWithMethod.class),
                 usesDefaultConstructorPredicate(ClassWithMethod.class),
@@ -56,16 +53,16 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     @Test
     public void testClassWithMethodReadingField() throws Exception {
         this.getParser().parse(ClassWithMethodReadingField.class);
-        this.assertProduced(
+        this.assertProducedExactly(
                 defaultExtends(ClassWithMethodReadingField.class),
                 hasDefaultConstructor(ClassWithMethodReadingField.class),
                 usesDefaultConstructorPredicate(ClassWithMethodReadingField.class),
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethodReadingField.class)),
                         new MethodRef(className(ClassWithMethodReadingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V")
-                        ),
+                ),
                 Predicates.uses(
-                        new MethodRef(className(ClassWithMethodReadingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V"), 
+                        new MethodRef(className(ClassWithMethodReadingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V"),
                         new FieldRef(className(ClassWithField.class) + "#field")
                 )
         );
@@ -74,7 +71,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     @Test
     public void testClassWithMethodWritingField() throws Exception {
         this.getParser().parse(ClassWithMethodWritingField.class);
-        this.assertProduced(
+        this.assertProducedExactly(
                 defaultExtends(ClassWithMethodWritingField.class),
                 hasDefaultConstructor(ClassWithMethodWritingField.class),
                 usesDefaultConstructorPredicate(ClassWithMethodWritingField.class),
@@ -92,7 +89,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     @Test
     public void testClassWithMethodInvokingMethod() throws Exception {
         this.getParser().parse(ClassWithMethodInvokingMethod.class);
-        this.assertProduced(
+        this.assertProducedExactly(
                 defaultExtends(ClassWithMethodInvokingMethod.class),
                 hasDefaultConstructor(ClassWithMethodInvokingMethod.class),
                 usesDefaultConstructorPredicate(ClassWithMethodInvokingMethod.class),

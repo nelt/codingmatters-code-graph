@@ -1,8 +1,9 @@
-package org.codingmatters.code.graph.bytecode.parser.resolver;
+package org.codingmatters.code.graph.bytecode.parser.util;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
@@ -28,15 +29,20 @@ public class ClassResourcesHelper {
         return clazz.getName().replace('.', '/') + ".class";
     }
 
-    static public File makeTemporaryJar(Class ... classes) throws IOException {
+    static public File makeTemporaryJarFile(Class... classes) throws IOException {
         File result = File.createTempFile("temporary", ".jar");
+        result.deleteOnExit();
         try (
                 FileOutputStream fout = new FileOutputStream(result);
                 JarOutputStream jout = new JarOutputStream(fout)
         ) {
+            HashSet<String> directories = new HashSet<>();
             for (Class clazz : classes) {
                 String directory = getBytecodeRelativePath(clazz).substring(0, getBytecodeRelativePath(clazz).lastIndexOf("/"));
-                jout.putNextEntry(new JarEntry(directory));
+                if(! directories.contains(directory)) {
+                    jout.putNextEntry(new JarEntry(directory));
+                    directories.add(directory);
+                }
                 jout.putNextEntry(new JarEntry(getBytecodeRelativePath(clazz)));
                 jout.write(getBytes(clazz));
                 jout.closeEntry();
