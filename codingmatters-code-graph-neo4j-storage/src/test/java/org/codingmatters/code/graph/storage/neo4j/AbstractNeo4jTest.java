@@ -2,8 +2,10 @@ package org.codingmatters.code.graph.storage.neo4j;
 
 import org.junit.After;
 import org.junit.Before;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.kernel.impl.util.StringLogger;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.io.File;
@@ -17,10 +19,12 @@ import java.io.File;
  */
 public class AbstractNeo4jTest {
     private GraphDatabaseService graphDb;
-
+    private ExecutionEngine engine;
+    
     @Before
-    public void setUp() throws Exception {
+    public void setUpGraphDb() throws Exception {
         this.graphDb = new TestGraphDatabaseFactory().newImpermanentDatabase();
+        this.engine = new ExecutionEngine(this.getGraphDb(), StringLogger.SYSTEM);
     }
 
     @After
@@ -32,4 +36,8 @@ public class AbstractNeo4jTest {
         return this.graphDb;
     }
 
+
+    public ExecutionEngine getEngine() {
+        return engine;
+    }
 }

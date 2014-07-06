@@ -4,9 +4,10 @@ import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.api.references.Ref;
-import org.neo4j.cypher.ExecutionEngine;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ResourceIterator;
 import scala.collection.Iterator;
 
 import java.util.HashMap;
@@ -50,19 +51,23 @@ public interface Codec {
             this.engine = engine;
         }
         
-        public Iterator<Node> mergeRefNode(Ref ref) {
+        public ResourceIterator<Object> mergeRefNode(Ref ref) {
             Map<String, Object> parameters = new HashMap<>();
             
             String queryString = String.format(
                     "MERGE (n:%s {name: {name}}) " +
+                            "ON CREATE SET n.source = {source}, n.shortName = {shortName}, n.created = timestamp(), n.updated = timestamp()" +
+                            "ON MATCH  SET n.source = {source}, n.shortName = {shortName}, n.updated = timestamp()" +
                             "RETURN n", 
                     Dictionnary.label(ref).name());
+            parameters.put("source", ref.getSource());
+            parameters.put("shortName", ref.getShortName());
             parameters.put("name", ref.getName());
             
             return this.engine.execute(queryString, parameters).columnAs("n");
         }
     
-        public Iterator<Relationship> mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
+        public ResourceIterator<Object> mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
             Map<String, Object> parameters = new HashMap<>();
             
             String queryString = String.format(

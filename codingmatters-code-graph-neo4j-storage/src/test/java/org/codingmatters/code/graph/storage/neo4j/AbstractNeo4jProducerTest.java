@@ -3,6 +3,7 @@ package org.codingmatters.code.graph.storage.neo4j;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
+import org.codingmatters.code.graph.api.references.Ref;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.junit.Assert;
 import org.junit.Before;
@@ -90,6 +91,16 @@ public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
     
     protected Relationship assertUniqueRelationship(Node source, RelationshipType relationshipType, Node target) {
         return this.assertRelationshipCount(1, source, relationshipType, target).get(0);
+    }
+
+
+
+    protected void assertNodeHasRefProperties(Ref ref, Node actual) {
+        try( Transaction tx = this.getGraphDb().beginTx(); ) {
+            Assert.assertEquals(ref.getSource(), actual.getProperty("source"));
+            Assert.assertEquals(ref.getShortName(), actual.getProperty("shortName"));
+            Assert.assertEquals(ref.getName(), actual.getProperty("name"));
+        }
     }
 
 }

@@ -5,9 +5,12 @@ import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.cypher.ExecutionEngine;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.impl.util.StringLogger;
 
 /**
@@ -23,7 +26,7 @@ public class Neo4jNodeProducerTest extends AbstractNeo4jProducerTest {
 
     @Before
     public void setUpProducer() throws Exception {
-        this.producer = new Neo4jNodeProducer(this.getGraphDb(), new ExecutionEngine(this.getGraphDb(), StringLogger.SYSTEM));
+        this.producer = new Neo4jNodeProducer(this.getGraphDb(), this.getEngine());
     }
     
     @Test
@@ -31,22 +34,25 @@ public class Neo4jNodeProducerTest extends AbstractNeo4jProducerTest {
         this.producer.aClass(new ClassNode(CLASS_REF));        
         this.producer.aClass(new ClassNode(CLASS_REF));
         
-        assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        Node actual = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        this.assertNodeHasRefProperties(CLASS_REF, actual);
     }
 
     @Test
     public void testAField() throws Exception {
         this.producer.aField(new FieldNode(FIELD_REF));
         this.producer.aField(new FieldNode(FIELD_REF));
-        
-        assertUniqueNodeWithLabelAndName(Codec.Label.FIELD, FIELD_REF.getName());
+
+        Node actual = assertUniqueNodeWithLabelAndName(Codec.Label.FIELD, FIELD_REF.getName());
+        this.assertNodeHasRefProperties(FIELD_REF, actual);
     }
 
     @Test
     public void testAMethod() throws Exception {
         this.producer.aMethod(new MethodNode(METHOD_REF));
         this.producer.aMethod(new MethodNode(METHOD_REF));
-        
-        assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
+
+        Node actual = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
+        this.assertNodeHasRefProperties(METHOD_REF, actual);
     }
 }

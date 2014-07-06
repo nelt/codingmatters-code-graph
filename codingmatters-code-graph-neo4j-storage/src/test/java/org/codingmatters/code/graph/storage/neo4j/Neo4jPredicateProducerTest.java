@@ -25,8 +25,7 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
 
     @Before
     public void setUpProducer() throws Exception {
-        super.setUp();
-        this.producer = new Neo4jPredicateProducer(this.getGraphDb(), new ExecutionEngine(this.getGraphDb(), StringLogger.SYSTEM));
+        this.producer = new Neo4jPredicateProducer(this.getGraphDb(), this.getEngine());
     }
 
     @Test
@@ -35,7 +34,11 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         this.producer.hasField(new HasFieldPredicate(CLASS_REF, FIELD_REF));
 
         Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        assertNodeHasRefProperties(CLASS_REF, clsNode);
+        
         Node fieldNode = assertUniqueNodeWithLabelAndName(Codec.Label.FIELD, FIELD_REF.getName());
+        assertNodeHasRefProperties(FIELD_REF, fieldNode);
+        
         assertUniqueRelationship(clsNode, Codec.RelationshipType.HAS_FIELD, fieldNode);
     }
     
@@ -45,7 +48,10 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         this.producer.hasMethod(new HasMethodPredicate(CLASS_REF, METHOD_REF));
 
         Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        assertNodeHasRefProperties(CLASS_REF, clsNode);
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
+        assertNodeHasRefProperties(METHOD_REF, methodNode);
+        
         assertUniqueRelationship(clsNode, Codec.RelationshipType.HAS_METHOD, methodNode);
     }
 
@@ -54,7 +60,11 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         this.producer.hasInner(new HasInnerClassPredicate(CLASS_REF, INNER_CLASS_REF));
 
         Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        assertNodeHasRefProperties(CLASS_REF, clsNode);
+        
         Node innerClsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, INNER_CLASS_REF.getName());
+        assertNodeHasRefProperties(INNER_CLASS_REF, innerClsNode);
+        
         assertUniqueRelationship(clsNode, Codec.RelationshipType.HAS_INNER_CLASS, innerClsNode);
 
     }
@@ -65,7 +75,11 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF));
 
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
+        assertNodeHasRefProperties(METHOD_REF, methodNode);
+        
         Node fieldNode = assertUniqueNodeWithLabelAndName(Codec.Label.FIELD, FIELD_REF.getName());
+        assertNodeHasRefProperties(FIELD_REF, fieldNode);
+        
         assertUniqueRelationship(methodNode, Codec.RelationshipType.USES, fieldNode);
     }
     
@@ -75,7 +89,11 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF));
 
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
+        assertNodeHasRefProperties(METHOD_REF, methodNode);
+        
         Node usedMethodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, USED_METHOD_REF.getName());
+        assertNodeHasRefProperties(USED_METHOD_REF, usedMethodNode);
+        
         assertUniqueRelationship(methodNode , Codec.RelationshipType.USES , usedMethodNode);
     }
 
@@ -85,7 +103,11 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         this.producer.hasParent(new ExtendsPredicate(CLASS_REF, ANOTHER_CLASS_REF));
 
         Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        assertNodeHasRefProperties(CLASS_REF, clsNode);
+        
         Node extendedClsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, ANOTHER_CLASS_REF.getName());
+        assertNodeHasRefProperties(ANOTHER_CLASS_REF, extendedClsNode);
+        
         assertUniqueRelationship(clsNode, Codec.RelationshipType.EXTENDS, extendedClsNode);
     }
 }

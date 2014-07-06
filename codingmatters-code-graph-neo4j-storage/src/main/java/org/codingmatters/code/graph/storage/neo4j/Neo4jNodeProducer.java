@@ -6,7 +6,7 @@ import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
-import org.neo4j.cypher.ExecutionEngine;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
