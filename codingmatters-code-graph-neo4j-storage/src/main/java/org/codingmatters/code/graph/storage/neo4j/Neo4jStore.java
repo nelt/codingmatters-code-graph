@@ -14,6 +14,7 @@ import org.neo4j.graphdb.Transaction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.codingmatters.code.graph.storage.neo4j.internal.Codec.RelationshipType.HAS_FIELD;
 import static org.codingmatters.code.graph.storage.neo4j.internal.Codec.RelationshipType.HAS_METHOD;
@@ -26,7 +27,33 @@ import static org.codingmatters.code.graph.storage.neo4j.internal.Codec.Relation
  * To change this template use File | Settings | File Templates.
  */
 public class Neo4jStore {
+    
+    static public Runnable initializer(final GraphDatabaseService graphDb) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try(Transaction tx = graphDb.beginTx()) {
+                    graphDb.schema().constraintFor(Codec.Label.CLASS)
+                            .assertPropertyIsUnique("name")
+                            .create();
+                    graphDb.schema()
+                            .constraintFor(Codec.Label.FIELD)
+                            .assertPropertyIsUnique("name")
+                            .create();
+                    graphDb.schema()
+                            .constraintFor(Codec.Label.METHOD)
+                            .assertPropertyIsUnique("name")
+                            .create();
+                    tx.success();
+                }
 
+                try(Transaction tx = graphDb.beginTx()) {
+                    graphDb.schema().awaitIndexesOnline(10, TimeUnit.SECONDS);
+                }
+            }
+        };
+    }
+    
     private final GraphDatabaseService graphDb;
     private final ExecutionEngine engine;
 

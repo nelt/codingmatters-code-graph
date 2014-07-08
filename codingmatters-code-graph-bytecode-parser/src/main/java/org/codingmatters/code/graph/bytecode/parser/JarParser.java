@@ -41,6 +41,7 @@ public class JarParser {
         while(entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             if(this.isClassEntry(entry)) {
+                System.out.println("parsing jar entry " + entry.getName());
                 this.parser.parse(this.getClassName(entry));
             }
         }

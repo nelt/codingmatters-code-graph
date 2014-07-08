@@ -32,18 +32,7 @@ public class AbstractNeo4jProducerTest extends AbstractNeo4jTest {
 
     @Before
     public void setUpIndexes() throws Exception {
-        try(Transaction tx = this.getGraphDb().beginTx()) {
-            this.getGraphDb().schema().constraintFor(Codec.Label.CLASS).assertPropertyIsUnique("name").create();
-
-            this.getGraphDb().schema().constraintFor(Codec.Label.FIELD).assertPropertyIsUnique("name").create();
-
-            this.getGraphDb().schema().constraintFor(Codec.Label.METHOD).assertPropertyIsUnique("name").create();
-            
-            tx.success();
-        }
-        try(Transaction tx = this.getGraphDb().beginTx()) {
-            this.getGraphDb().schema().awaitIndexesOnline(10, TimeUnit.SECONDS);
-        }
+        Neo4jStore.initializer(this.getGraphDb()).run();
     }
 
     protected Node assertUniqueNodeWithLabelAndName(Label label, String name) {
