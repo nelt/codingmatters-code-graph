@@ -4,6 +4,7 @@ import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.bytecode.parser.JarParser;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParserException;
+import org.codingmatters.code.graph.cross.cutting.logs.Log;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jNodeProducer;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jPredicateProducer;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jStore;
@@ -28,32 +29,35 @@ import java.io.File;
  * To change this template use File | Settings | File Templates.
  */
 public class CodeGraphRunner {
+    
+    static private final Log log = Log.log(CodeGraphRunner.class);
+    
     public static void main(String[] args) {
         if(args.length < 1) throw new RuntimeException("usage : <db path> {<jar path>...}");
         
         GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(args[0]);
         registerShutdownHook(graphDb);
-
-        System.out.println("yop");
-//        Neo4jStore.initializer(graphDb).run();
+        
+        log.info("neo4j graph is up");
+        
+        Neo4jStore.initializer(graphDb).run();
 
         ExecutionEngine engine = new ExecutionEngine(graphDb, StringLogger.SYSTEM);
         NodeProducer nodeProducer = new Neo4jNodeProducer(graphDb, engine);
         PredicateProducer predicateProducer = new Neo4jPredicateProducer(graphDb, engine);
 
-        System.out.println("yip");
+        log.info("will parse %s jar files...", args.length - 1);
         for(int i = 1 ; i < args.length ; i++) {
             try {
-                System.out.println("parsing " + args[i] + "...");
+                log.info("parsing %s...", args[i]);
                 JarParser.parse(new File(args[i]), nodeProducer, predicateProducer, "TEST");
-                System.out.println("done parsing " + args[i] + ".");
+                log.info("done parsing %s.", args[i]);
             } catch (ClassParserException e) {
-                System.err.println("error parsing jar file " + args[i]);
-                e.printStackTrace();
+                log.report(e).error("error parsing jar file " + args[i]);
             }
         }
 
-        System.out.println("done.");
+        log.info("done.");
     }
 
     private static void registerShutdownHook(final GraphDatabaseService graphDb) {
