@@ -91,6 +91,11 @@
                 <artifactId>codingmatters-code-graph-main</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.codingmatters.code.graph</groupId>
+                <artifactId>codingmatters-code-graph-cross-cutting</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             
         </dependencies>
     </dependencyManagement>
@@ -100,5 +105,6 @@
         <module>codingmatters-code-graph-bytecode-parser</module>
         <module>codingmatters-code-graph-neo4j-storage</module>
         <module>codingmatters-code-graph-main</module>
+        <module>codingmatters-code-graph-cross-cutting</module>
     </modules>
 </project>

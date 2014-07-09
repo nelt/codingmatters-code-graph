@@ -4,6 +4,7 @@ import org.codingmatters.code.graph.api.beans.ClassBean;
 import org.codingmatters.code.graph.api.beans.FieldBean;
 import org.codingmatters.code.graph.api.beans.MethodBean;
 import org.codingmatters.code.graph.api.references.ClassRef;
+import org.codingmatters.code.graph.cross.cutting.logs.Log;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -11,6 +12,8 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.schema.ConstraintDefinition;
+import org.neo4j.graphdb.schema.ConstraintType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,28 +31,49 @@ import static org.codingmatters.code.graph.storage.neo4j.internal.Codec.Relation
  */
 public class Neo4jStore {
     
+    static private final Log log = Log.log(Neo4jStore.class);
+    
     static public Runnable initializer(final GraphDatabaseService graphDb) {
         return new Runnable() {
             @Override
             public void run() {
                 try(Transaction tx = graphDb.beginTx()) {
-                    graphDb.schema().constraintFor(Codec.Label.CLASS)
-                            .assertPropertyIsUnique("name")
-                            .create();
-                    graphDb.schema()
-                            .constraintFor(Codec.Label.FIELD)
-                            .assertPropertyIsUnique("name")
-                            .create();
-                    graphDb.schema()
-                            .constraintFor(Codec.Label.METHOD)
-                            .assertPropertyIsUnique("name")
-                            .create();
+
+                    this.createUnicityConstraint(Codec.Label.CLASS, "name");
+                    this.createUnicityConstraint(Codec.Label.FIELD, "name");
+                    this.createUnicityConstraint(Codec.Label.METHOD, "name");
+                    
                     tx.success();
                 }
 
                 try(Transaction tx = graphDb.beginTx()) {
                     graphDb.schema().awaitIndexesOnline(10, TimeUnit.SECONDS);
                 }
+            }
+
+            private void createUnicityConstraint(Label label, String property) {
+                if(! this.unicityConstraintExists(label, property)) {
+                    graphDb.schema().constraintFor(label)
+                            .assertPropertyIsUnique(property)
+                            .create();
+                    log.info("created %s.%s unique index", label.name(), property);
+                }
+            }
+
+            private boolean unicityConstraintExists(Label label, String property) {
+                boolean exists = false;
+                for (ConstraintDefinition constraintDefinition : graphDb.schema().getConstraints()) {
+                    if(
+                            constraintDefinition.getLabel().equals(label) &&
+                            constraintDefinition.isConstraintType(ConstraintType.UNIQUENESS)) {
+                        for (String prop : constraintDefinition.getPropertyKeys()) {
+                            if(prop.equals(property)) {
+                                exists = true;
+                            }
+                        }
+                    }
+                }
+                return exists;
             }
         };
     }

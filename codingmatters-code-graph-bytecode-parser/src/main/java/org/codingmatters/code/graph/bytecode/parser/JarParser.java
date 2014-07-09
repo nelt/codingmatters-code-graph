@@ -4,6 +4,7 @@ import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParserException;
 import org.codingmatters.code.graph.bytecode.parser.resolver.JarResolver;
+import org.codingmatters.code.graph.cross.cutting.logs.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,9 @@ import java.util.jar.JarFile;
  * To change this template use File | Settings | File Templates.
  */
 public class JarParser {
+
+    static private final Log log = Log.log(JarParser.class);
+
     static public void parse(File jarFile, NodeProducer nodeProducer, PredicateProducer predicateProducer, String source) throws ClassParserException {
         try(JarResolver resolver = new JarResolver(jarFile);JarFile jar = new JarFile(jarFile)) {
             ClassParser parser = new ClassParser(nodeProducer, predicateProducer, resolver, source);
@@ -41,7 +45,7 @@ public class JarParser {
         while(entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             if(this.isClassEntry(entry)) {
-                System.out.println("parsing jar entry " + entry.getName());
+                log.info("parsing jar entry %s", entry.getName());
                 this.parser.parse(this.getClassName(entry));
             }
         }

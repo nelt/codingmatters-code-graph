@@ -9,7 +9,7 @@
         <artifactId>codingmatters-code-graph</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    
-    <artifactId>codingmatters-code-graph-api</artifactId>
+
+    <artifactId>codingmatters-code-graph-cross-cutting</artifactId>
     
 </project>

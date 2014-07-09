@@ -10,9 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.codingmatters.code.graph</groupId>
     <artifactId>codingmatters-code-graph-main</artifactId>
-    <version>1.0-SNAPSHOT</version>
     
     <dependencies>
         <dependency>
@@ -26,6 +24,10 @@
         <dependency>
             <groupId>org.codingmatters.code.graph</groupId>
             <artifactId>codingmatters-code-graph-neo4j-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codingmatters.code.graph</groupId>
+            <artifactId>codingmatters-code-graph-cross-cutting</artifactId>
         </dependency>
         
         <dependency>
