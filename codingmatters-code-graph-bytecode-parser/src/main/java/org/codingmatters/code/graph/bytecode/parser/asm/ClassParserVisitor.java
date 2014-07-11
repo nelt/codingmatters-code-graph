@@ -56,9 +56,9 @@ public class ClassParserVisitor extends ClassVisitor {
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
         try {
-            FieldRef fieldRef = this.createFieldRef(NameUtil.fieldName(this.currentClassNode.getRef().getName(), name));
+            FieldRef fieldRef = this.createFieldRef(NameUtil.fieldName(this.currentClassNode.getRef().getShortName(), name));
             this.nodeProducer.aField(new FieldNode(fieldRef));
-            this.predicateProducer.hasField(new HasFieldPredicate(this.createClassRef(this.currentClassNode.getRef().getName()), fieldRef));
+            this.predicateProducer.hasField(new HasFieldPredicate(this.createClassRef(this.currentClassNode.getRef().getShortName()), fieldRef));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
