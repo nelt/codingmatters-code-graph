@@ -1,4 +1,4 @@
-coding-matterers' code graph is a java code static analyzer and diggers.
+coding-matterers' code graph is a java code static analyzer and digger.
 Copyright (C) 2014  Nel Taurisson
 
 This program is free software: you can redistribute it and/or modify
