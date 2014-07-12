@@ -5,6 +5,7 @@ import org.codingmatters.code.graph.api.Predicates;
 import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
+import org.codingmatters.code.graph.api.nodes.properties.ClassInformation;
 import org.codingmatters.code.graph.api.predicates.ExtendsPredicate;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
@@ -44,6 +45,10 @@ public class ClassParserVisitor extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         try {
             this.currentClassNode = Nodes.classNode(this.createClassRef(name));
+            String className = name.replace('/', '.');
+            this.currentClassNode.getProperties()
+                    .withInformation(ClassInformation.create().withClassName(className));
+            
             this.nodeProducer.aClass(this.currentClassNode);
             this.predicateProducer.hasParent(new ExtendsPredicate(this.currentClassNode.getRef(), this.createClassRef(superName)));
         } catch (ProducerException e) {

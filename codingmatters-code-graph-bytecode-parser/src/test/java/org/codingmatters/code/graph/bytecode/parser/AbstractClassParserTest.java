@@ -14,6 +14,8 @@ import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
 import org.codingmatters.code.graph.bytecode.parser.parsed.ClassWithMethod;
 import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
+import org.fest.assertions.api.Assertions;
+import org.fest.assertions.api.filter.Filters;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.fest.assertions.api.Assertions.filter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,12 +67,20 @@ public class AbstractClassParserTest {
     private ClassParser parser;
     private List<Object> produced = new ArrayList<>();
 
+    static protected Filters<Object> filterClassNodes(List<Object> objects) {
+        return filter(objects).with("class", ClassNode.class);
+    }
+
     @Before
     public void setUp() throws Exception {
         NodeProducer nodeProducer = this.getNodeProducer();
         PredicateProducer predicateProducer = this.getPredicateProducer();
         
         this.parser = new ClassParser(nodeProducer, predicateProducer, createResolver(), this.parserSource());
+    }
+
+    public List<Object> getProduced() {
+        return produced;
     }
 
     protected ByteCodeResolver createResolver() throws IOException {
@@ -138,29 +150,9 @@ public class AbstractClassParserTest {
 
     protected void assertProducedExactly(Object... objects) {
         objects = objects != null ? objects : new Object[0];
-        if(objects.length != this.produced.size()) {
-            throw new AssertionError("different produced size, " +
-                    "expected size <" + objects.length + "> but was <" + this.produced.size() + ">" +
-                    this.expectedWasArraysMessage("", objects)
-            );
-        }
-        Assert.assertEquals("unexpected produced count", objects.length, this.produced.size());
-        for(int i = 0 ; i < objects.length ; i++) {
-            if(! this.produced.get(i).equals(objects[i])) {
-                throw new AssertionError(
-                    "unexpected " + (i+1) + "th produced:\n" +
-                    "excpected: <" + objects[i] + ">\n" +
-                    "but was  : <" + this.produced.get(i) + "\n" +
-                    this.expectedWasArraysMessage("\t", objects)
-                );
-            }
-        }
+        Assertions.assertThat(this.produced).isEqualTo(Arrays.asList(objects));
     }
 
-    private String expectedWasArraysMessage(String prefix, Object[] objects) {
-        return "\n" + prefix + "expected <" + Arrays.asList(objects) + ">" +
-                "\n" + prefix + "but was  <" + this.produced + ">";
-    }
 
     public ClassParser getParser() {
         return parser;

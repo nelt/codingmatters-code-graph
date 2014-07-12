@@ -1,5 +1,6 @@
 package org.codingmatters.code.graph.api.nodes;
 
+import org.codingmatters.code.graph.api.nodes.properties.ClassProperties;
 import org.codingmatters.code.graph.api.references.ClassRef;
 
 /**
@@ -11,6 +12,7 @@ import org.codingmatters.code.graph.api.references.ClassRef;
  */
 public class ClassNode {
     private final ClassRef ref;
+    private final ClassProperties properties = new ClassProperties();
 
     public ClassNode(ClassRef ref) {
         this.ref = ref;
@@ -19,7 +21,11 @@ public class ClassNode {
     public ClassRef getRef() {
         return this.ref;
     }
-    
+
+    public ClassProperties getProperties() {
+        return properties;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
