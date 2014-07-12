@@ -78,6 +78,12 @@
                 <artifactId>junit</artifactId>
                 <version>4.11</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.easytesting</groupId>
+                <artifactId>fest-assert-core</artifactId>
+                <version>2.0M10</version>
+            </dependency>
             
             <dependency>
                 <groupId>org.codingmatters.code.graph</groupId>
@@ -117,6 +123,11 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

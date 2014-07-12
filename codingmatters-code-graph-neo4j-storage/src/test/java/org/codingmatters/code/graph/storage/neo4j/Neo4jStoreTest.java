@@ -1,25 +1,16 @@
 package org.codingmatters.code.graph.storage.neo4j;
 
 import org.codingmatters.code.graph.api.beans.ClassBean;
-import org.codingmatters.code.graph.api.beans.MethodBean;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
-import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.kernel.impl.util.StringLogger;
-import scala.collection.immutable.Map;
 
-import java.util.List;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.extractProperty;
 
 /**
  * Created with IntelliJ IDEA.
@@ -52,13 +43,14 @@ public class Neo4jStoreTest extends AbstractNeo4jProducerTest {
     @Test
     public void testGetClassBean() throws Exception {
         ClassBean actual = this.store.getClassBean(new ClassRef("TEST", "some/package/AClass"));
-        
-        Assert.assertEquals("some/package/AClass", actual.getRef());
-        
-        Assert.assertEquals(2, actual.getFields().size());
-        Assert.assertEquals("some/package/AClass#field1", actual.getFields().get(0).getRef());
-        
-        Assert.assertEquals(2, actual.getMethods().size());
-        Assert.assertEquals("some/package/AClass#method1():V", actual.getMethods().get(0).getRef());
+
+        assertThat(actual.getRef()).isEqualTo("some/package/AClass");
+        assertThat(actual.getFields()).hasSize(2);
+        assertThat(extractProperty("ref").from(actual.getFields()))
+                .containsExactly("some/package/AClass#field1", "some/package/AClass#field2");
+
+        assertThat(actual.getMethods()).hasSize(2);
+        assertThat(extractProperty("ref").from(actual.getMethods()))
+                .containsExactly("some/package/AClass#method1():V", "some/package/AClass#method2():V");
     }
 }
