@@ -41,7 +41,7 @@ public class LogTest {
         Logger.getLogger("").addHandler(handler);
         Logger.getLogger("").setLevel(Level.FINEST);
 
-        log = Log.log(this.getClass());
+        log = Log.get(this.getClass());
     }
 
     @After

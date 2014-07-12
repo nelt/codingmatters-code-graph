@@ -1,5 +1,7 @@
 package org.codingmatters.code.graph.api.nodes.properties;
 
+import org.codingmatters.code.graph.api.nodes.properties.annotations.Storable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: nel
@@ -7,7 +9,7 @@ package org.codingmatters.code.graph.api.nodes.properties;
  * Time: 03:50
  * To change this template use File | Settings | File Templates.
  */
-public class ClassInformation {
+public class ClassInformationProperties {
     
     static public Builder create() {
         return new Builder();
@@ -21,17 +23,18 @@ public class ClassInformation {
             return this;
         }
         
-        public ClassInformation build() {
-            return new ClassInformation(this.className);
+        public ClassInformationProperties build() {
+            return new ClassInformationProperties(this.className);
         }
     }
     
     private final String className;
 
-    private ClassInformation(String className) {
+    private ClassInformationProperties(String className) {
         this.className = className;
     }
-
+    
+    @Storable
     public String getClassName() {
         return className;
     }
@@ -41,7 +44,7 @@ public class ClassInformation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ClassInformation that = (ClassInformation) o;
+        ClassInformationProperties that = (ClassInformationProperties) o;
 
         if (className != null ? !className.equals(that.className) : that.className != null) return false;
 

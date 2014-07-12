@@ -13,11 +13,11 @@ import java.util.logging.Logger;
  */
 public class Log {
 
-    static public Log log(Class clazz) {
-        return log(clazz.getName());
+    static public Log get(Class clazz) {
+        return get(clazz.getName());
     }
     
-    static public Log log(String name) {
+    static public Log get(String name) {
         return new Log(Logger.getLogger(name));
     }
     

@@ -1,6 +1,6 @@
 package org.codingmatters.code.graph.bytecode.parser;
 
-import org.codingmatters.code.graph.api.nodes.properties.ClassInformation;
+import org.codingmatters.code.graph.api.nodes.properties.ClassInformationProperties;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class ClassParserClassInformationTest extends AbstractClassParserTest {
         assertThat(
                 extractProperty("properties.information").from(filterClassNodes(this.getProduced()).get()))
                 .containsExactly(
-                        ClassInformation.create().withClassName(EmptyClass.class.getName()).build()
+                        ClassInformationProperties.create().withClassName(EmptyClass.class.getName()).build()
                 );
     }
 

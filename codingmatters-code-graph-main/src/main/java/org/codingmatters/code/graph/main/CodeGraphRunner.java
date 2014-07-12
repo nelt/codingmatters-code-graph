@@ -11,13 +11,7 @@ import org.codingmatters.code.graph.storage.neo4j.Neo4jStore;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.kernel.AbstractGraphDatabase;
-import org.neo4j.kernel.GraphDatabaseAPI;
 import org.neo4j.kernel.impl.util.StringLogger;
-import org.neo4j.server.Bootstrapper;
-import org.neo4j.server.WrappingNeoServer;
-import org.neo4j.server.WrappingNeoServerBootstrapper;
-import org.neo4j.server.configuration.Configurator;
 
 import java.io.File;
 
@@ -30,7 +24,7 @@ import java.io.File;
  */
 public class CodeGraphRunner {
     
-    static private final Log log = Log.log(CodeGraphRunner.class);
+    static private final Log log = Log.get(CodeGraphRunner.class);
     
     public static void main(String[] args) {
         if(args.length < 1) throw new RuntimeException("usage : <db path> {<jar path>...}");

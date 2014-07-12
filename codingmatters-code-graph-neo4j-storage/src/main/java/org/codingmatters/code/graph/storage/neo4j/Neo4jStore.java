@@ -31,7 +31,7 @@ import static org.codingmatters.code.graph.storage.neo4j.internal.Codec.Relation
  */
 public class Neo4jStore {
     
-    static private final Log log = Log.log(Neo4jStore.class);
+    static private final Log log = Log.get(Neo4jStore.class);
     
     static public Runnable initializer(final GraphDatabaseService graphDb) {
         return new Runnable() {

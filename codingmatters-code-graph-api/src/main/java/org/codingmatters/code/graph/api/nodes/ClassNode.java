@@ -1,6 +1,6 @@
 package org.codingmatters.code.graph.api.nodes;
 
-import org.codingmatters.code.graph.api.nodes.properties.ClassProperties;
+import org.codingmatters.code.graph.api.nodes.properties.ClassData;
 import org.codingmatters.code.graph.api.references.ClassRef;
 
 /**
@@ -12,7 +12,7 @@ import org.codingmatters.code.graph.api.references.ClassRef;
  */
 public class ClassNode {
     private final ClassRef ref;
-    private final ClassProperties properties = new ClassProperties();
+    private final ClassData properties = new ClassData();
 
     public ClassNode(ClassRef ref) {
         this.ref = ref;
@@ -22,7 +22,7 @@ public class ClassNode {
         return this.ref;
     }
 
-    public ClassProperties getProperties() {
+    public ClassData getProperties() {
         return properties;
     }
 

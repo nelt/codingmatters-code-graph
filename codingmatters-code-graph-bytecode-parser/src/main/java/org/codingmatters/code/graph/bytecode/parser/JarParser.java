@@ -21,7 +21,7 @@ import java.util.jar.JarFile;
  */
 public class JarParser {
 
-    static private final Log log = Log.log(JarParser.class);
+    static private final Log log = Log.get(JarParser.class);
 
     static public void parse(File jarFile, NodeProducer nodeProducer, PredicateProducer predicateProducer, String source) throws ClassParserException {
         try(JarResolver resolver = new JarResolver(jarFile);JarFile jar = new JarFile(jarFile)) {

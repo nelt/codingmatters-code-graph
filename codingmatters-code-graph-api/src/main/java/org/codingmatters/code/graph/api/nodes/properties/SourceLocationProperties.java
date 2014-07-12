@@ -1,5 +1,7 @@
 package org.codingmatters.code.graph.api.nodes.properties;
 
+import org.codingmatters.code.graph.api.nodes.properties.annotations.Storable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: nel
@@ -7,7 +9,7 @@ package org.codingmatters.code.graph.api.nodes.properties;
  * Time: 03:47
  * To change this template use File | Settings | File Templates.
  */
-public class SourceLocation {
+public class SourceLocationProperties {
     
     static public Builder create() {
         return new Builder();
@@ -34,8 +36,8 @@ public class SourceLocation {
             return this;
         }
         
-        public SourceLocation build() {
-            return new SourceLocation(this.line, this.startColumn, this.endColumn);
+        public SourceLocationProperties build() {
+            return new SourceLocationProperties(this.line, this.startColumn, this.endColumn);
         }
     }
     
@@ -43,20 +45,23 @@ public class SourceLocation {
     private final Integer startColumn;
     private final Integer endColumn;
 
-    private SourceLocation(Integer line, Integer startColumn, Integer endColumn) {
+    private SourceLocationProperties(Integer line, Integer startColumn, Integer endColumn) {
         this.line = line;
         this.startColumn = startColumn;
         this.endColumn = endColumn;
     }
 
+    @Storable
     public Integer getLine() {
         return line;
     }
-
+    
+    @Storable
     public Integer getStartColumn() {
         return startColumn;
     }
-
+    
+    @Storable
     public Integer getEndColumn() {
         return endColumn;
     }
@@ -66,7 +71,7 @@ public class SourceLocation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SourceLocation that = (SourceLocation) o;
+        SourceLocationProperties that = (SourceLocationProperties) o;
 
         if (endColumn != null ? !endColumn.equals(that.endColumn) : that.endColumn != null) return false;
         if (line != null ? !line.equals(that.line) : that.line != null) return false;
