@@ -1,6 +1,9 @@
 package org.codingmatters.code.graph.storage.neo4j;
 
 import org.codingmatters.code.graph.api.beans.ClassBean;
+import org.codingmatters.code.graph.api.nodes.ClassNode;
+import org.codingmatters.code.graph.api.nodes.FieldNode;
+import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
 import org.codingmatters.code.graph.api.references.ClassRef;
@@ -34,10 +37,21 @@ public class Neo4jStoreTest extends AbstractNeo4jProducerTest {
         this.store = new Neo4jStore(this.getGraphDb(), this.getEngine());
 
         ClassRef clsRef = new ClassRef("TEST", "some/package/AClass");
-        this.predicateProducer.hasField(new HasFieldPredicate(clsRef, new FieldRef("TEST", "some/package/AClass#field1")));
-        this.predicateProducer.hasField(new HasFieldPredicate(clsRef, new FieldRef("TEST", "some/package/AClass#field2")));
-        this.predicateProducer.hasMethod(new HasMethodPredicate(clsRef, new MethodRef("TEST", "some/package/AClass#method1():V")));
-        this.predicateProducer.hasMethod(new HasMethodPredicate(clsRef, new MethodRef("TEST", "some/package/AClass#method2():V")));
+        FieldRef f1Ref = new FieldRef("TEST", "some/package/AClass#field1");
+        FieldRef f2Ref = new FieldRef("TEST", "some/package/AClass#field2");
+        MethodRef m1Ref = new MethodRef("TEST", "some/package/AClass#method1():V");
+        MethodRef m2Ref = new MethodRef("TEST", "some/package/AClass#method2():V");
+
+        this.nodeProducer.aClass(new ClassNode(clsRef));
+        this.nodeProducer.aField(new FieldNode(f1Ref));
+        this.nodeProducer.aField(new FieldNode(f2Ref));
+        this.nodeProducer.aMethod(new MethodNode(m1Ref));
+        this.nodeProducer.aMethod(new MethodNode(m2Ref));
+        
+        this.predicateProducer.hasField(new HasFieldPredicate(clsRef, f1Ref));
+        this.predicateProducer.hasField(new HasFieldPredicate(clsRef, f2Ref));
+        this.predicateProducer.hasMethod(new HasMethodPredicate(clsRef, m1Ref));
+        this.predicateProducer.hasMethod(new HasMethodPredicate(clsRef, m2Ref));
     }
 
     @Test
