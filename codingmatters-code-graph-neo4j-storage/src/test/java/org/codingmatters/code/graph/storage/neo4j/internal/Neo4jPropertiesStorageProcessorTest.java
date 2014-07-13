@@ -21,7 +21,7 @@ public class Neo4jPropertiesStorageProcessorTest {
     private Neo4jPropertiesStorageProcessor processor = new Neo4jPropertiesStorageProcessor();
 
     @Test
-    public void testPrepareStorage() throws Exception {
+    public void testNonNullFields() throws Exception {
         Data data = new Data()
                 .withStorable(new Props.Builder().withField1("F1").withField2("F2").build())
                 .withNotStorable(new Props.Builder().withField1("not storable").build())
@@ -31,7 +31,7 @@ public class Neo4jPropertiesStorageProcessorTest {
 
         assertThat(actual.getPropertyMergerString())
                 .isEqualTo("n.storable_field1 = {storable_field1}, n.storable_field2 = {storable_field2}");
-            
+        
         assertThat(actual.getParameters())
                 .isEqualTo(
                     map("storable_field1", "F1")
@@ -39,9 +39,51 @@ public class Neo4jPropertiesStorageProcessorTest {
                 );
     }
     
+    @Test
+    public void testOneNonNullField() throws Exception {
+        Data data = new Data()
+                .withStorable(new Props.Builder().withField1("F1").withField2(null).build())
+                .withNotStorable(new Props.Builder().withField1("not storable").build())
+                ;
+        
+        Neo4jPropertiesStorageProcessor.ToStore actual = this.processor.prepareStorage("n", data);
+
+        assertThat(actual.getPropertyMergerString())
+                .isEqualTo("n.storable_field1 = {storable_field1}");
+        
+        assertThat(actual.getParameters())
+                .isEqualTo(
+                    map("storable_field1", "F1")
+                );
+    }
+    
+    @Test
+    public void testNullFields() throws Exception {
+        Data data = new Data()
+                .withStorable(new Props.Builder().withField1(null).withField2(null).build())
+                .withNotStorable(new Props.Builder().withField1("not storable").build())
+                ;
+        
+        Neo4jPropertiesStorageProcessor.ToStore actual = this.processor.prepareStorage("n", data);
+
+        assertThat(actual.getPropertyMergerString())
+                .isEqualTo("");
+        
+        assertThat(actual.getParameters())
+                .isEqualTo(
+                    emptyMap()
+                );
+    }
     
     
     
+    
+    
+    
+    static public FluentMap<String, Object> emptyMap() {
+        return new FluentMap<String, Object>();
+    }
+
     static public FluentMap<String, Object> map(String key, Object value) {
         return new FluentMap<String, Object>().map(key, value);
     }
