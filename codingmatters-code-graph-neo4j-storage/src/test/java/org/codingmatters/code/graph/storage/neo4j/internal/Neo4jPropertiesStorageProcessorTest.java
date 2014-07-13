@@ -74,12 +74,23 @@ public class Neo4jPropertiesStorageProcessorTest {
                     emptyMap()
                 );
     }
-    
-    
-    
-    
-    
-    
+
+    @Test
+    public void testAppendNotEmpty() throws Exception {
+        Neo4jPropertiesStorageProcessor.ToStore actual = new Neo4jPropertiesStorageProcessor.ToStore(
+                "not empty", 
+                new HashMap<String, Object>());
+        assertThat(actual.getPropertyMergerString(true)).isEqualTo(", not empty");
+    }
+
+    @Test
+    public void testAppendEmpty() throws Exception {
+        Neo4jPropertiesStorageProcessor.ToStore actual = new Neo4jPropertiesStorageProcessor.ToStore(
+                "",
+                new HashMap<String, Object>());
+        assertThat(actual.getPropertyMergerString(true)).isEqualTo("");
+    }
+
     static public FluentMap<String, Object> emptyMap() {
         return new FluentMap<String, Object>();
     }

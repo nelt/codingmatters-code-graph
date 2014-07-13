@@ -82,6 +82,8 @@ public class Neo4jPropertiesStorageProcessor {
         return results;
     }
 
+    static public final ToStore NOTHING = new ToStore("", new HashMap<String,Object>());
+    
     static public class ToStore {
         private final String propertyMergerString;
         private final Map<String, Object> parameters;
@@ -90,9 +92,17 @@ public class Neo4jPropertiesStorageProcessor {
             this.propertyMergerString = propertyMergerString;
             this.parameters = parameters;
         }
-
+        
         public String getPropertyMergerString() {
-            return propertyMergerString;
+            return this.getPropertyMergerString(false);
+        }
+        
+        public String getPropertyMergerString(boolean append) {
+            if(append && this.propertyMergerString.length() > 0) {
+                return ", " + this.propertyMergerString;
+            } else {
+                return propertyMergerString;
+            }
         }
 
         public Map<String, Object> getParameters() {

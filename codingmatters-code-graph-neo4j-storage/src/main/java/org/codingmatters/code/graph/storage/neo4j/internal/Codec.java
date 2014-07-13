@@ -46,24 +46,40 @@ public interface Codec {
     class Querier {
         
         private final ExecutionEngine engine;
+        private final Neo4jPropertiesStorageProcessor processor = new Neo4jPropertiesStorageProcessor();
     
         public Querier(ExecutionEngine engine) {
             this.engine = engine;
         }
         
         public ResourceIterator<Object> mergeRefNode(Ref ref) {
-            Map<String, Object> parameters = new HashMap<>();
+            return this.mergeRefNode(ref, null);
+        }
+        
+        public ResourceIterator<Object> mergeRefNode(Ref ref, Object data) {
+            Neo4jPropertiesStorageProcessor.ToStore toStore;
+            if(data != null) {
+                toStore = this.processor.prepareStorage("n", data);
+            } else {
+                toStore = Neo4jPropertiesStorageProcessor.NOTHING;
+            }
             
             String queryString = String.format(
                     "MERGE (n:%s {name: {name}}) " +
-                            "ON CREATE SET n.source = {source}, n.shortName = {shortName}, n.created = timestamp(), n.updated = timestamp()" +
-                            "ON MATCH  SET n.source = {source}, n.shortName = {shortName}, n.updated = timestamp()" +
+                            "ON CREATE SET n.source = {source}, n.shortName = {shortName}, n.created = timestamp(), n.updated = timestamp()%s " +
+                            "ON MATCH  SET n.source = {source}, n.shortName = {shortName}, n.updated = timestamp()%s " +
                             "RETURN n", 
-                    Dictionnary.label(ref).name());
+                    Dictionnary.label(ref).name(),
+                    toStore.getPropertyMergerString(true),
+                    toStore.getPropertyMergerString(true)
+            );
+
+            Map<String, Object> parameters = new HashMap<>();
             parameters.put("source", ref.getSource());
             parameters.put("shortName", ref.getShortName());
             parameters.put("name", ref.getName());
-            
+            parameters.putAll(toStore.getParameters());
+
             return this.engine.execute(queryString, parameters).columnAs("n");
         }
     
