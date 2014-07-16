@@ -31,4 +31,8 @@ public class Predicates {
     static public UsesPredicate uses(MethodRef user, FieldRef used) {
         return new UsesPredicate(user, used);
     }
+    static public ImplementsPredicate implementsInterface(ClassRef implementer, ClassRef implemented) {
+        return new ImplementsPredicate(implementer, implemented);
+    }
+    
 }

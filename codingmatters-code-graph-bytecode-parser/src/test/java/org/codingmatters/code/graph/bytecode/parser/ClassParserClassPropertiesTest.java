@@ -16,7 +16,7 @@ import static org.fest.assertions.api.Assertions.filter;
  * Time: 04:10
  * To change this template use File | Settings | File Templates.
  */
-public class ClassParserClassInformationTest extends AbstractClassParserTest {
+public class ClassParserClassPropertiesTest extends AbstractClassParserTest {
 
     @Override
     protected PredicateProducer getPredicateProducer() {

@@ -73,4 +73,14 @@ public class Neo4jPredicateProducer implements PredicateProducer {
             tx.success();
         }
     }
+
+    @Override
+    public void hasInterface(ImplementsPredicate predicate) throws ProducerException {
+        try(Transaction tx = this.graphDb.beginTx()) {
+            this.querier.mergeRefNode(predicate.getImplementer());
+            this.querier.mergeRefNode(predicate.getImplemented());
+            this.querier.mergeRelationship(predicate.getImplementer(), Codec.RelationshipType.IMPLEMENTS, predicate.getImplemented());
+            tx.success();
+        }
+    }
 }

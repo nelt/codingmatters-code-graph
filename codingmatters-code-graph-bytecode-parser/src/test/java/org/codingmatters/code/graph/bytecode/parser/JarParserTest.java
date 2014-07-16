@@ -46,6 +46,8 @@ public class JarParserTest {
         public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {}
         @Override
         public void usage(UsesPredicate predicate) throws ProducerException {}
+        @Override
+        public void hasInterface(ImplementsPredicate predicate) throws ProducerException {}
     };
     private LinkedList<Object> produced = new LinkedList<>();
 

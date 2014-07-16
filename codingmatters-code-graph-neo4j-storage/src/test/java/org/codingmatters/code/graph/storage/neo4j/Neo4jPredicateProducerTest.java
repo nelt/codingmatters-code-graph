@@ -110,4 +110,18 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
         
         assertUniqueRelationship(clsNode, Codec.RelationshipType.EXTENDS, extendedClsNode);
     }
+    
+    @Test
+    public void testImplements() throws Exception {
+        this.producer.hasInterface(new ImplementsPredicate(CLASS_REF, ANOTHER_CLASS_REF));
+        this.producer.hasInterface(new ImplementsPredicate(CLASS_REF, ANOTHER_CLASS_REF));
+
+        Node clsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, CLASS_REF.getName());
+        assertNodeHasRefProperties(CLASS_REF, clsNode);
+        
+        Node extendedClsNode = assertUniqueNodeWithLabelAndName(Codec.Label.CLASS, ANOTHER_CLASS_REF.getName());
+        assertNodeHasRefProperties(ANOTHER_CLASS_REF, extendedClsNode);
+        
+        assertUniqueRelationship(clsNode, Codec.RelationshipType.IMPLEMENTS, extendedClsNode);
+    }
 }

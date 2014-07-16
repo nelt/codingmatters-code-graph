@@ -6,6 +6,7 @@ import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.nodes.properties.ClassInformationProperties;
+import org.codingmatters.code.graph.api.nodes.properties.SourceLocationProperties;
 import org.codingmatters.code.graph.api.predicates.ExtendsPredicate;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
 import org.codingmatters.code.graph.api.predicates.HasMethodPredicate;
@@ -43,18 +44,23 @@ public class ClassParserVisitor extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         try {
             this.currentClassNode = Nodes.classNode(this.createClassRef(name));
+            super.visit(version, access, name, signature, superName, interfaces);
+            
+            this.predicateProducer.hasParent(new ExtendsPredicate(this.currentClassNode.getRef(), this.createClassRef(superName)));
+            for (String anInterface : interfaces) {
+                this.predicateProducer.hasInterface(Predicates.implementsInterface(this.currentClassNode.getRef(), this.createClassRef(anInterface)));
+            }
+
+
             String className = name.replace('/', '.');
             this.currentClassNode.getProperties()
-                    .withInformation(ClassInformationProperties.create().withClassName(className));
-            
+                    .withInformation(ClassInformationProperties.create().withClassName(className))
+            ;
             this.nodeProducer.aClass(this.currentClassNode);
-            this.predicateProducer.hasParent(new ExtendsPredicate(this.currentClassNode.getRef(), this.createClassRef(superName)));
         } catch (ProducerException e) {
             this.errorReporter.report(e);
         }
-        super.visit(version, access, name, signature, superName, interfaces);
     }
-
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {

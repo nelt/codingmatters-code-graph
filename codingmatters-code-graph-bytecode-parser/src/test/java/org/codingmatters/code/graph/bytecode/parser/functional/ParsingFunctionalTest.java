@@ -49,6 +49,7 @@ public class ParsingFunctionalTest {
         assertThat(counters.hasInnerCounter, is(165));
         assertThat(counters.hasParentCounter, is(233));
         assertThat(counters.usageCounter, is(4521));
+        assertThat(counters.implementsCounter, is(70));
     }
 
 
@@ -84,6 +85,12 @@ public class ParsingFunctionalTest {
             public void usage(UsesPredicate predicate) throws ProducerException {
                 assertThat(predicate.getUser(), containsSourcePrefixOnlyOnce(SOURCE));
                 assertThat(predicate.getUsed(), containsSourcePrefixOnlyOnce(SOURCE));
+            }
+
+            @Override
+            public void hasInterface(ImplementsPredicate predicate) throws ProducerException {
+                assertThat(predicate.getImplementer(), containsSourcePrefixOnlyOnce(SOURCE));
+                assertThat(predicate.getImplemented(), containsSourcePrefixOnlyOnce(SOURCE));
             }
         };
     }
@@ -132,7 +139,12 @@ public class ParsingFunctionalTest {
                 public void usage(UsesPredicate predicate) throws ProducerException {
                     counters.usageCounter++;
                 }
-            };
+
+                @Override
+                public void hasInterface(ImplementsPredicate predicate) throws ProducerException {
+                    counters.implementsCounter++;
+                }
+        };
     }
 
     private NodeProducer countingNodeProducer(final Counters counters) {
@@ -161,6 +173,7 @@ public class ParsingFunctionalTest {
         public int hasMethodCounter = 0;
         public int hasInnerCounter = 0;
         public int usageCounter = 0;
+        public int implementsCounter = 0;
     }
 
     protected static File testJarFile() throws URISyntaxException {

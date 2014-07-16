@@ -16,7 +16,7 @@ public class SourceLocationProperties {
     }
     
     static public class Builder {
-
+        private String source;
         private Integer line;
         private Integer startColumn;
         private Integer endColumn;
@@ -36,16 +36,26 @@ public class SourceLocationProperties {
             return this;
         }
         
+        
+        public Builder withSource(String source) {
+            this.source = source;
+            return this;
+        }
+        
+        
+        
         public SourceLocationProperties build() {
-            return new SourceLocationProperties(this.line, this.startColumn, this.endColumn);
+            return new SourceLocationProperties(this.source, this.line, this.startColumn, this.endColumn);
         }
     }
     
+    private final String source;
     private final Integer line;
     private final Integer startColumn;
     private final Integer endColumn;
 
-    private SourceLocationProperties(Integer line, Integer startColumn, Integer endColumn) {
+    private SourceLocationProperties(String source, Integer line, Integer startColumn, Integer endColumn) {
+        this.source = source;
         this.line = line;
         this.startColumn = startColumn;
         this.endColumn = endColumn;
@@ -75,6 +85,7 @@ public class SourceLocationProperties {
 
         if (endColumn != null ? !endColumn.equals(that.endColumn) : that.endColumn != null) return false;
         if (line != null ? !line.equals(that.line) : that.line != null) return false;
+        if (source != null ? !source.equals(that.source) : that.source != null) return false;
         if (startColumn != null ? !startColumn.equals(that.startColumn) : that.startColumn != null) return false;
 
         return true;
@@ -82,7 +93,8 @@ public class SourceLocationProperties {
 
     @Override
     public int hashCode() {
-        int result = line != null ? line.hashCode() : 0;
+        int result = source != null ? source.hashCode() : 0;
+        result = 31 * result + (line != null ? line.hashCode() : 0);
         result = 31 * result + (startColumn != null ? startColumn.hashCode() : 0);
         result = 31 * result + (endColumn != null ? endColumn.hashCode() : 0);
         return result;

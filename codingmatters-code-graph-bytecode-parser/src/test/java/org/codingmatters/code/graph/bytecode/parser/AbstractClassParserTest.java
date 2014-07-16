@@ -62,6 +62,8 @@ public class AbstractClassParserTest {
         public void hasField(HasFieldPredicate predicate) throws ProducerException {}
         @Override
         public void usage(UsesPredicate predicate) throws ProducerException {}
+        @Override
+        public void hasInterface(ImplementsPredicate predicate) throws ProducerException {}
     };
     
     private ClassParser parser;
@@ -136,6 +138,11 @@ public class AbstractClassParserTest {
             public void usage(UsesPredicate predicate) throws ProducerException {
                 produced.add(predicate);
             }
+
+            @Override
+            public void hasInterface(ImplementsPredicate predicate) throws ProducerException {
+                produced.add(predicate);
+            }
         };
     }
 
@@ -145,7 +152,7 @@ public class AbstractClassParserTest {
     }
     
     protected void assertProduced(Object object) {
-        Assert.assertTrue("not produced " + object, this.produced.contains(object));
+        Assertions.assertThat(this.produced).contains(object);
     }
 
     protected void assertProducedExactly(Object... objects) {

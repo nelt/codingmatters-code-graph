@@ -50,6 +50,7 @@ public class AnonymousClassTest extends AbstractClassParserTest {
         this.assertProducedExactly(
                 new ClassNode(ANONYMOUS_CLASS_REF),
                 new ExtendsPredicate(ANONYMOUS_CLASS_REF, new ClassRef(className(Object.class))),
+                new ImplementsPredicate(ANONYMOUS_CLASS_REF, new ClassRef(className(Runnable.class))),
                 new FieldNode(new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")),
                 new HasFieldPredicate(
                         ANONYMOUS_CLASS_REF, new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")
