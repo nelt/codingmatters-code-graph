@@ -150,7 +150,7 @@ public class AbstractClassParserTest {
 
     protected void assertProducedExactly(Object... objects) {
         objects = objects != null ? objects : new Object[0];
-        Assertions.assertThat(this.produced).isEqualTo(Arrays.asList(objects));
+        Assertions.assertThat(this.produced).containsOnly(objects);
     }
 
 
