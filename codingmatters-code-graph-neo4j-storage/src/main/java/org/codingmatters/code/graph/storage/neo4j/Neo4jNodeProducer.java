@@ -45,7 +45,7 @@ public class Neo4jNodeProducer implements NodeProducer {
     @Override
     public void aMethod(MethodNode node) throws ProducerException {
         try(Transaction tx = this.graphDb.beginTx()) {
-            this.querier.mergeRefNode(node.getRef());
+            this.querier.mergeRefNode(node.getRef(), node.getProperties());
             tx.success();
         }
     }

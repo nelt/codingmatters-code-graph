@@ -1,5 +1,7 @@
 package org.codingmatters.code.graph.api.nodes.properties;
 
+import org.codingmatters.code.graph.api.nodes.properties.annotations.StorableProperties;
+
 /**
  * Created with IntelliJ IDEA.
  * User: nel
@@ -11,6 +13,7 @@ public class MethodData {
     
     private MethodSignatureProperties signature;
 
+    @StorableProperties
     public MethodSignatureProperties getSignature() {
         return signature;
     }

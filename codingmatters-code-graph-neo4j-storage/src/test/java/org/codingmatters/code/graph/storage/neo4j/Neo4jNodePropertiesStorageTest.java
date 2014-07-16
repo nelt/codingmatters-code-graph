@@ -1,7 +1,9 @@
 package org.codingmatters.code.graph.storage.neo4j;
 
 import org.codingmatters.code.graph.api.nodes.ClassNode;
+import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.nodes.properties.ClassInformationProperties;
+import org.codingmatters.code.graph.api.nodes.properties.MethodSignatureProperties;
 import org.codingmatters.code.graph.api.nodes.properties.SourceLocationProperties;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
@@ -22,6 +24,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 public class Neo4jNodePropertiesStorageTest extends AbstractNeo4jProducerTest {
 
+    public static final String METHOD_SIGNATURE = "method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;";
     private NodeProducer producer;
 
     @Before
@@ -54,4 +57,16 @@ public class Neo4jNodePropertiesStorageTest extends AbstractNeo4jProducerTest {
         
     }
 
+    @Test
+    public void testAMethod() throws Exception {
+        MethodNode node = new MethodNode(METHOD_REF);
+        node.getProperties().withSignature(MethodSignatureProperties.create().withSignature(METHOD_SIGNATURE));
+        this.producer.aMethod(node);
+
+        Node actual = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
+        try( Transaction tx = this.getGraphDb().beginTx(); ) {
+            assertThat(actual.getProperty("signature_signature")).isEqualTo(METHOD_SIGNATURE);
+        }
+    }
+    
 }

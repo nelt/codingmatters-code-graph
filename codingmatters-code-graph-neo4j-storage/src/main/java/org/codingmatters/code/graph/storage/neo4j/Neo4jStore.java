@@ -117,7 +117,7 @@ public class Neo4jStore {
             return result;
         }
     }
-
+    
     private boolean isField(Node node) {
         return this.hasLabel(node, Codec.Label.FIELD);
     }
