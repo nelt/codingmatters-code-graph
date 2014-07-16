@@ -18,6 +18,7 @@ public class EmptyInterfaceTest extends AbstractClassParserTest {
 
     public static final ClassRef INTERFACE_REF = new ClassRef(className(EmptyInterface.class));
     public static final ClassRef OBJECT_REF = new ClassRef(className(Object.class));
+    public static final ClassRef IMPLEMENTER_REF = new ClassRef(className(EmptyImplementerClass.class));
 
     @Test
     public void testInterface() throws Exception {
@@ -33,6 +34,6 @@ public class EmptyInterfaceTest extends AbstractClassParserTest {
     public void testImplementer() throws Exception {
         this.getParser().parse(EmptyImplementerClass.class);
         
-        assertProduced(Predicates.implementsInterface(new ClassRef(className(EmptyImplementerClass.class)), INTERFACE_REF));
+        assertProduced(Predicates.implementsInterface(IMPLEMENTER_REF, INTERFACE_REF));
     }
 }

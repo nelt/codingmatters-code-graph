@@ -6,6 +6,7 @@ import org.codingmatters.code.graph.api.nodes.ClassNode;
 import org.codingmatters.code.graph.api.nodes.FieldNode;
 import org.codingmatters.code.graph.api.nodes.MethodNode;
 import org.codingmatters.code.graph.api.nodes.properties.ClassInformationProperties;
+import org.codingmatters.code.graph.api.nodes.properties.MethodSignatureProperties;
 import org.codingmatters.code.graph.api.nodes.properties.SourceLocationProperties;
 import org.codingmatters.code.graph.api.predicates.ExtendsPredicate;
 import org.codingmatters.code.graph.api.predicates.HasFieldPredicate;
@@ -17,6 +18,8 @@ import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.objectweb.asm.*;
+
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -78,7 +81,10 @@ public class ClassParserVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodRef methodRef = this.createMethodRef(NameUtil.methodName(this.currentClassNode.getRef().getShortName(), name, desc));
         try {
-            this.nodeProducer.aMethod(new MethodNode(methodRef));
+            MethodNode node = new MethodNode(methodRef);
+            node.getProperties().withSignature(MethodSignatureProperties.create().withSignature(name + desc));
+            
+            this.nodeProducer.aMethod(node);
             this.predicateProducer.hasMethod(
                     new HasMethodPredicate(this.currentClassNode.getRef(), methodRef));
         } catch (ProducerException e) {

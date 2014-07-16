@@ -1,5 +1,6 @@
 package org.codingmatters.code.graph.api.nodes;
 
+import org.codingmatters.code.graph.api.nodes.properties.MethodData;
 import org.codingmatters.code.graph.api.references.MethodRef;
 
 /**
@@ -11,9 +12,14 @@ import org.codingmatters.code.graph.api.references.MethodRef;
  */
 public class MethodNode {
     private final MethodRef ref;
+    private MethodData properties = new MethodData();
 
     public MethodNode(MethodRef ref) {
         this.ref = ref;
+    }
+
+    public MethodData getProperties() {
+        return properties;
     }
 
     @Override

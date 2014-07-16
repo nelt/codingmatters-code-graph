@@ -34,5 +34,4 @@ public class Predicates {
     static public ImplementsPredicate implementsInterface(ClassRef implementer, ClassRef implemented) {
         return new ImplementsPredicate(implementer, implemented);
     }
-    
 }

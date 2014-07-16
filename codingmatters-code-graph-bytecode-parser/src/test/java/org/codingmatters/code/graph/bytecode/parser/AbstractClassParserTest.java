@@ -12,17 +12,14 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.ClassRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
-import org.codingmatters.code.graph.bytecode.parser.parsed.ClassWithMethod;
 import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
 import org.fest.assertions.api.Assertions;
 import org.fest.assertions.api.filter.Filters;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.filter;
@@ -71,6 +68,14 @@ public class AbstractClassParserTest {
 
     static protected Filters<Object> filterClassNodes(List<Object> objects) {
         return filter(objects).with("class", ClassNode.class);
+    }
+    static protected Filters<Object> filterMethodNodes(List<Object> objects) {
+        return filter(objects).with("class", MethodNode.class);
+    }
+    static protected Filters<Object> filterMethodNodes(List<Object> objects, String shortName) {
+        return filter(objects)
+                .with("class").equalsTo(MethodNode.class)
+                .and("ref.shortName").equalsTo(shortName);
     }
 
     @Before
