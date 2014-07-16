@@ -14,6 +14,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 import org.neo4j.graphdb.schema.ConstraintType;
+import org.neo4j.graphdb.schema.IndexDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,12 +43,22 @@ public class Neo4jStore {
                     this.createUnicityConstraint(Codec.Label.CLASS, "name");
                     this.createUnicityConstraint(Codec.Label.FIELD, "name");
                     this.createUnicityConstraint(Codec.Label.METHOD, "name");
-                    
+                    this.createIndex("signature_signature");
+
                     tx.success();
                 }
 
                 try(Transaction tx = graphDb.beginTx()) {
                     graphDb.schema().awaitIndexesOnline(10, TimeUnit.SECONDS);
+                }
+            }
+
+            private void createIndex(String property) {
+                if(! this.indexExists(Codec.Label.METHOD, property)) {
+                    graphDb.schema().indexFor(Codec.Label.METHOD)
+                            .on(property)
+                            .create();
+                    log.info("created %s.%s index", Codec.Label.METHOD.name(), property);
                 }
             }
 
@@ -70,6 +81,17 @@ public class Neo4jStore {
                             if(prop.equals(property)) {
                                 exists = true;
                             }
+                        }
+                    }
+                }
+                return exists;
+            }
+            private boolean indexExists(Label label, String property) {
+                boolean exists = false;
+                for ( IndexDefinition constraintDefinition : graphDb.schema().getIndexes(label)) {
+                    for (String prop : constraintDefinition.getPropertyKeys()) {
+                        if(prop.equals(property)) {
+                            exists = true;
                         }
                     }
                 }
