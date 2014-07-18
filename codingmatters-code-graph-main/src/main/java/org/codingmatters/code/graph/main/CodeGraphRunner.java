@@ -8,6 +8,7 @@ import org.codingmatters.code.graph.cross.cutting.logs.Log;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jNodeProducer;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jPredicateProducer;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jStore;
+import org.codingmatters.code.graph.storage.neo4j.postprocess.OverridesPostProcessor;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
@@ -29,7 +30,10 @@ public class CodeGraphRunner {
     public static void main(String[] args) {
         if(args.length < 1) throw new RuntimeException("usage : <db path> {<jar path>...}");
         
-        GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(args[0]);
+        String source = "TEST";
+        String dbPath = args[0];
+        
+        GraphDatabaseService graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
         registerShutdownHook(graphDb);
         
         log.info("neo4j graph is up");
@@ -44,14 +48,18 @@ public class CodeGraphRunner {
         for(int i = 1 ; i < args.length ; i++) {
             try {
                 log.info("parsing %s...", args[i]);
-                JarParser.parse(new File(args[i]), nodeProducer, predicateProducer, "TEST");
+                JarParser.parse(new File(args[i]), nodeProducer, predicateProducer, source);
                 log.info("done parsing %s.", args[i]);
             } catch (ClassParserException e) {
                 log.report(e).error("error parsing jar file " + args[i]);
             }
         }
 
+        log.info("postprocessing source %s", source);
+        new OverridesPostProcessor(graphDb, engine).process(source);
+        
         log.info("done.");
+        log.info("db files are stored in " + dbPath);
     }
 
     private static void registerShutdownHook(final GraphDatabaseService graphDb) {

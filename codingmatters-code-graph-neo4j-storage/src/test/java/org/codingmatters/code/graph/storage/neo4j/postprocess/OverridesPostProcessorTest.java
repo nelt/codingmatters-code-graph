@@ -68,7 +68,7 @@ public class OverridesPostProcessorTest extends AbstractNeo4jProducerTest {
     public void testDirectExtends() throws Exception {
         this.predicateProducer.hasParent(extendsClass(this.overridingClass.getRef(), this.declaringClass.getRef()));
         
-        this.postProcessor.process();
+        this.postProcessor.process("TEST");
 
         this.assertUniqueRelationship(this.getMethodNode(this.overridingMethod), OVERRIDES, this.getMethodNode(this.declaringMethod));
     }
@@ -78,7 +78,7 @@ public class OverridesPostProcessorTest extends AbstractNeo4jProducerTest {
         this.predicateProducer.hasParent(extendsClass(this.inTheMiddleClass.getRef(), this.declaringClass.getRef()));
         this.predicateProducer.hasParent(extendsClass(this.overridingClass.getRef(), this.inTheMiddleClass.getRef()));
         
-        this.postProcessor.process();
+        this.postProcessor.process("TEST");
 
         this.assertUniqueRelationship(this.getMethodNode(this.overridingMethod), OVERRIDES, this.getMethodNode(this.declaringMethod));
     }
@@ -90,7 +90,7 @@ public class OverridesPostProcessorTest extends AbstractNeo4jProducerTest {
         this.predicateProducer.hasParent(extendsClass(this.overridingClass.getRef(), this.declaringClass.getRef()));
         this.predicateProducer.hasParent(extendsClass(this.reOverridingClass.getRef(), this.overridingClass.getRef()));
         
-        this.postProcessor.process();
+        this.postProcessor.process("TEST");
 
         this.assertUniqueRelationship(this.getMethodNode(this.overridingMethod), OVERRIDES, this.getMethodNode(this.declaringMethod));
         this.assertUniqueRelationship(this.getMethodNode(this.reOverridingMethod), OVERRIDES, this.getMethodNode(this.overridingMethod));
@@ -101,7 +101,7 @@ public class OverridesPostProcessorTest extends AbstractNeo4jProducerTest {
     public void testDirectImplements() throws Exception {
         this.predicateProducer.hasInterface(implementsInterface(this.overridingClass.getRef(), this.declaringClass.getRef()));
         
-        this.postProcessor.process();
+        this.postProcessor.process("TEST");
 
         this.assertUniqueRelationship(this.getMethodNode(this.overridingMethod), OVERRIDES, this.getMethodNode(this.declaringMethod));
     }
@@ -111,7 +111,7 @@ public class OverridesPostProcessorTest extends AbstractNeo4jProducerTest {
         this.predicateProducer.hasInterface(implementsInterface(this.inTheMiddleClass.getRef(), this.declaringClass.getRef()));
         this.predicateProducer.hasParent(extendsClass(this.overridingClass.getRef(), this.inTheMiddleClass.getRef()));
         
-        this.postProcessor.process();
+        this.postProcessor.process("TEST");
 
         this.assertUniqueRelationship(this.getMethodNode(this.overridingMethod), OVERRIDES, this.getMethodNode(this.declaringMethod));
     }
@@ -121,7 +121,7 @@ public class OverridesPostProcessorTest extends AbstractNeo4jProducerTest {
         this.predicateProducer.hasParent(extendsClass(this.inTheMiddleClass.getRef(), this.declaringClass.getRef()));
         this.predicateProducer.hasInterface(implementsInterface(this.overridingClass.getRef(), this.inTheMiddleClass.getRef()));
         
-        this.postProcessor.process();
+        this.postProcessor.process("TEST");
 
         this.assertUniqueRelationship(this.getMethodNode(this.overridingMethod), OVERRIDES, this.getMethodNode(this.declaringMethod));
     }

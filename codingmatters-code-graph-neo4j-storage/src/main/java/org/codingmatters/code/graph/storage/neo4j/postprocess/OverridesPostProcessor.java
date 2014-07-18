@@ -6,6 +6,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,14 +26,16 @@ public class OverridesPostProcessor {
         this.engine = engine;
     }
     
-    public void process() {
+    public void process(String source) {
         String query = "" +
-                "MATCH (m2:METHOD)<-[:HAS_METHOD]-(c2:CLASS)-[:EXTENDS|IMPLEMENTS *]->(c1:CLASS)-[:HAS_METHOD]->(m1:METHOD) " +
+                "MATCH (m2:METHOD)<-[:HAS_METHOD]-(c2:CLASS {source: {source}})-[:EXTENDS|IMPLEMENTS *]->(c1:CLASS {source: {source}})-[:HAS_METHOD]->(m1:METHOD) " +
                 "WHERE m2.signature_signature = m1.signature_signature " +
                 "MERGE (m2)-[o:OVERRIDES]->(m1) ";
+        Map<String, Object> props = new HashMap<>();
+        props.put("source", source);
         
         try(Transaction tx = this.graphDb.beginTx();) {
-            ExecutionResult res = this.engine.execute(query);
+            ExecutionResult res = this.engine.execute(query, props);
             tx.success();
         }
         
