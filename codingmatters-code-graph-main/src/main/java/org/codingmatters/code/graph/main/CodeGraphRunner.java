@@ -11,6 +11,7 @@ import org.codingmatters.code.graph.storage.neo4j.Neo4jStore;
 import org.codingmatters.code.graph.storage.neo4j.postprocess.OverridesPostProcessor;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.impl.util.StringLogger;
 
@@ -48,7 +49,10 @@ public class CodeGraphRunner {
         for(int i = 1 ; i < args.length ; i++) {
             try {
                 log.info("parsing %s...", args[i]);
-                JarParser.parse(new File(args[i]), nodeProducer, predicateProducer, source);
+                try(Transaction tx = graphDb.beginTx();) {
+                    JarParser.parse(new File(args[i]), nodeProducer, predicateProducer, source);
+                    tx.success();
+                }
                 log.info("done parsing %s.", args[i]);
             } catch (ClassParserException e) {
                 log.report(e).error("error parsing jar file " + args[i]);
