@@ -28,11 +28,6 @@
             <artifactId>asm</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>org.codingmatters.code.graph</groupId>
-            <artifactId>codingmatters-code-graph-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     
 </project>

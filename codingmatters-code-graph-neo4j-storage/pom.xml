@@ -35,12 +35,6 @@
         </dependency>
         
         <dependency>
-            <groupId>org.codingmatters.code.graph</groupId>
-            <artifactId>codingmatters-code-graph-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
             <type>test-jar</type>
