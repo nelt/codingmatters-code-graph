@@ -89,6 +89,11 @@
                 <artifactId>codingmatters-code-graph-java-ast</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.codingmatters.code.graph</groupId>
+                <artifactId>codingmatters-code-graph-java-parser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!--END OF INTERNAL DEPENDENCIES-->
             
             <dependency>
