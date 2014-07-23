@@ -14,11 +14,17 @@ public class AbstractFragment implements SourceFragment {
     static public class Builder {
 
         private String text;
+        private String qualifiedName;
         private int start;
         private int end;
 
         public Builder withText(String text) {
             this.text = text;
+            return this;
+        }
+
+        public Builder withQualifiedName(String qualifiedName) {
+            this.qualifiedName = qualifiedName;
             return this;
         }
 
@@ -34,7 +40,8 @@ public class AbstractFragment implements SourceFragment {
 
         public <T extends AbstractFragment> T build(Class<T> clazz) throws BuilderException {
             try {
-                return clazz.getConstructor(new Class[]{String.class, Integer.class, Integer.class}).newInstance(this.text, this.start, this.end);
+                return clazz.getConstructor(new Class[]{String.class, String.class, Integer.class, Integer.class})
+                        .newInstance(this.text, this.qualifiedName, this.start, this.end);
             } catch (InstantiationException|IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
                 throw new BuilderException(e);
             }
@@ -48,11 +55,13 @@ public class AbstractFragment implements SourceFragment {
     }
     
     private final String text;
+    private final String qualifiedName;
     private final int start;
     private final int end;
 
-    public AbstractFragment(String text, Integer start, Integer end) {
+    public AbstractFragment(String text, String qualifiedName, Integer start, Integer end) {
         this.text = text;
+        this.qualifiedName = qualifiedName;
         this.start = start;
         this.end = end;
     }
@@ -60,6 +69,10 @@ public class AbstractFragment implements SourceFragment {
     @Override
     public String text() {
         return this.text;
+    }
+
+    public String qualifiedName() {
+        return qualifiedName;
     }
 
     @Override
@@ -76,6 +89,7 @@ public class AbstractFragment implements SourceFragment {
     public String toString() {
         return this.getClass().getSimpleName() + "{" +
                 "text='" + text + '\'' +
+                ", qualifiedName='" + qualifiedName + '\'' +
                 ", start=" + start +
                 ", end=" + end +
                 '}';

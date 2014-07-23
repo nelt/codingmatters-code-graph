@@ -8,7 +8,7 @@ package org.codingmatters.code.graph.java.parser.fragments;
  * To change this template use File | Settings | File Templates.
  */
 public class PackageFragment extends AbstractFragment {
-    public PackageFragment(String text, Integer start, Integer end) {
-        super(text, start, end);
+    public PackageFragment(String text, String qualifiedName, Integer start, Integer end) {
+        super(text, qualifiedName, start, end);
     }
 }
