@@ -1,6 +1,7 @@
 package org.codingmatters.code.graph.bytecode.parser.util;
 
 import java.util.Date;
+import java.util.concurrent.atomic.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,17 +13,18 @@ import java.util.Date;
 public class TestClass {
     
     static public class InnerStaticClass {
-        
+        class InnerInner {
+        }
     }
     
     static private Runnable run = new Runnable() {
         @Override
         public void run() {
-            
         }
     };
     
     private final String field;
+    private AtomicBoolean dd;
 
     public TestClass(String field) {
         this.field = field;

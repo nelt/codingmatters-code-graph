@@ -6,11 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.codingmatters.code.graph.java.ast.JavaLexer;
 import org.codingmatters.code.graph.java.ast.JavaListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
-import org.codingmatters.code.graph.java.parser.JavaSource;
 import org.codingmatters.code.graph.java.parser.fragments.*;
-import org.codingmatters.code.graph.java.parser.internal.SourceFragmentGeneratorListener;
-import org.fest.assertions.api.Assertions;
-import org.fest.assertions.internal.Conditions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static org.codingmatters.code.graph.java.parser.JavaSource.fromResourceFile;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -38,16 +32,38 @@ public class SourceFragmentGeneratorListenerTest {
     
     private JavaListener listener;
     private List<SourceFragment> fragments = new LinkedList<>();
-    
+
+    private ClassDisambiguizer disambiguizer;
+    private HashSet<ClassDisambiguizerCall> disambiguizerCalls = new HashSet<>();
+    private HashMap<ClassDisambiguizerCall, String> disambiguizerCallResults = new HashMap<>();
+
     @Before
     public void setUp() throws Exception {
         this.fragments.clear();
+        this.disambiguizerCalls.clear();
+
+        this.disambiguizer = new ClassDisambiguizer() {
+            @Override
+            public String choosePackage(String forClass, String[] orderedCandidates) throws DisambiguizerException {
+                if(Arrays.asList("Runnable", "String").contains(forClass)) {
+                    return "java.lang";
+                } else if("AtomicBoolean".equals(forClass)) {
+                    return "java.util.concurrent.atomic";
+                }
+
+                ClassDisambiguizerCall disambiguizerCall = new ClassDisambiguizerCall(forClass, orderedCandidates);
+                disambiguizerCalls.add(disambiguizerCall);
+                System.out.println(disambiguizerCall + "->" + disambiguizerCallResults.get(disambiguizerCall));
+                return disambiguizerCallResults.get(disambiguizerCall);
+            }
+        };
+
         this.listener = new SourceFragmentGeneratorListener(new FragmentStream() {
             @Override
             public void fragment(SourceFragment fragment) {
                 fragments.add(fragment);
             }
-        });
+        }, this.disambiguizer);
     }
 
     @Test
@@ -55,23 +71,57 @@ public class SourceFragmentGeneratorListenerTest {
         String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass";
         this.parseResourceWith(resourceClass, this.listener);
 
+        FragmentsAssertions fragmentsAssertions = new FragmentsAssertions(this.fragments);
+
+
         for (SourceFragment fragment : this.fragments) {
             System.out.println(fragment);
         }
 
+        fragmentsAssertions.assertFragment(
+                PackageFragment.class, "org.codingmatters.code.graph.bytecode.parser.util");
+        fragmentsAssertions.assertFragment(
+                ImportFragment.class, "java.util.Date");
+        fragmentsAssertions.assertFragment(
+                ImportFragment.class, "java.util.concurrent.atomic");
+        fragmentsAssertions.assertFragment(
+                ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass");
+        fragmentsAssertions.assertFragment(
+                ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass");
+        fragmentsAssertions.assertFragment(
+                ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass$InnerInner");
+        fragmentsAssertions.assertFragment(
+                ClassUsageFragment.class, "java.lang.Runnable");
+        fragmentsAssertions.assertFragment(
+                ClassUsageFragment.class, "java.lang.String");
+        fragmentsAssertions.assertFragment(
+                ClassUsageFragment.class, "java.util.concurrent.atomic.AtomicBoolean");
 
-        Iterator<SourceFragment> actualFragment = this.fragments.iterator();
-        
-        this.assertFragment(PackageFragment.class, "org.codingmatters.code.graph.bytecode.parser.util", actualFragment.next());
-        this.assertFragment(ImportFragment.class, "java.util.Date", actualFragment.next());
-        this.assertFragment(ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass", actualFragment.next());
-        this.assertFragment(ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass", actualFragment.next());
-        
-        assertFalse(actualFragment.hasNext());
-        
+        fragmentsAssertions.assertNoMoreFragment();
+
         for (SourceFragment fragment : this.fragments) {
             this.assertFragmentCoherent(fragment, resourceClass);    
         }
+    }
+
+    static public class FragmentsAssertions {
+        private final Iterator<SourceFragment> fragments;
+
+        public FragmentsAssertions(List<SourceFragment> fragments) {
+            this.fragments = fragments.iterator();
+        }
+
+        public void assertFragment(Class clazz, String qualifiedName) {
+            SourceFragment actual = this.fragments.next();
+            assertThat(actual).isOfAnyClassIn(clazz);
+            assertThat(actual.qualifiedName()).isEqualTo(qualifiedName);
+        }
+
+        public void assertNoMoreFragment() {
+            assertThat(this.fragments.hasNext()).isFalse();
+        }
+
+
     }
 
     private void assertFragment(Class clazz, String qualifiedName, SourceFragment actual) {
@@ -106,25 +156,6 @@ public class SourceFragmentGeneratorListenerTest {
         Assert.assertEquals("expected " + sourceFragment.toString(), source.substring(sourceFragment.start(), sourceFragment.end() + 1), sourceFragment.text());
     }
 
-    @Test
-    public void testSourceFromTest() throws Exception {
-
-        try(BufferedReader source = buffered(fromResourceFile("org.codingmatters.code.graph.bytecode.parser.util.TestClass"));) {
-            for(String line = source.readLine() ; line != null ; line = source.readLine()) {
-                System.out.println(line);
-            }
-        }
-    }
-
-    @Test
-    public void testJar() throws Exception {
-        try(BufferedReader source = buffered(JavaSource.fromResourceJar("junit-4.11-sources.jar", "junit.runner.BaseTestRunner"));) {
-            for(String line = source.readLine() ; line != null ; line = source.readLine()) {
-                System.out.println(line);
-            }
-        }
-    }
-    
     static public BufferedReader buffered(InputStream stream) {
         return new BufferedReader(new InputStreamReader(stream));
     }
