@@ -1,8 +1,6 @@
 package org.codingmatters.code.graph.test.support.text;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,6 +14,13 @@ public class TextFile {
 
     static public TextFile read(String resource) throws IOException {
         try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);){
+            return read(stream);
+        }
+    }
+
+    static public TextFile read(File file) throws IOException {
+        if(file == null) throw new IOException("null file");
+        try(InputStream stream = new FileInputStream(file)) {
             return read(stream);
         }
     }
