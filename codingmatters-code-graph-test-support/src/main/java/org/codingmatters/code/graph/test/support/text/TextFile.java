@@ -52,4 +52,8 @@ public class TextFile {
     public String content() {
         return this.content;
     }
+
+    public TextFragmenter fragmenter(String startTag, String endTag) {
+        return new TextFragmenter(this.content, startTag, endTag);
+    }
 }
