@@ -1,9 +1,6 @@
 package org.codingmatters.code.graph.test.support.text;
 
-import org.fest.assertions.api.Assertions;
 import org.junit.Test;
-
-import java.util.NoSuchElementException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
