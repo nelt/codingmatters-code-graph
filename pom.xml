@@ -17,6 +17,7 @@
         <module>codingmatters-code-graph-main</module>
         <module>codingmatters-code-graph-cross-cutting</module>
         <module>codingmatters-code-graph-java-source</module>
+        <module>codingmatters-code-graph-test-support</module>
     </modules>
 
     <properties>
@@ -92,6 +93,11 @@
             <dependency>
                 <groupId>org.codingmatters.code.graph</groupId>
                 <artifactId>codingmatters-code-graph-java-parser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codingmatters.code.graph</groupId>
+                <artifactId>codingmatters-code-graph-test-support</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--END OF INTERNAL DEPENDENCIES-->
