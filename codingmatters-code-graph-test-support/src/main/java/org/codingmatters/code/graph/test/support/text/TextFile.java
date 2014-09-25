@@ -11,7 +11,6 @@ import java.io.*;
  */
 public class TextFile {
 
-
     static public TextFile read(String resource) throws IOException {
         try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);){
             return read(stream);
@@ -37,6 +36,11 @@ public class TextFile {
             
             return new TextFile(content.toString());
         }
+    }
+
+    static public TextFile fromString(String content) throws IOException {
+        if(content == null) throw new IOException("null string");
+        return new TextFile(content);
     }
 
     private final String content;

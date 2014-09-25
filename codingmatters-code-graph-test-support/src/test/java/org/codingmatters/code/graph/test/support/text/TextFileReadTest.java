@@ -59,4 +59,18 @@ public class TextFileReadTest {
     public void testNullFile() throws Exception {
         TextFile.read((File) null);
     }
+    
+    @Test
+    public void testString() throws Exception {
+        TextFile actual = TextFile.fromString("hello");
+
+        assertThat(actual.content()).isEqualTo("hello");
+    }
+
+    @Test(expected = IOException.class)
+    public void testNullString() throws Exception {
+        TextFile.fromString(null);
+    }
+    
+    
 }
