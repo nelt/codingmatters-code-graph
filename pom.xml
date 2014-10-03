@@ -18,6 +18,7 @@
         <module>codingmatters-code-graph-cross-cutting</module>
         <module>codingmatters-code-graph-java-source</module>
         <module>codingmatters-code-graph-test-support</module>
+        <module>codingmatters-code-graph-ui</module>
     </modules>
 
     <properties>
