@@ -1,0 +1,44 @@
+body {
+  padding-top: 50px;
+}
+.page-heading {
+  padding: 40px 15px;
+  text-align: center;
+}
+.code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    white-space: pre;
+}
+
+.code .keyword {
+    color: #333;
+    font-weight: bold;
+}
+
+.code .this {
+    color: #333;
+    font-weight: bold;
+}
+
+.code .class {
+    color: #445588;
+    font-weight: bold;
+}
+
+.code .method {
+    color: #990000;
+    font-weight: bold;
+}
+
+.code .field {
+    color: #008080;
+}
+
+.code .call {
+    color: #008080;
+}
+
+.code .package {
+    color: #008080;
+}
+
