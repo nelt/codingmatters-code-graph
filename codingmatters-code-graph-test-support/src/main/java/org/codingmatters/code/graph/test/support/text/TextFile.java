@@ -56,4 +56,11 @@ public class TextFile {
     public TextFragmenter fragmenter(String startTag, String endTag) {
         return new TextFragmenter(this.content, startTag, endTag);
     }
+
+
+    public TextFragmenter htmlFragmenter(String tag) {
+        return new TextFragmenter(this.content, 
+                "<!--" + tag + "==-->", 
+                "<!--==" + tag + "-->");
+    }
 }

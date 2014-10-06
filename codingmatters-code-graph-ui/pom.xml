@@ -16,6 +16,7 @@
     
     <modules>
         <module>codingmatters-code-graph-ui-mock</module>
+        <module>codingmatters-code-graph-ui-content</module>
     </modules>
     
 </project>

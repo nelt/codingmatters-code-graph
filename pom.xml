@@ -101,6 +101,16 @@
                 <artifactId>codingmatters-code-graph-test-support</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.codingmatters.code.graph.ui</groupId>
+                <artifactId>codingmatters-code-graph-ui-mock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codingmatters.code.graph.ui</groupId>
+                <artifactId>codingmatters-code-graph-ui-content</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!--END OF INTERNAL DEPENDENCIES-->
             
             <dependency>
