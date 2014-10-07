@@ -111,6 +111,11 @@
                 <artifactId>codingmatters-code-graph-ui-content</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.codingmatters.code.graph.ui</groupId>
+                <artifactId>codingmatters-code-graph-ui-service-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!--END OF INTERNAL DEPENDENCIES-->
             
             <dependency>

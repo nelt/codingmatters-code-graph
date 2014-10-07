@@ -5,6 +5,8 @@ import org.codingmatters.code.graph.ui.content.elements.menu.DropdownMenu;
 import org.codingmatters.code.graph.ui.content.elements.menu.LinkMenu;
 import org.codingmatters.code.graph.ui.content.elements.menu.Menubar;
 import org.codingmatters.code.graph.ui.content.support.Lines;
+import org.codingmatters.code.graph.ui.service.api.project.Project;
+import org.codingmatters.code.graph.ui.service.api.project.ProjectService;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,16 +21,16 @@ public class Navigations {
         return new Navigation().lines();
     }
 
-    static public Lines projectIndex() {
+    static public Lines projectIndex(Project current, ProjectService projectService) {
+        DropdownMenu projectsMenu = new DropdownMenu(current.label());
+        for (Project project : projectService.listProject()) {
+            projectsMenu.withMenu(new LinkMenu(project.path(), project.label()));
+        }
         return new Navigation()
                 .withMenuBar(
                         new Menubar()
                                 .withMenu(new LinkMenu("", "Home"))
-                                .withMenu(new DropdownMenu()
-                                        .withMenu(new LinkMenu("project 1/", "Project 1"))
-                                        .withMenu(new LinkMenu("project 2/", "Project 2"))
-                                        .withMenu(new LinkMenu("project 3/", "Project 3"))
-                                )
+                                .withMenu(projectsMenu)
                 )
                 .lines();
     }

@@ -14,30 +14,29 @@ import java.util.LinkedList;
 public class DropdownMenu implements Menu {
 
 
+    private final String text;
     private final LinkedList<LinkMenu> menus = new LinkedList<>();
-    
+
+    public DropdownMenu(String text) {
+        this.text = text;
+    }
+
     public DropdownMenu withMenu(LinkMenu menu) {
         this.menus.add(menu);
         return this;
     }
-
+    
     @Override
     public Lines lines() {
         Lines result = new Lines();
         result
                 .appendLine("<li class=\"dropdown active\">")
-                .appendLine("    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Project 1 <span class=\"caret\"></span></a>")
+                .appendLine("    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">" + this.text + " <span class=\"caret\"></span></a>")
                 .appendLine("    <ul class=\"dropdown-menu\" role=\"menu\">");
 
         for (Menu menu : this.menus) {
             result.append(menu.lines().prefix("        ").content());    
         }
-
-
-//        result
-//                .appendLine("        <li><a href=\"project 1/\">Project 1</a></li>")
-//                .appendLine("        <li><a href=\"project 2/\">Project 2</a></li>")
-//                .appendLine("        <li><a href=\"project 3/\">Project 3</a></li>");
         
         result
                 .appendLine("    </ul>")

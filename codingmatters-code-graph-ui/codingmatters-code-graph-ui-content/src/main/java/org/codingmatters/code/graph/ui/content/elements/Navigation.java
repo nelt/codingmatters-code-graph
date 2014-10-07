@@ -18,10 +18,6 @@ public class Navigation {
         this.menubar = menubar;
         return this;
     }
-
-    private boolean hasMenuBar() {
-        return this.menubar != null;
-    }
     
     public Lines lines() {
         Lines result = new Lines()

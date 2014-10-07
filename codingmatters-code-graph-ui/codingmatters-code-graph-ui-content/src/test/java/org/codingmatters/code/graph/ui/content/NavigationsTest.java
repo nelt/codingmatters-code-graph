@@ -1,8 +1,15 @@
 package org.codingmatters.code.graph.ui.content;
 
 import org.codingmatters.code.graph.test.support.text.TextFile;
+import org.codingmatters.code.graph.ui.content.mocked.TestProjectService;
+import org.codingmatters.code.graph.ui.service.api.project.Project;
+import org.codingmatters.code.graph.ui.service.api.project.ProjectService;
 import org.fest.assertions.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.codingmatters.code.graph.test.support.text.TextFile.read;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -15,7 +22,19 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * To change this template use File | Settings | File Templates.
  */
 public class NavigationsTest {
-    
+
+
+    private ProjectService projectService;
+
+    @Before
+    public void setUp() throws Exception {
+        this.projectService = new TestProjectService().withProjects(
+                new Project("project 1/", "Project 1"),
+                new Project("project 2/", "Project 2"),
+                new Project("project 3/", "Project 3")
+        );
+    }
+
     @Test
     public void testIndex() throws Exception {
         assertThat(Navigations.index().content())
@@ -24,7 +43,7 @@ public class NavigationsTest {
 
     @Test
     public void testProjectIndex() throws Exception {
-        assertThat(Navigations.projectIndex().content())
+        assertThat(Navigations.projectIndex(new Project("project 1/", "Project 1"), this.projectService).content())
                 .isEqualTo(read("project 1/index.html").htmlFragmenter("navigation bar").next());
     }
 }
