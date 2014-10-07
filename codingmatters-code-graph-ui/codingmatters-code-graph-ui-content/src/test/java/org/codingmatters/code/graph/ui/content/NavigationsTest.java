@@ -1,15 +1,10 @@
 package org.codingmatters.code.graph.ui.content;
 
-import org.codingmatters.code.graph.test.support.text.TextFile;
 import org.codingmatters.code.graph.ui.content.mocked.TestProjectService;
 import org.codingmatters.code.graph.ui.service.api.project.Project;
 import org.codingmatters.code.graph.ui.service.api.project.ProjectService;
-import org.fest.assertions.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.codingmatters.code.graph.test.support.text.TextFile.read;
 import static org.fest.assertions.api.Assertions.assertThat;
