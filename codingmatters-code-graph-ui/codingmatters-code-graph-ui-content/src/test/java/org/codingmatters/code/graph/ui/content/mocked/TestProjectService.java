@@ -16,7 +16,11 @@ import java.util.List;
  */
 public class TestProjectService implements ProjectService {
     private final List<Project> projects = new LinkedList<>();
-
+    
+    public TestProjectService withProjects(List<Project> projects) {
+        return withProjects(projects.toArray(new Project[projects.size()]));
+    }
+    
     public TestProjectService withProjects(Project ... projects) {
         if(projects != null) {
             for (Project project : projects) {
