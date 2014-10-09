@@ -10,7 +10,8 @@ package org.codingmatters.code.graph.ui.service.api.project;
 public class Project {
     private final String path;
     private final String label;
-
+    private String description;
+    
     public Project(String path, String label) {
         this.path = path;
         this.label = label;
@@ -22,5 +23,14 @@ public class Project {
 
     public String label() {
         return this.label;
+    }
+    
+    public String description() {
+        return this.description;
+    }
+
+    public Project withDescription(String description) {
+        this.description = description;
+        return this;
     }
 }
