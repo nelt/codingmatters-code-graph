@@ -14,6 +14,7 @@ public class TextFragmenter implements Iterator<String> {
     private String content;
     private final String startTag;
     private final String endTag;
+    private String cleaningRegex;
 
     public TextFragmenter(String content, String startTag, String endTag) {
         this.content = content;
@@ -21,6 +22,11 @@ public class TextFragmenter implements Iterator<String> {
         this.endTag = endTag;
     }
 
+    public TextFragmenter cleaning(String regex) {
+        this.cleaningRegex = regex;
+        return this;
+    }
+    
     @Override
     public boolean hasNext() {
         int start = this.content.indexOf(this.startTag);
@@ -53,11 +59,18 @@ public class TextFragmenter implements Iterator<String> {
             this.content = this.content.substring(1);
         }
         
-        return result;
+        return this.clean(result);
+    }
+
+    private String clean(String result) {
+        if(this.cleaningRegex == null) return result;
+        
+        return result.replaceAll(this.cleaningRegex, "");
     }
 
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
+
 }

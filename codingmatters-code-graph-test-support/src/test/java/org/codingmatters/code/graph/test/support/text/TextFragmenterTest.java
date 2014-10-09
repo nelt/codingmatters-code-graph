@@ -53,6 +53,15 @@ public class TextFragmenterTest {
         assertThat(fragmenter.hasNext()).isFalse();
     }
 
+    @Test
+    public void testClean() throws Exception {
+        assertThat(TextFile.fromString(
+                "START\n" +
+                        "frag# this will be cleaned #ment\n" +
+                        "END"
+        ).fragmenter("START", "END").cleaning("#(.*)#").next()).isEqualTo("fragment");
+    }
+
     @Test(expected = NoSuchFragmentException.class)
     public void testNoStart() throws Exception {
         TextFile.fromString("").fragmenter("START", "END").next();

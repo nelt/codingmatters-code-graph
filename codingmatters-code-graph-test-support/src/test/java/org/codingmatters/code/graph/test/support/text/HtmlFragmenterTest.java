@@ -11,7 +11,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * Time: 06:47
  * To change this template use File | Settings | File Templates.
  */
-public class HtmlFragmenterText {
+public class HtmlFragmenterTest {
 
     @Test
     public void testHasNextFragment() throws Exception {
