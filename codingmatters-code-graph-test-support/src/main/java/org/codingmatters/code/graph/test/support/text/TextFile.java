@@ -61,6 +61,7 @@ public class TextFile {
     public TextFragmenter htmlFragmenter(String tag) {
         return new TextFragmenter(this.content, 
                 "<!--" + tag + "==-->", 
-                "<!--==" + tag + "-->");
+                "<!--==" + tag + "-->")
+                .cleaning("(<!--(.*)==-->(^|\\n))|(<!--==(.*)-->)(^|\\n)");
     }
 }

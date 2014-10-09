@@ -14,11 +14,23 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class HtmlFragmenterTest {
 
     @Test
-    public void testHasNextFragment() throws Exception {
+    public void testFragment() throws Exception {
         assertThat(TextFile.fromString(
                 "<!--TAG==-->\n" +
                         "fragment\n" +
                         "<!--==TAG-->"
-        ).htmlFragmenter("TAG").hasNext()).isTrue();
+        ).htmlFragmenter("TAG").next()).isEqualTo("fragment");
+    }
+    
+    @Test
+    public void testCleanFragment() throws Exception {
+        assertThat(TextFile.fromString(
+                "<!--TAG==-->\n" +
+                        "frag\n" +
+                        "<!--NOT A TAG==-->\n" +
+                        "<!--==NOT A TAG-->\n" +
+                        "ment\n" +
+                        "<!--==TAG-->"
+        ).htmlFragmenter("TAG").next()).isEqualTo("frag\nment");
     }
 }
