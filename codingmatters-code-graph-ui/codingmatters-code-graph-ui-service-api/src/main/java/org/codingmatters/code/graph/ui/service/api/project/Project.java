@@ -33,4 +33,26 @@ public class Project {
         this.description = description;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Project project = (Project) o;
+
+        if (description != null ? !description.equals(project.description) : project.description != null) return false;
+        if (label != null ? !label.equals(project.label) : project.label != null) return false;
+        if (path != null ? !path.equals(project.path) : project.path != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
 }
