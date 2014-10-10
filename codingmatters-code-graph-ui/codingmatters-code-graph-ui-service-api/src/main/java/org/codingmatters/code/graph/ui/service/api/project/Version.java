@@ -5,19 +5,29 @@ package org.codingmatters.code.graph.ui.service.api.project;
  */
 public class Version {
     private final Project project;
+    private final boolean latest;
     private final String name;
 
     public Version(Project project, String name) {
+        this(project, name, false);
+    }
+
+    public Version(Project project, String name, boolean latest) {
         this.project = project;
         this.name = name;
+        this.latest = latest;
     }
-    
+
     public Project project() {
         return this.project;
     }
     
     public String name() {
         return this.name;
+    }
+
+    public boolean latest() {
+        return latest;
     }
 
     @Override

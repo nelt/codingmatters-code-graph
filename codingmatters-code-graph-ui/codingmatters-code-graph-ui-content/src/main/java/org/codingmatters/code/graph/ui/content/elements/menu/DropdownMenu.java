@@ -15,7 +15,7 @@ public class DropdownMenu implements Menu {
 
 
     private final String text;
-    private final LinkedList<LinkMenu> menus = new LinkedList<>();
+    private final LinkedList<MenuItem> menus = new LinkedList<>();
 
     public DropdownMenu(String text) {
         this.text = text;
@@ -23,6 +23,11 @@ public class DropdownMenu implements Menu {
 
     public DropdownMenu withMenu(LinkMenu menu) {
         this.menus.add(menu);
+        return this;
+    }
+
+    public DropdownMenu withDivider() {
+        this.menus.add(new Divider());
         return this;
     }
     
@@ -34,7 +39,7 @@ public class DropdownMenu implements Menu {
                 .appendLine("    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">" + this.text + " <span class=\"caret\"></span></a>")
                 .appendLine("    <ul class=\"dropdown-menu\" role=\"menu\">");
 
-        for (Menu menu : this.menus) {
+        for (MenuItem menu : this.menus) {
             result.append(menu.lines().prefix("        ").content());    
         }
         
@@ -42,5 +47,12 @@ public class DropdownMenu implements Menu {
                 .appendLine("    </ul>")
                 .appendLine("</li>");
         return result;
+    }
+
+    static private class Divider implements MenuItem {
+        @Override
+        public Lines lines() {
+            return new Lines().appendLine("<li class=\"divider\"></li>");
+        }
     }
 }

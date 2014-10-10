@@ -1,6 +1,6 @@
 package org.codingmatters.code.graph.ui.content.elements.menu;
 
-import org.codingmatters.code.graph.ui.content.support.Lines;
+import org.codingmatters.code.graph.ui.content.elements.UIElement;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,6 +9,5 @@ import org.codingmatters.code.graph.ui.content.support.Lines;
  * Time: 06:50
  * To change this template use File | Settings | File Templates.
  */
-public interface Menu {
-    Lines lines();
+public interface Menu extends UIElement {
 }

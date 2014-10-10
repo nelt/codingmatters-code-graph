@@ -3,6 +3,7 @@ package org.codingmatters.code.graph.ui.content;
 import org.codingmatters.code.graph.ui.content.mocked.TestProjectService;
 import org.codingmatters.code.graph.ui.service.api.project.Project;
 import org.codingmatters.code.graph.ui.service.api.project.ProjectService;
+import org.codingmatters.code.graph.ui.service.api.project.Version;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,10 +24,18 @@ public class NavigationsTest {
 
     @Before
     public void setUp() throws Exception {
+        Project project1 = new Project("project 1/", "Project 1");
         this.projectService = new TestProjectService().withProjects(
-                new Project("project 1/", "Project 1"),
+                project1,
                 new Project("project 2/", "Project 2"),
                 new Project("project 3/", "Project 3")
+        ).withProjectVersion(
+                project1,
+                new Version(project1, "18", true),
+                new Version(project1, "17"),
+                new Version(project1, "16"),
+                new Version(project1, "15"),
+                new Version(project1, "14")
         );
     }
 
@@ -37,8 +46,14 @@ public class NavigationsTest {
     }
 
     @Test
-    public void testProjectIndex() throws Exception {
-        assertThat(Navigations.projectIndex(new Project("project 1/", "Project 1"), this.projectService).content())
+    public void testProject() throws Exception {
+        assertThat(Navigations.project(new Project("project 1/", "Project 1"), this.projectService).content())
                 .isEqualTo(read("project 1/index.html").htmlFragmenter("navigation bar").next());
+    }
+
+    @Test
+    public void testVersion() throws Exception {
+        assertThat(Navigations.version(new Version(new Project("project 1/", "Project 1"), "18", true), this.projectService).content())
+                .isEqualTo(read("project 1/18/index.html").htmlFragmenter("navigation bar").next());
     }
 }

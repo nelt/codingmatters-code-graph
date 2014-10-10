@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface ProjectService {
     List<Project> listProject();
+    List<Version> listProjectVersions(Project project);
 }

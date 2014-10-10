@@ -10,12 +10,12 @@ import org.codingmatters.code.graph.ui.content.support.Lines;
  * Time: 06:58
  * To change this template use File | Settings | File Templates.
  */
-public class Navigation {
+public class Navigation implements UIElement {
     
     private Menubar menubar = Menubar.NONE;
 
     public Navigation withMenuBar(Menubar menubar) {
-        this.menubar = menubar;
+        this.menubar = menubar != null ? menubar : Menubar.NONE;
         return this;
     }
     
@@ -35,6 +35,7 @@ public class Navigation {
     }
 
 
+
     private void appendHeader(Lines result) {
         result
                 .appendLine("        <div class=\"navbar-header\">")
@@ -52,5 +53,6 @@ public class Navigation {
     private void appendMenuBar(Lines result) {
         result.append(this.menubar.lines().prefix("        ").content());
     }
-    
+
+
 }

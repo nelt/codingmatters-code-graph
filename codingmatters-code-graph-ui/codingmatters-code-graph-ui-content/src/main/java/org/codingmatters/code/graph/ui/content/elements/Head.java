@@ -5,7 +5,7 @@ import org.codingmatters.code.graph.ui.content.support.Lines;
 /**
  * Created by nel on 10/10/14.
  */
-public class Head {
+public class Head implements UIElement {
     
     private final String title;
     private final String baseHref;
