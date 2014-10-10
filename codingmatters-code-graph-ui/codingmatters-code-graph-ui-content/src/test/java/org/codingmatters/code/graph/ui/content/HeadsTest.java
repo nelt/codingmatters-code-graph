@@ -18,5 +18,11 @@ public class HeadsTest {
         assertThat(Heads.head("Project 1", "http://localhost/codingmatters-mockup/code-graph/").content())
                 .isEqualTo(read("project 1/index.html").htmlFragmenter("head").next());
     }
+
+    @Test
+    public void testVersion() throws Exception {
+        assertThat(Heads.head("Project 1 / Version 18", "http://localhost/codingmatters-mockup/code-graph/").content())
+                .isEqualTo(read("project 1/18/index.html").htmlFragmenter("head").next());
+    }
     
 }
