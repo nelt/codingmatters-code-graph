@@ -1,12 +1,30 @@
 package org.codingmatters.code.graph.ui.content;
 
 import org.codingmatters.code.graph.ui.content.support.Lines;
+import org.codingmatters.code.graph.ui.service.api.project.*;
 
 /**
  * Created by nel on 10/10/14.
  */
 public class Heads {
-    public static Lines head(String title, String baseHref) {
+    
+    public static Lines head(String baseHref) {
+        return head((String)null, baseHref);
+    }
+    
+    static public Lines head(Project project, String baseHref) {
+        return head(project.label(), baseHref);
+    }
+    
+    static public Lines head(Version version, String baseHref) {
+        return head(version.project().label() + " / Version " + version.name(), baseHref);
+    }
+    
+    static public Lines head(Pack pack, String baseHref) {
+        return head(pack.version().project().label() + " / Version " + pack.version().name() + " / " + pack.name(), baseHref);
+    }
+    
+    static public Lines head(String title, String baseHref) {
         if(title != null) {
             title = "CodeGraph: " + title;
         } else {
@@ -17,9 +35,9 @@ public class Heads {
                         "    <meta charset=\"utf-8\">\n" +
                         "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
                         "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-                        "\n" +
+                        "    \n" +
                         "    <base href=\"" + baseHref + "\" target=\"_self\">\n" +
-                        "\n" +
+                        "    \n" +
                         "    <title>" + title + "</title>\n" +
                         "    \n" +
                         "    <!-- Latest compiled and minified CSS -->\n" +
@@ -37,7 +55,4 @@ public class Heads {
                         "</head>");
     }
 
-    public static Lines head(String baseHref) {
-        return head(null, baseHref);
-    }
 }
