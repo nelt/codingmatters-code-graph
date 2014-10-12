@@ -24,6 +24,8 @@ public class Projects {
                 .appendLine("    <p>" + project.description() + "</p>")
                 .append("</div>");
     }
+    
+    
 
     public static Lines digestList(ProjectService projectService) {
         Lines result = new Lines();
@@ -45,5 +47,22 @@ public class Projects {
             }
         }
         return result;
+    }
+
+    public static Lines header(Project project) {
+        return new Lines()
+                .appendLine("<div class=\"row page-heading\">")
+                .appendLine("    <div class=\"col-lg-3\">")
+                .appendLine("        <a class=\"pull-left\" href=\"" + project.path() + "\">")
+                .appendLine("            <img class=\"media-object img-circle\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==\" style=\"width: 100px; height: 100px;\" alt=\"Project Icon\">")
+                .appendLine("        </a>")
+                .appendLine("        <h1>" + project.label() + "</h1>")
+                .appendLine("    </div>")
+                .appendLine("    <div class=\"col-lg-4\">")
+                .appendLine("        <p>" + project.description() + "</p>")
+                .appendLine("    </div>")
+                .appendLine("    <div class=\"col-lg-5\">")
+                .appendLine("    </div>")
+                .append("</div>");
     }
 }

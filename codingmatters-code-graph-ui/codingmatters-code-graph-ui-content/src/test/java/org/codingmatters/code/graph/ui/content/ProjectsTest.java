@@ -35,4 +35,13 @@ public class ProjectsTest {
         assertThat(Projects.digestList(new TestProjectService().withProjects(projects)).prefix("        ").content())
                 .isEqualTo(read("index.html").htmlFragmenter("project digest list").next());
     }
+
+    @Test
+    public void testProjectAsHeader() throws Exception {
+        Project project = new Project("project 1/", "Project 1")
+                .withDescription("Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit.");
+        
+        assertThat(Projects.header(project).prefix("    ").content())
+                .isEqualTo(read("project 1/index.html").htmlFragmenter("header").next());
+    }
 }
