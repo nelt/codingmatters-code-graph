@@ -1,5 +1,8 @@
 package org.codingmatters.code.graph.ui.service.api.project;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by nel on 10/10/14.
  */
@@ -8,6 +11,9 @@ public class Version {
     private final boolean latest;
     private final String name;
 
+    private String description = "";
+    private Date date;
+    
     public Version(Project project, String name) {
         this(project, name, false);
     }
@@ -16,6 +22,16 @@ public class Version {
         this.project = project;
         this.name = name;
         this.latest = latest;
+    }
+
+    public Version withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Version withDate(Date date) {
+        this.date = date;
+        return this;
     }
 
     public Project project() {
@@ -30,6 +46,15 @@ public class Version {
         return latest;
     }
 
+
+    public String description() {
+        return this.description;
+    }
+
+    public Date date() {
+        return this.date;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,4 +74,5 @@ public class Version {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
+
 }

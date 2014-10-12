@@ -55,24 +55,16 @@ public class Navigations {
     }
 
     private static Menu versionMenu(Version current, ProjectService projectService) {
-        DropdownMenu menu = new DropdownMenu(versionLabel(current));
+        DropdownMenu menu = new DropdownMenu(Versions.versionLabel(current));
         for (Version version : projectService.listProjectVersions(current.project())) {
-            menu.withMenu(new LinkMenu(versionPath(version), versionLabel(version)));
+            menu.withMenu(new LinkMenu(Versions.versionPath(version), Versions.versionLabel(version)));
         }
         menu.withDivider();
         menu.withMenu(new LinkMenu(current.project().path(), "All versions"));
         return menu;
     }
 
-    private static String versionPath(Version version) {
-        return version.project().path() + version.name() + "/";
-    }
-
-    private static String versionLabel(Version current) {
-        return "Version " + current.name() + (current.latest() ? " (latest)" : "");
-    }
-    
     private static SearchBox versionSearchBox(Version version) {
-        return new SearchBox(versionPath(version) + "search", "criteria", "Search...");
+        return new SearchBox(Versions.versionPath(version) + "search", "criteria", "Search...");
     }
 }
