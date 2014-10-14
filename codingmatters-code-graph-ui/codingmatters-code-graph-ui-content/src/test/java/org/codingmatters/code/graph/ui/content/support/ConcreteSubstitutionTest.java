@@ -2,6 +2,8 @@ package org.codingmatters.code.graph.ui.content.support;
 
 import org.junit.Test;
 
+import java.util.Calendar;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class ConcreteSubstitutionTest {
@@ -16,10 +18,12 @@ public class ConcreteSubstitutionTest {
 
     @Test
     public void testOneWithConversion() throws Exception {
+        Calendar cal = Calendar.getInstance();
+        
         assertThat(new ConcreteSubstitution()
-                        .replace("hello").with("bonjour")
-                        .in("%hello$s%")
-        ).isEqualTo("bonjour");
+                        .replace("hello").with(cal)
+                        .in("%hello$tY%")
+        ).isEqualTo("" + cal.get(Calendar.YEAR));
     }
     
     @Test

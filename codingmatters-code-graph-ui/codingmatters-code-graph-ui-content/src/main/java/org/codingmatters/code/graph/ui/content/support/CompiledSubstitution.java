@@ -28,7 +28,7 @@ public class CompiledSubstitution {
      
      * @param format
      */
-    static private Pattern FORMAT_PATTERN = Pattern.compile("%((\\w+)|(\\w+)\\$[A-Za-z0-9.]+)%");
+    static private Pattern FORMAT_PATTERN = Pattern.compile("%((\\w+)|(\\w+)(\\$[A-Za-z0-9.]+))%");
 
     private void compile(String format) {    
         Matcher m = FORMAT_PATTERN.matcher(format);
@@ -38,7 +38,11 @@ public class CompiledSubstitution {
             if(! this.indices.containsKey(name)) {
                 this.indices.put(name, this.indices.size() + 1);
             }
-            this.replacements.add(new ToReplace("%" + this.indices.get(name) + "$s", m.start(), m.end()));
+            if(m.group(2) != null) {
+                this.replacements.add(new ToReplace("%" + this.indices.get(name) + "$s", m.start(), m.end()));
+            } else {
+                this.replacements.add(new ToReplace("%" + this.indices.get(name) + m.group(4), m.start(), m.end()));
+            }
         }
 
         Collections.reverse(this.replacements);
