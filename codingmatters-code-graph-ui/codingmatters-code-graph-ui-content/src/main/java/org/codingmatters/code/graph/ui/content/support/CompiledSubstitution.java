@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 * Created by nel on 14/10/14.
 */
 public class CompiledSubstitution {
+
     private final HashMap<String, Integer> indices = new HashMap<>();
     private final LinkedList<ToReplace> replacements = new LinkedList<ToReplace>();
     
@@ -24,28 +25,16 @@ public class CompiledSubstitution {
     /**
      *
      %[argument_index$][flags][width][.precision]conversion
-
-     The optional argument_index is a decimal integer indicating the position of the argument in the argument list. 
-     The first argument is referenced by "1$", the second by "2$", etc.
-
-     The optional flags is a set of characters that modify the output format. The set of valid flags depends on the conversion.
-
-     The optional width is a non-negative decimal integer indicating the minimum number of characters to be written to the output.
-
-     The optional precision is a non-negative decimal integer usually used to restrict the number of characters. 
-     The specific behavior depends on the conversion.
-
-     The required conversion is a character indicating how the argument should be formatted. 
-     The set of valid conversions for a given argument depends on the argument's data type.
      
      * @param format
      */
-    private void compile(String format) {
-        Pattern p = Pattern.compile("(%(\\w+)%)|(%(\\w+)\\$\\w+%)");
-        Matcher m = p.matcher(format);
+    static private Pattern FORMAT_PATTERN = Pattern.compile("%((\\w+)|(\\w+)\\$[A-Za-z0-9.]+)%");
+
+    private void compile(String format) {    
+        Matcher m = FORMAT_PATTERN.matcher(format);
 
         while(m.find()) {
-            String name = m.group(2);
+            String name = m.group(2) != null ? m.group(2) : m.group(3);
             if(! this.indices.containsKey(name)) {
                 this.indices.put(name, this.indices.size() + 1);
             }
@@ -57,7 +46,6 @@ public class CompiledSubstitution {
         for (ToReplace replacement : this.replacements) {
             this.compiled = replacement.replaceIn(this.compiled);
         }
-        System.out.println(this.compiled);
     }
     
     public String format() {

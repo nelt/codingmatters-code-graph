@@ -13,6 +13,14 @@ public class ConcreteSubstitutionTest {
                         .in("%hello%")
         ).isEqualTo("bonjour");
     }
+
+    @Test
+    public void testOneWithConversion() throws Exception {
+        assertThat(new ConcreteSubstitution()
+                        .replace("hello").with("bonjour")
+                        .in("%hello$s%")
+        ).isEqualTo("bonjour");
+    }
     
     @Test
     public void testOneCharBefore() throws Exception {
