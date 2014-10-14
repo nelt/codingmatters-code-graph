@@ -1,7 +1,5 @@
 package org.codingmatters.code.graph.ui.content.support;
 
-import org.fest.assertions.api.Assertions;
-import org.fest.assertions.api.StringAssert;
 import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;

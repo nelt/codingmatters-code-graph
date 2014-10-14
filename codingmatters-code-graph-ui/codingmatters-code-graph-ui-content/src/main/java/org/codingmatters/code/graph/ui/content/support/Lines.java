@@ -3,6 +3,7 @@ package org.codingmatters.code.graph.ui.content.support;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,5 +51,10 @@ public class Lines {
             }
         }
         return lineMarkers;
+    }
+
+    public Lines format(Substitutions.Substitution substitution) {
+        this.content = new StringBuilder(substitution.in(this.content.toString()));
+        return this;
     }
 }
