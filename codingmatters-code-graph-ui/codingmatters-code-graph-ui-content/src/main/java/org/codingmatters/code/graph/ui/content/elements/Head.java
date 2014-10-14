@@ -2,6 +2,8 @@ package org.codingmatters.code.graph.ui.content.elements;
 
 import org.codingmatters.code.graph.ui.content.support.Lines;
 
+import static org.codingmatters.code.graph.ui.content.support.Substitutions.replace;
+
 /**
  * Created by nel on 10/10/14.
  */
@@ -26,9 +28,9 @@ public class Head implements UIElement {
                         "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
                         "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
                         "    \n" +
-                        "    <base href=\"" + this.baseHref + "\" target=\"_self\">\n" +
+                        "    <base href=\"%baseHref%\" target=\"_self\">\n" +
                         "    \n" +
-                        "    <title>" + this.title + "</title>\n" +
+                        "    <title>%title%</title>\n" +
                         "    \n" +
                         "    <!-- Latest compiled and minified CSS -->\n" +
                         "    <link rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css\">\n" +
@@ -42,6 +44,10 @@ public class Head implements UIElement {
                         "    <script src=\"https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js\"></script>\n" +
                         "    <script src=\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"></script>\n" +
                         "    <![endif]-->\n" +
-                        "</head>");
+                        "</head>")
+                .format(
+                        replace("baseHref").with(this.baseHref)
+                        .replace("title").with(this.title)
+                );
     }
 }
