@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Predicates.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-api</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.api</a> &gt; <span class="el_source">Predicates.java</span></div><h1>Predicates.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.api;
+
+import org.codingmatters.code.graph.api.predicates.*;
+import org.codingmatters.code.graph.api.references.FieldRef;
+import org.codingmatters.code.graph.api.references.ClassRef;
+import org.codingmatters.code.graph.api.references.MethodRef;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: nel
+ * Date: 21/06/14
+ * Time: 14:04
+ * To change this template use File | Settings | File Templates.
+ */
+<span class="nc" id="L15">public class Predicates {</span>
+    static public HasFieldPredicate hasField(ClassRef cls, FieldRef field) {
+<span class="fc" id="L17">        return new HasFieldPredicate(cls, field);</span>
+    }
+    static public HasMethodPredicate hasMethod(ClassRef cls, MethodRef method) {
+<span class="fc" id="L20">        return new HasMethodPredicate(cls, method);</span>
+    }
+    static public HasInnerClassPredicate hasInner(ClassRef cls, ClassRef inner) {
+<span class="fc" id="L23">        return new HasInnerClassPredicate(cls, inner);</span>
+    }
+    static public ExtendsPredicate extendsClass(ClassRef cls, ClassRef superClass) {
+<span class="fc" id="L26">        return new ExtendsPredicate(cls, superClass);</span>
+    }
+    static public UsesPredicate uses(MethodRef user, MethodRef used) {
+<span class="fc" id="L29">        return new UsesPredicate(user, used);</span>
+    }
+    static public UsesPredicate uses(MethodRef user, FieldRef used) {
+<span class="fc" id="L32">        return new UsesPredicate(user, used);</span>
+    }
+    static public ImplementsPredicate implementsInterface(ClassRef implementer, ClassRef implemented) {
+<span class="fc" id="L35">        return new ImplementsPredicate(implementer, implemented);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
