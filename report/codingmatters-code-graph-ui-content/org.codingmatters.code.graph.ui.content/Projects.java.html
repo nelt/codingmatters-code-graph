@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Projects.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-ui-content</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.ui.content</a> &gt; <span class="el_source">Projects.java</span></div><h1>Projects.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.ui.content;
+
+import org.codingmatters.code.graph.ui.content.support.Lines;
+import org.codingmatters.code.graph.ui.service.api.project.Project;
+import org.codingmatters.code.graph.ui.service.api.project.ProjectService;
+
+import java.util.List;
+
+
+/**
+ * Created by nel on 08/10/14.
+ */
+<span class="nc" id="L13">public class Projects {</span>
+
+    public static final int DIGEST_LIST_WIDTH = 3;
+
+    static public Lines digest(Project project) {
+<span class="fc" id="L18">        return new Lines()</span>
+                .appendLine(&quot;&lt;a class=\&quot;pull-left\&quot; href=\&quot;&quot; + project.path() + &quot;\&quot;&gt;&quot;)
+                .appendLine(&quot;    &lt;img class=\&quot;media-object img-circle\&quot; src=\&quot;data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==\&quot; style=\&quot;width: 100px; height: 100px;\&quot; alt=\&quot;Project Icon\&quot;&gt;&quot;)
+                .appendLine(&quot;&lt;/a&gt;&quot;)
+                .appendLine(&quot;&lt;div class=\&quot;media-object\&quot;&gt;&quot;)
+                .appendLine(&quot;    &lt;h4&gt;&lt;a href=\&quot;&quot; + project.path() + &quot;\&quot;&gt;&quot; + project.label() + &quot;&lt;/a&gt;&lt;/h4&gt;&quot;)
+                .appendLine(&quot;    &lt;p&gt;&quot; + project.description() + &quot;&lt;/p&gt;&quot;)
+                .append(&quot;&lt;/div&gt;&quot;);
+    }
+    
+    
+
+    public static Lines digestList(ProjectService projectService) {
+<span class="fc" id="L31">        Lines result = new Lines();</span>
+
+<span class="fc" id="L33">        List&lt;Project&gt; projects = projectService.listProject();</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for(int line = 0 ; line &lt;= projects.size() / DIGEST_LIST_WIDTH; line++) {</span>
+<span class="fc" id="L35">            result.appendLine(&quot;&lt;div class=\&quot;row\&quot;&gt;&quot;);</span>
+<span class="fc bfc" id="L36" title="All 4 branches covered.">            for(int i = line * DIGEST_LIST_WIDTH; i &lt; (line + 1) * DIGEST_LIST_WIDTH &amp;&amp; i &lt; projects.size() ; i++) {</span>
+<span class="fc" id="L37">                result</span>
+                        .appendLine(&quot;    &lt;div class=\&quot;col-lg-4 media\&quot;&gt;&quot;)
+                        .appendLine(digest(projects.get(i)).prefix(&quot;        &quot;).content())
+                        .appendLine(&quot;    &lt;/div&gt;&quot;)
+                ;
+            }
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if(line &lt; projects.size() / DIGEST_LIST_WIDTH) {</span>
+<span class="fc" id="L44">                result.appendLine(&quot;&lt;/div&gt;&quot;);</span>
+            } else {
+<span class="fc" id="L46">                result.append(&quot;&lt;/div&gt;&quot;);</span>
+            }
+        }
+<span class="fc" id="L49">        return result;</span>
+    }
+
+    public static Lines header(Project project) {
+<span class="fc" id="L53">        return new Lines()</span>
+                .appendLine(&quot;&lt;div class=\&quot;row page-heading\&quot;&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-3\&quot;&gt;&quot;)
+                .appendLine(&quot;        &lt;a class=\&quot;pull-left\&quot; href=\&quot;&quot; + project.path() + &quot;\&quot;&gt;&quot;)
+                .appendLine(&quot;            &lt;img class=\&quot;media-object img-circle\&quot; src=\&quot;data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==\&quot; style=\&quot;width: 100px; height: 100px;\&quot; alt=\&quot;Project Icon\&quot;&gt;&quot;)
+                .appendLine(&quot;        &lt;/a&gt;&quot;)
+                .appendLine(&quot;        &lt;h1&gt;&quot; + project.label() + &quot;&lt;/h1&gt;&quot;)
+                .appendLine(&quot;    &lt;/div&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-4\&quot;&gt;&quot;)
+                .appendLine(&quot;        &lt;p&gt;&quot; + project.description() + &quot;&lt;/p&gt;&quot;)
+                .appendLine(&quot;    &lt;/div&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-5\&quot;&gt;&quot;)
+                .appendLine(&quot;    &lt;/div&gt;&quot;)
+                .append(&quot;&lt;/div&gt;&quot;);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

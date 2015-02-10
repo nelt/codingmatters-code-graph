@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>MethodParserVisitor.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-bytecode-parser</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.bytecode.parser.asm</a> &gt; <span class="el_source">MethodParserVisitor.java</span></div><h1>MethodParserVisitor.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.bytecode.parser.asm;
+
+import org.codingmatters.code.graph.api.predicates.UsesPredicate;
+import org.codingmatters.code.graph.api.producer.PredicateProducer;
+import org.codingmatters.code.graph.api.producer.exception.ProducerException;
+import org.codingmatters.code.graph.api.references.FieldRef;
+import org.codingmatters.code.graph.api.references.MethodRef;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: nel
+ * Date: 23/06/14
+ * Time: 10:12
+ * To change this template use File | Settings | File Templates.
+ */
+public class MethodParserVisitor extends MethodVisitor {
+
+    private final MethodRef methodRef;
+    private final PredicateProducer predicateProducer;
+    private final ClassParserVisitor.ParsingErrorReporter errorReporter;
+    private final String source;
+    private int currentLine;
+
+    public MethodParserVisitor(MethodRef methodRef, PredicateProducer predicateProducer, ClassParserVisitor.ParsingErrorReporter errorReporter, String source) {
+<span class="fc" id="L28">        super(Opcodes.ASM5);</span>
+<span class="fc" id="L29">        this.methodRef = methodRef;</span>
+<span class="fc" id="L30">        this.predicateProducer = predicateProducer;</span>
+<span class="fc" id="L31">        this.errorReporter = errorReporter;</span>
+<span class="fc" id="L32">        this.source = source;</span>
+<span class="fc" id="L33">    }</span>
+
+
+    @Override
+    public void visitLineNumber(int line, Label start) {
+<span class="fc" id="L38">        this.currentLine = line;</span>
+<span class="fc" id="L39">        super.visitLineNumber(line, start);</span>
+<span class="fc" id="L40">    }</span>
+    
+    @Override
+    public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if(Opcodes.GETFIELD == opcode) {</span>
+            try {
+<span class="fc" id="L46">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));</span>
+<span class="nc" id="L47">            } catch (ProducerException e) {</span>
+<span class="nc" id="L48">                this.errorReporter.report(e);</span>
+<span class="pc" id="L49">            }</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        } else if(Opcodes.PUTFIELD == opcode) {</span>
+            try {
+<span class="fc" id="L52">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));</span>
+<span class="nc" id="L53">            } catch (ProducerException e) {</span>
+<span class="nc" id="L54">                this.errorReporter.report(e);</span>
+<span class="fc" id="L55">            }</span>
+        }
+<span class="fc" id="L57">        super.visitFieldInsn(opcode, owner, name, desc);</span>
+<span class="fc" id="L58">    }</span>
+
+    private String fieldName(String owner, String name) {
+<span class="fc" id="L61">        return NameUtil.fieldName(owner, name);</span>
+    }
+    
+    
+
+    @Override
+    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+        try {
+<span class="fc" id="L69">            this.predicateProducer.usage(</span>
+                    new UsesPredicate(
+                            this.methodRef, 
+                            new MethodRef(this.source, NameUtil.methodName(owner, name, desc))
+                    )
+            );
+<span class="nc" id="L75">        } catch (ProducerException e) {</span>
+<span class="nc" id="L76">            this.errorReporter.report(e);</span>
+<span class="fc" id="L77">        }</span>
+<span class="fc" id="L78">        super.visitMethodInsn(opcode, owner, name, desc, itf);</span>
+<span class="fc" id="L79">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

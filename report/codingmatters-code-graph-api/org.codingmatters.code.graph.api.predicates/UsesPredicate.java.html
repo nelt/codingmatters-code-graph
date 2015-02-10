@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>UsesPredicate.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-api</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.api.predicates</a> &gt; <span class="el_source">UsesPredicate.java</span></div><h1>UsesPredicate.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.api.predicates;
+
+import org.codingmatters.code.graph.api.references.MethodRef;
+import org.codingmatters.code.graph.api.references.UsableRef;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: nel
+ * Date: 21/06/14
+ * Time: 14:28
+ * To change this template use File | Settings | File Templates.
+ */
+public class UsesPredicate {
+    private final MethodRef user;
+    private final UsableRef used;
+
+<span class="fc" id="L17">    public UsesPredicate(MethodRef user, UsableRef used) {</span>
+<span class="fc" id="L18">        this.user = user;</span>
+<span class="fc" id="L19">        this.used = used;</span>
+<span class="fc" id="L20">    }</span>
+
+    public UsableRef getUsed() {
+<span class="fc" id="L23">        return used;</span>
+    }
+
+    public MethodRef getUser() {
+<span class="fc" id="L27">        return user;</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L33" title="1 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+
+<span class="fc" id="L35">        UsesPredicate that = (UsesPredicate) o;</span>
+
+<span class="pc bpc" id="L37" title="3 of 6 branches missed.">        if (used != null ? !used.equals(that.used) : that.used != null) return false;</span>
+<span class="pc bpc" id="L38" title="4 of 6 branches missed.">        if (user != null ? !user.equals(that.user) : that.user != null) return false;</span>
+
+<span class="fc" id="L40">        return true;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        int result = user != null ? user.hashCode() : 0;</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        result = 31 * result + (used != null ? used.hashCode() : 0);</span>
+<span class="fc" id="L47">        return result;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L52">        return &quot;UsesPredicate{&quot; +</span>
+                &quot;user=&quot; + user +
+                &quot;, used=&quot; + used +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
