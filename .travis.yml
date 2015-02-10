@@ -6,6 +6,7 @@ env:
 
 script: mvn test -Pjacoco-coverage
 
-after_success: 
-  - ./register-git-oauth.sh
+after_success:
+  - chmod 600 .travis/deploy_key.pem
+  - ssh-add .travis/deploy_key.pem
   - ./update-site.sh
