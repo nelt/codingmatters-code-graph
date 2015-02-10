@@ -7,5 +7,5 @@ env:
 script: mvn test -Pjacoco-coverage
 
 after_success: 
-  ./register-git-oauth.sh
-  ./update-site.sh
+  - ./register-git-oauth.sh
+  - ./update-site.sh
