@@ -1,5 +1,11 @@
 language: java
 
+env:
+  global:
+  - secure: HiEIPWtWCmUl9+bJFcQlMX5ZGs1BWOXPRSu1X8vIN+DOVu+e9akGPp0f2XgZXCrDrGCtkHEIFJHD1VfjuxYPtB8tZX94Z6Q74A/+d0X0u+CUteC9WZK6GAtcfo7Aun7MzcwxEBMtw79xH+HAHM+leLlsweVxRIpGzqoAoRQEniw=
+
 script: mvn test -Pjacoco-coverage
 
-after_success: ./update-site.sh
+after_success: 
+  ./register-git-oauth.sh
+  ./update-site.sh

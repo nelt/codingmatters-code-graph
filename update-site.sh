@@ -17,8 +17,9 @@ HERE=$(pwd)
 cd target/gh-pages
 
 git add jacoco-coverage/$VERSION 
-#git commit -a -m "update site with jacoco coverage for version $VERSION"
-#git push
+git commit -a -m "update site with jacoco coverage for version $VERSION"
+
+git push
 
 cd $HERE
 echo "done."
