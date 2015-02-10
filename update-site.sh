@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-VERSION=121 #$(mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o | grep -Ev '(^\[|Download\w+:)')
+VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o | grep -Ev '(^\[|Download\w+:)'`
 
 echo "updating site for version $VERSION"
 
