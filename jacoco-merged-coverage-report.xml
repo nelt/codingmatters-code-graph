@@ -1,0 +1,87 @@
+<project name="codingmatters-code-graph" xmlns:jacoco="antlib:org.jacoco.ant">
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml"/>
+
+    <jacoco:merge destfile="target/ut-merged-coverage.exec">
+        <fileset dir="." includes="**/target/jacoco.exec"/>
+    </jacoco:merge>
+
+    <jacoco:report>
+        <executiondata>
+            <file file="target/ut-merged-coverage.exec"/>
+        </executiondata>
+
+        <structure name="Codingmatters' CodeGraph Coverage">
+            <group name="codingmatters-code-graph-api">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-api/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-api/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            <group name="codingmatters-code-graph-bytecode-parser">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-bytecode-parser/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-bytecode-parser/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            <group name="codingmatters-code-graph-cross-cutting">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-cross-cutting/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-cross-cutting/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            
+            <group name="codingmatters-code-graph-java-parser">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-java-source/codingmatters-code-graph-java-parser/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-java-source/codingmatters-code-graph-java-parser/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            
+            <group name="codingmatters-code-graph-main">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-main/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-main/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            <group name="codingmatters-code-graph-neo4j-storage">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-neo4j-storage/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-neo4j-storage/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            
+            <group name="codingmatters-code-graph-ui-content">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-ui/codingmatters-code-graph-ui-content/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-ui/codingmatters-code-graph-ui-content/src/main/java/"/>
+                </sourcefiles>
+            </group>
+            <group name="codingmatters-code-graph-ui-service-api">
+                <classfiles>
+                    <fileset dir="./codingmatters-code-graph-ui/codingmatters-code-graph-ui-service-api/target/classes/"/>
+                </classfiles>
+                <sourcefiles>
+                    <fileset dir="./codingmatters-code-graph-ui/codingmatters-code-graph-ui-service-api/src/main/java/"/>
+                </sourcefiles>
+            </group>
+        </structure>
+
+        <html destdir="target/report"/>
+        
+    </jacoco:report>
+
+</project>
