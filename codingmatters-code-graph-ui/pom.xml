@@ -14,6 +14,8 @@
     <artifactId>codingmatters-code-graph-ui</artifactId>
     <packaging>pom</packaging>
     
+    <name>${project.groupId}:${project.artifactId}</name>
+    
     <modules>
         <module>codingmatters-code-graph-ui-mock</module>
         <module>codingmatters-code-graph-ui-content</module>

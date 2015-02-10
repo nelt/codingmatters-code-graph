@@ -11,5 +11,7 @@
     </parent>
 
     <artifactId>codingmatters-code-graph-cross-cutting</artifactId>
-    
+
+    <name>${project.groupId}:${project.artifactId}</name>
+
 </project>

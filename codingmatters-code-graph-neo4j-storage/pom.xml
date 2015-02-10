@@ -11,7 +11,9 @@
     </parent>
 
     <artifactId>codingmatters-code-graph-neo4j-storage</artifactId>
-    
+
+    <name>${project.groupId}:${project.artifactId}</name>
+
     <dependencies>
         <dependency>
             <groupId>org.codingmatters.code.graph</groupId>

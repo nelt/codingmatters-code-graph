@@ -12,5 +12,6 @@
 
     <artifactId>codingmatters-code-graph-test-support</artifactId>
 
-    
+    <name>${project.groupId}:${project.artifactId}</name>
+
 </project>

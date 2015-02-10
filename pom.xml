@@ -10,6 +10,31 @@
     
     <packaging>pom</packaging>
     
+    <name>Codingmatters' CodeGraph</name>
+    <description>Aims at building a navigable graph reprensentation of code bases.</description>
+    
+    <url>http://nelt.github.io/codingmatters-code-graph/</url>
+
+    <licenses>
+        <license>
+            <name>GPLv3 License</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Nel Taurisson</name>
+            <email>nel.taurisson@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:nelt/codingmatters-code-graph</connection>
+        <developerConnection>scm:git:git@github.com:nelt/codingmatters-code-graph.git</developerConnection>
+        <url>git@github.com:nelt/codingmatters-code-graph.git</url>
+    </scm>
+    
     <modules>
         <module>codingmatters-code-graph-api</module>
         <module>codingmatters-code-graph-bytecode-parser</module>
