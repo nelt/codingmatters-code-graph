@@ -4,11 +4,8 @@ set -ev
 git config --global user.email "nel.taurisson@gmail.com"
 git config --global user.name "nelt"
 
-
-VERSION=123
-
 mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o
-mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o | grep -Ev '(^\[|Download\w+:)' > ./version.txt
+VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o | grep -Ev '(^\[|Download\w+:)')
 
 
 echo "updating site for version $VERSION"
