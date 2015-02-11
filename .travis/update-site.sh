@@ -15,11 +15,14 @@ ant -f jacoco-merged-coverage-report.xml -lib jacoco/lib
 mkdir -p target/gh-pages/jacoco-coverage
 cp -r target/report target/gh-pages/jacoco-coverage/$VERSION
 
-HERE=$(pwd) 
+HERE=` pwd`  
 cd target/gh-pages
 
 git add jacoco-coverage/$VERSION 
 git commit -a -m "update site with jacoco coverage for version $VERSION"
+
+git config --global user.email "nel.taurisson@gmail.com"
+git config --global user.name "nelt"
 
 git push
 
