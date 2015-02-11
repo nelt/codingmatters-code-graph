@@ -21,6 +21,8 @@ cp -r target/report target/gh-pages/jacoco-coverage/$VERSION
 
 HERE=` pwd`  
 cd target/gh-pages
+git remote rm origin
+git remote add origin https://${GH_TOKEN}@github.com/nelt/codingmatters-code-graph.git
 
 git add jacoco-coverage/$VERSION 
 git commit -a -m "update site with jacoco coverage for version $VERSION"
