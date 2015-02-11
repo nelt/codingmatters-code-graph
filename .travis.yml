@@ -7,6 +7,6 @@ env:
   - secure: Y0MK4j1EqfguVOPkZz5onU3mnamJvVoH0IfbMJ1yK+MCPGhb5bt4NElfZiTm1/wDK1Nk9Z1FNUArl+s22lj6vX/URps6OWubAReBzMv3hhGV47fF3lQezSgIx7E/nVSuHskqqawRK9rpbtP5pFH0sVjWVp6UoV8KgqLALwkWsbU=
 before_install:
 script:
-- mvn deploy -Pjacoco-coverage --settings target/travis/settings.xml
+- mvn deploy -Pjacoco-coverage --settings .travis/settings.xml
 after_success:
 - ".travis/update-site.sh"
