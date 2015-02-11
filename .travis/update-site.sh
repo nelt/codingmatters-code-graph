@@ -2,7 +2,7 @@
 set -ev
 
 git config --global user.email "nel.taurisson@gmail.com"
-git config --gloabl user.name "nelt"
+git config --global user.name "nelt"
 
 
 VERSION=123
