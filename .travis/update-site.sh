@@ -4,7 +4,7 @@ set -ev
 git config --global user.email "nel.taurisson@gmail.com"
 git config --global user.name "nelt"
 
-mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o
+mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version
 VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version | grep -Ev '(^\[|Download\w+:)')
 
 
