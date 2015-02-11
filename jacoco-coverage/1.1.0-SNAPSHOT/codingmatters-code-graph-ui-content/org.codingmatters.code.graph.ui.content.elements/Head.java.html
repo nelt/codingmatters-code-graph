@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Head.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-ui-content</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.ui.content.elements</a> &gt; <span class="el_source">Head.java</span></div><h1>Head.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.ui.content.elements;
+
+import org.codingmatters.code.graph.ui.content.support.Lines;
+
+import static org.codingmatters.code.graph.ui.content.support.Substitutions.replace;
+
+/**
+ * Created by nel on 10/10/14.
+ */
+public class Head implements UIElement {
+    
+    private final String title;
+    private final String baseHref;
+
+<span class="fc" id="L15">    public Head(String title, String baseHref) {</span>
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        if(title != null) {</span>
+<span class="fc" id="L17">            this.title = &quot;CodeGraph: &quot; + title;</span>
+        } else {
+<span class="fc" id="L19">            this.title = &quot;CodeGraph&quot;;</span>
+        }
+<span class="fc" id="L21">        this.baseHref = baseHref;</span>
+<span class="fc" id="L22">    }</span>
+
+    public Lines lines() {
+<span class="fc" id="L25">        return new Lines()</span>
+                .append(&quot;&lt;head&gt;\n&quot; +
+                        &quot;    &lt;meta charset=\&quot;utf-8\&quot;&gt;\n&quot; +
+                        &quot;    &lt;meta http-equiv=\&quot;X-UA-Compatible\&quot; content=\&quot;IE=edge\&quot;&gt;\n&quot; +
+                        &quot;    &lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width, initial-scale=1\&quot;&gt;\n&quot; +
+                        &quot;    \n&quot; +
+                        &quot;    &lt;base href=\&quot;%baseHref%\&quot; target=\&quot;_self\&quot;&gt;\n&quot; +
+                        &quot;    \n&quot; +
+                        &quot;    &lt;title&gt;%title%&lt;/title&gt;\n&quot; +
+                        &quot;    \n&quot; +
+                        &quot;    &lt;!-- Latest compiled and minified CSS --&gt;\n&quot; +
+                        &quot;    &lt;link rel=\&quot;stylesheet\&quot; href=\&quot;http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css\&quot;&gt;\n&quot; +
+                        &quot;    &lt;link rel=\&quot;stylesheet\&quot; href=\&quot;http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css\&quot;&gt;\n&quot; +
+                        &quot;    \n&quot; +
+                        &quot;    &lt;link rel=\&quot;stylesheet\&quot; href=\&quot;style/code-graph.css\&quot;&gt;\n&quot; +
+                        &quot;    \n&quot; +
+                        &quot;    &lt;!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries --&gt;\n&quot; +
+                        &quot;    &lt;!-- WARNING: Respond.js doesn't work if you view the page via file:// --&gt;\n&quot; +
+                        &quot;    &lt;!--[if lt IE 9]&gt;\n&quot; +
+                        &quot;    &lt;script src=\&quot;https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js\&quot;&gt;&lt;/script&gt;\n&quot; +
+                        &quot;    &lt;script src=\&quot;https://oss.maxcdn.com/respond/1.4.2/respond.min.js\&quot;&gt;&lt;/script&gt;\n&quot; +
+                        &quot;    &lt;![endif]--&gt;\n&quot; +
+                        &quot;&lt;/head&gt;&quot;)
+                .format(
+                        replace(&quot;baseHref&quot;).with(this.baseHref)
+                        .replace(&quot;title&quot;).with(this.title)
+                );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

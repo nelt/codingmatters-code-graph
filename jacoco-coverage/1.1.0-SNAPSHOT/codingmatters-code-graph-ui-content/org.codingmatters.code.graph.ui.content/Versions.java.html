@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Versions.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-ui-content</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.ui.content</a> &gt; <span class="el_source">Versions.java</span></div><h1>Versions.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.ui.content;
+
+import org.codingmatters.code.graph.ui.content.support.Lines;
+import org.codingmatters.code.graph.ui.service.api.project.Version;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+/**
+ * Created by nel on 12/10/14.
+ */
+<span class="nc" id="L12">public class Versions {</span>
+    
+    static public Lines digest(Version version) {
+<span class="fc" id="L15">        return new Lines()</span>
+                .appendLine(&quot;&lt;div class=\&quot;row\&quot;&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-1\&quot;&gt;&lt;/div&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-2\&quot;&gt;&quot;)
+                .appendLine(&quot;        &lt;h4&gt;&lt;a href=\&quot;&quot; + versionPath(version) + &quot;\&quot;&gt;&quot; + versionLabel(version) + &quot;&lt;/a&gt;&lt;/h4&gt;&quot;)
+                .appendLine(&quot;    &lt;/div&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-5\&quot;&gt;&quot;)
+                .appendLine(&quot;        &lt;p&gt;&quot; + version.description() + &quot;&lt;/p&gt;&quot;)
+                .appendLine(&quot;    &lt;/div&gt;&quot;)
+                .appendLine(&quot;    &lt;div class=\&quot;col-lg-2\&quot;&gt;&quot;)
+                .appendLine(&quot;        &lt;p&gt;&quot; + versionFormattedDate(version) + &quot;&lt;/p&gt;&quot;)
+                .appendLine(&quot;    &lt;/div&gt;&quot;)
+                .append(&quot;&lt;/div&gt;&quot;);
+    }
+    
+<span class="fc" id="L30">    static private DateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+    
+    static public String versionFormattedDate(Version version) {
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        return version.date() != null ? dateFormat.format(version.date()) : &quot;&quot;;</span>
+    }
+
+    static public String versionPath(Version version) {
+<span class="fc" id="L37">        return version.project().path() + version.name() + &quot;/&quot;;</span>
+    }
+
+    static public String versionLabel(Version current) {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        return &quot;Version &quot; + current.name() + (current.latest() ? &quot; (latest)&quot; : &quot;&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
