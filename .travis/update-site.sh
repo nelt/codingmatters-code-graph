@@ -1,8 +1,8 @@
 #!/bin/bash
 set -ev
 
-git config user.email "nel.taurisson@gmail.com"
-git config user.name "nelt"
+git config --global user.email "nel.taurisson@gmail.com"
+git config --gloabl user.name "nelt"
 
 
 VERSION=123
