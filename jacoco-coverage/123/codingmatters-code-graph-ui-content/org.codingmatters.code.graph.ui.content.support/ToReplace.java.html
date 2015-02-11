@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>ToReplace.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-ui-content</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.ui.content.support</a> &gt; <span class="el_source">ToReplace.java</span></div><h1>ToReplace.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.ui.content.support;
+
+/**
+* Created by nel on 14/10/14.
+*/
+public class ToReplace {
+    private final String replacement;
+    private final int start;
+    private final int end;
+
+<span class="fc" id="L11">    public ToReplace(String replacement, int start, int end) {</span>
+<span class="fc" id="L12">        this.replacement = replacement;</span>
+<span class="fc" id="L13">        this.start = start;</span>
+<span class="fc" id="L14">        this.end = end;</span>
+<span class="fc" id="L15">    }</span>
+
+    public String replaceIn(String original) {
+<span class="fc" id="L18">        StringBuilder result = new StringBuilder();</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if(this.start &gt; 0) {</span>
+<span class="fc" id="L20">            result.append(original.substring(0, this.start));</span>
+        }
+<span class="fc" id="L22">        result.append(this.replacement);</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if(this.end &lt; original.length()) {</span>
+<span class="fc" id="L24">            result.append(original.substring(this.end));</span>
+        }
+<span class="fc" id="L26">        return result.toString();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L31">        return &quot;ToReplace{&quot; +</span>
+                &quot;replacement='&quot; + replacement + '\'' +
+                &quot;, start=&quot; + start +
+                &quot;, end=&quot; + end +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
