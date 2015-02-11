@@ -1,12 +1,16 @@
 language: java
-
 env:
   global:
   - secure: HiEIPWtWCmUl9+bJFcQlMX5ZGs1BWOXPRSu1X8vIN+DOVu+e9akGPp0f2XgZXCrDrGCtkHEIFJHD1VfjuxYPtB8tZX94Z6Q74A/+d0X0u+CUteC9WZK6GAtcfo7Aun7MzcwxEBMtw79xH+HAHM+leLlsweVxRIpGzqoAoRQEniw=
 
-script: mvn test -Pjacoco-coverage
+before_install:
+- openssl aes-256-cbc -K $encrypted_063633da3991_key -iv $encrypted_063633da3991_iv
+  -in .travis/travis_rsa.enc -out .travis/travis_rsa -d
+  
+script: 
+- mvn test -Pjacoco-coverage
 
 after_success:
-  - chmod 600 .travis/deploy_key.pem
-  - ssh-add .travis/deploy_key.pem
-  - ./update-site.sh
+- chmod 600 .travis/travis_rsa
+- ssh-add .travis/travis_rsa
+- "./update-site.sh"
