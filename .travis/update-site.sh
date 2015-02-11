@@ -1,6 +1,10 @@
 #!/bin/bash
 set -ev
 
+git config user.email "nel.taurisson@gmail.com"
+git config user.name "nelt"
+
+
 VERSION=123
 
 #mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -o | grep -Ev '(^\[|Download\w+:)'
@@ -20,9 +24,6 @@ cd target/gh-pages
 
 git add jacoco-coverage/$VERSION 
 git commit -a -m "update site with jacoco coverage for version $VERSION"
-
-git config --global user.email "nel.taurisson@gmail.com"
-git config --global user.name "nelt"
 
 git push
 
