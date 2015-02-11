@@ -12,5 +12,6 @@ script:
 
 after_success:
 - chmod 600 .travis/travis_rsa
+- eval "$(ssh-agent)"
 - ssh-add .travis/travis_rsa
-- "./update-site.sh"
+- ".travis/update-site.sh"
