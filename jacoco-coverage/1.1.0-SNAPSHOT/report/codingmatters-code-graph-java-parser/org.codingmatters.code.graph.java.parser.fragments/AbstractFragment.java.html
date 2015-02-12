@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>AbstractFragment.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-java-parser</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.java.parser.fragments</a> &gt; <span class="el_source">AbstractFragment.java</span></div><h1>AbstractFragment.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.java.parser.fragments;
+
+import java.lang.reflect.InvocationTargetException;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: nel
+ * Date: 22/07/14
+ * Time: 07:13
+ * To change this template use File | Settings | File Templates.
+ */
+public class AbstractFragment implements SourceFragment {
+
+<span class="fc" id="L14">    static public class Builder {</span>
+
+        private String text;
+        private String qualifiedName;
+        private int start;
+        private int end;
+
+        public Builder withText(String text) {
+<span class="fc" id="L22">            this.text = text;</span>
+<span class="fc" id="L23">            return this;</span>
+        }
+
+        public Builder withQualifiedName(String qualifiedName) {
+<span class="fc" id="L27">            this.qualifiedName = qualifiedName;</span>
+<span class="fc" id="L28">            return this;</span>
+        }
+
+        public Builder withStart(int start) {
+<span class="fc" id="L32">            this.start = start;</span>
+<span class="fc" id="L33">            return this;</span>
+        }
+
+        public Builder withEnd(int end) {
+<span class="fc" id="L37">            this.end = end;</span>
+<span class="fc" id="L38">            return this;</span>
+        }
+
+        public &lt;T extends AbstractFragment&gt; T build(Class&lt;T&gt; clazz) throws BuilderException {
+            try {
+<span class="fc" id="L43">                return clazz.getConstructor(new Class[]{String.class, String.class, Integer.class, Integer.class})</span>
+                        .newInstance(this.text, this.qualifiedName, this.start, this.end);
+<span class="nc" id="L45">            } catch (InstantiationException|IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {</span>
+<span class="nc" id="L46">                throw new BuilderException(e);</span>
+            }
+        }
+
+<span class="fc" id="L50">        public class BuilderException extends Exception {</span>
+<span class="nc" id="L51">            private BuilderException(Throwable cause) {</span>
+<span class="nc" id="L52">                super(cause);</span>
+<span class="nc" id="L53">            }</span>
+        }
+    }
+    
+    private final String text;
+    private final String qualifiedName;
+    private final int start;
+    private final int end;
+
+<span class="fc" id="L62">    public AbstractFragment(String text, String qualifiedName, Integer start, Integer end) {</span>
+<span class="fc" id="L63">        this.text = text;</span>
+<span class="fc" id="L64">        this.qualifiedName = qualifiedName;</span>
+<span class="fc" id="L65">        this.start = start;</span>
+<span class="fc" id="L66">        this.end = end;</span>
+<span class="fc" id="L67">    }</span>
+
+    @Override
+    public String text() {
+<span class="fc" id="L71">        return this.text;</span>
+    }
+
+    public String qualifiedName() {
+<span class="fc" id="L75">        return qualifiedName;</span>
+    }
+
+    @Override
+    public int start() {
+<span class="fc" id="L80">        return this.start;</span>
+    }
+
+    @Override
+    public int end() {
+<span class="fc" id="L85">        return this.end;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L90">        return this.getClass().getSimpleName() + &quot;{&quot; +</span>
+                &quot;text='&quot; + text + '\'' +
+                &quot;, qualifiedName='&quot; + qualifiedName + '\'' +
+                &quot;, start=&quot; + start +
+                &quot;, end=&quot; + end +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

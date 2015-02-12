@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Heads.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-ui-content</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.ui.content</a> &gt; <span class="el_source">Heads.java</span></div><h1>Heads.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.ui.content;
+
+import org.codingmatters.code.graph.ui.content.elements.Head;
+import org.codingmatters.code.graph.ui.content.support.Lines;
+import org.codingmatters.code.graph.ui.service.api.project.*;
+
+/**
+ * Created by nel on 10/10/14.
+ */
+<span class="nc" id="L10">public class Heads {</span>
+    
+    public static Lines head(String baseHref) {
+<span class="fc" id="L13">        return new Head(null, baseHref).lines();</span>
+    }
+    
+    static public Lines head(Project project, String baseHref) {
+<span class="fc" id="L17">        return new Head(project.label(), baseHref).lines();</span>
+    }
+    
+    static public Lines head(Version version, String baseHref) {
+<span class="fc" id="L21">        return new Head(</span>
+                version.project().label() + &quot; / Version &quot; + version.name(), 
+                baseHref
+        ).lines();
+    }
+    
+    static public Lines head(Pack pack, String baseHref) {
+<span class="fc" id="L28">        return new Head(</span>
+                pack.version().project().label() + &quot; / Version &quot; + pack.version().name() + &quot; / &quot; + pack.name(), 
+                baseHref
+        ).lines();
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
