@@ -5,8 +5,18 @@ env:
   - secure: NB7GxBjvYhheyGErmB4/dRg9S4WZpZxl7Vmzi2LyujAILGKsERfrNVTPwhsPuSSPQ7iiVWkrkVOwftXKCUmP+5C+ZFrXam6TM0cJ8j1ivmxOJMvBTA36Y94I3HVOmcIAoiu9YfxM+6UEQXImTf6DYhwuMNtwvcQwTk5DiSXDcYM=
   - secure: cNljFgsfA1MAKdnQzNeZPkiB4naCNTBUqa3oNVFsaLsWycWtn3RhQFM91nXGtjJ5J06azW3tqpXmPaFOIUfgL2KXiA2TUV+2knSfKdQPeLOT1+4Ik28c3JUDGDF9thzkElABt4GPOhZImTr6CAjtwdJy+xMrzTNjjDMU1vJEjoE=
   - secure: Y0MK4j1EqfguVOPkZz5onU3mnamJvVoH0IfbMJ1yK+MCPGhb5bt4NElfZiTm1/wDK1Nk9Z1FNUArl+s22lj6vX/URps6OWubAReBzMv3hhGV47fF3lQezSgIx7E/nVSuHskqqawRK9rpbtP5pFH0sVjWVp6UoV8KgqLALwkWsbU=
-before_install:
+  - secure: QMhk9I8+MyEKi9pv7hIBbzreEvGhepItIT/ZZMf6oSKyeKHf5Jecy4x08PcGSE9Tc+8seNIebLJSq4JeMBgCZCYRMn1mdgdXRqZzzqVSqZp3TxuRB+M7YDqzEdoc8hCME6NH4ro0ALJuqkRY4KdyAaN6B7euhByV/GwjPe6NwPs=
+before_install: 
 script:
-- mvn deploy -Pjacoco-coverage --settings .travis/settings.xml
+- '[ ${COVERITY_SCAN_BRANCH} != 1 ] && mvn deploy -Pjacoco-coverage --settings .travis/settings.xml'
 after_success:
 - '[ "${TRAVIS_BRANCH}" = "master" ] && .travis/update-site.sh'
+addons:
+  coverity_scan:
+    project:
+      name: "nelt/codingmatters-code-graph"
+      description: "Build submitted via Travis CI"
+    notification_email: nel.taurisson@gmail.com
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile"
+    branch_pattern: coverity_scan
