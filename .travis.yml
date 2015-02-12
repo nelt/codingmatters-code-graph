@@ -9,4 +9,4 @@ before_install:
 script:
 - mvn deploy -Pjacoco-coverage --settings .travis/settings.xml
 after_success:
-- ".travis/update-site.sh"
+- '[ "${TRAVIS_BRANCH}" = "master" ] && .travis/update-site.sh'
