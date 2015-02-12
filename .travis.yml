@@ -7,11 +7,11 @@ env:
   - secure: Y0MK4j1EqfguVOPkZz5onU3mnamJvVoH0IfbMJ1yK+MCPGhb5bt4NElfZiTm1/wDK1Nk9Z1FNUArl+s22lj6vX/URps6OWubAReBzMv3hhGV47fF3lQezSgIx7E/nVSuHskqqawRK9rpbtP5pFH0sVjWVp6UoV8KgqLALwkWsbU=
   - secure: QMhk9I8+MyEKi9pv7hIBbzreEvGhepItIT/ZZMf6oSKyeKHf5Jecy4x08PcGSE9Tc+8seNIebLJSq4JeMBgCZCYRMn1mdgdXRqZzzqVSqZp3TxuRB+M7YDqzEdoc8hCME6NH4ro0ALJuqkRY4KdyAaN6B7euhByV/GwjPe6NwPs=
 before_install: 
-install:
+install: true
 script:
-- '[ ${COVERITY_SCAN_BRANCH} != 1 ] && mvn deploy -Pjacoco-coverage --settings .travis/settings.xml'
+- '[ ${COVERITY_SCAN_BRANCH} != 1 ] && mvn deploy -Pjacoco-coverage --settings .travis/settings.xml || false'
 after_success:
-- '[ "${TRAVIS_BRANCH}" = "master" ] && .travis/update-site.sh'
+- '[ "${TRAVIS_BRANCH}" = "master" ] && .travis/update-site.sh || false'
 addons:
   coverity_scan:
     project:
