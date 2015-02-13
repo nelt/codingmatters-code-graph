@@ -24,7 +24,9 @@ public class FolderResolver implements ByteCodeResolver {
     @Override
     public ClassReader resolve(String name) throws IOException {
 <span class="fc" id="L26">        File classFile = new File(this.resolverRoot, name.replace('.', '/') + &quot;.class&quot;);</span>
-<span class="fc" id="L27">        return new ClassReader(new FileInputStream(classFile));</span>
+<span class="pc" id="L27">        try(FileInputStream fileStream = new FileInputStream(classFile)) {</span>
+<span class="fc" id="L28">            return new ClassReader(fileStream);</span>
+<span class="pc bpc" id="L29" title="6 of 8 branches missed.">        }</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

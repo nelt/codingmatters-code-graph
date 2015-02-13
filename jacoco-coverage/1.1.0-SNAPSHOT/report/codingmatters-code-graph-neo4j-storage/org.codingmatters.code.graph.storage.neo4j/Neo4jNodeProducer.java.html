@@ -8,6 +8,7 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 
 /**
@@ -21,25 +22,25 @@ public class Neo4jNodeProducer implements NodeProducer {
     private final GraphDatabaseService graphDb;
     private final Codec.Querier querier;
 
-<span class="fc" id="L24">    public Neo4jNodeProducer(GraphDatabaseService graphDb, ExecutionEngine engine) {</span>
-<span class="fc" id="L25">        this.graphDb = graphDb;</span>
-<span class="fc" id="L26">        this.querier = new Codec.Querier(engine);</span>
-<span class="fc" id="L27">    }</span>
+<span class="fc" id="L25">    public Neo4jNodeProducer(GraphDatabaseService graphDb, ExecutionEngine engine) {</span>
+<span class="fc" id="L26">        this.graphDb = graphDb;</span>
+<span class="fc" id="L27">        this.querier = new Codec.Querier(engine);</span>
+<span class="fc" id="L28">    }</span>
 
     @Override
     public void aClass(ClassNode node) throws ProducerException {
-<span class="fc" id="L31">        this.querier.mergeRefNode(node.getRef(), node.getProperties());</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L32">        this.querier.justMergeRefNode(node.getRef(), node.getProperties());</span>
+<span class="fc" id="L33">    }</span>
 
     @Override
     public void aField(FieldNode node) throws ProducerException {
-<span class="fc" id="L36">        this.querier.mergeRefNode(node.getRef());</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L37">        this.querier.justMergeRefNode(node.getRef());</span>
+<span class="fc" id="L38">    }</span>
 
     @Override
     public void aMethod(MethodNode node) throws ProducerException {
-<span class="fc" id="L41">        this.querier.mergeRefNode(node.getRef(), node.getProperties());</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L42">        this.querier.justMergeRefNode(node.getRef(), node.getProperties());</span>
+<span class="fc" id="L43">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

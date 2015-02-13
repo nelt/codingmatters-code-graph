@@ -7,6 +7,7 @@ import org.codingmatters.code.graph.api.references.Ref;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Resource;
 import org.neo4j.graphdb.ResourceIterator;
 import scala.collection.Iterator;
 
@@ -21,24 +22,24 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface Codec {
-<span class="pc" id="L24">    enum Label implements org.neo4j.graphdb.Label {</span>
-<span class="fc" id="L25">        CLASS, FIELD, METHOD       </span>
+<span class="pc" id="L25">    enum Label implements org.neo4j.graphdb.Label {</span>
+<span class="fc" id="L26">        CLASS, FIELD, METHOD       </span>
     }
     
-<span class="pc" id="L28">    enum RelationshipType implements org.neo4j.graphdb.RelationshipType {</span>
-<span class="fc" id="L29">        HAS_FIELD, HAS_METHOD, HAS_INNER_CLASS, USES, IMPLEMENTS, OVERRIDES, EXTENDS</span>
+<span class="pc" id="L29">    enum RelationshipType implements org.neo4j.graphdb.RelationshipType {</span>
+<span class="fc" id="L30">        HAS_FIELD, HAS_METHOD, HAS_INNER_CLASS, USES, IMPLEMENTS, OVERRIDES, EXTENDS</span>
     }
     
-<span class="nc" id="L32">    final class Dictionnary {</span>
+<span class="nc" id="L33">    final class Dictionnary {</span>
         static public Label label(Ref ref) {
-<span class="fc bfc" id="L34" title="All 2 branches covered.">            if(ref instanceof ClassRef) {</span>
-<span class="fc" id="L35">                return Label.CLASS;</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">            } else if(ref instanceof FieldRef) {</span>
-<span class="fc" id="L37">                return Label.FIELD;</span>
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">            } else if(ref instanceof MethodRef) {</span>
-<span class="fc" id="L39">                return Label.METHOD;</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            if(ref instanceof ClassRef) {</span>
+<span class="fc" id="L36">                return Label.CLASS;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            } else if(ref instanceof FieldRef) {</span>
+<span class="fc" id="L38">                return Label.FIELD;</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">            } else if(ref instanceof MethodRef) {</span>
+<span class="fc" id="L40">                return Label.METHOD;</span>
             } else {
-<span class="nc" id="L41">                return null;</span>
+<span class="nc" id="L42">                return null;</span>
             }
         }
     }
@@ -46,47 +47,55 @@ public interface Codec {
     class Querier {
         
         private final ExecutionEngine engine;
-<span class="fc" id="L49">        private final Neo4jPropertiesStorageProcessor processor = new Neo4jPropertiesStorageProcessor();</span>
+<span class="fc" id="L50">        private final Neo4jPropertiesStorageProcessor processor = new Neo4jPropertiesStorageProcessor();</span>
     
-<span class="fc" id="L51">        public Querier(ExecutionEngine engine) {</span>
-<span class="fc" id="L52">            this.engine = engine;</span>
-<span class="fc" id="L53">        }</span>
+<span class="fc" id="L52">        public Querier(ExecutionEngine engine) {</span>
+<span class="fc" id="L53">            this.engine = engine;</span>
+<span class="fc" id="L54">        }</span>
         
-        public ResourceIterator&lt;Object&gt; mergeRefNode(Ref ref) {
-<span class="fc" id="L56">            return this.mergeRefNode(ref, null);</span>
-        }
+        public void justMergeRefNode(Ref ref) { 
+<span class="fc" id="L57">            this.justMergeRefNode(ref, null);</span>
+<span class="fc" id="L58">        }</span>
+
+        public void justMergeRefNode(Ref ref, Object data) {
+<span class="pc bpc" id="L61" title="6 of 8 branches missed.">            try(Resource r = this.mergeRefNode(ref, data)) {}</span>
+<span class="fc" id="L62">        }</span>
         
-        public ResourceIterator&lt;Object&gt; mergeRefNode(Ref ref, Object data) {
+        public void justMergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
+<span class="pc bpc" id="L65" title="6 of 8 branches missed.">            try(Resource r = this.mergeRelationship(source, relationshipType, target)) {}</span>
+<span class="fc" id="L66">        }</span>
+
+        private ResourceIterator&lt;Object&gt; mergeRefNode(Ref ref, Object data) {
             Neo4jPropertiesStorageProcessor.ToStore toStore;
-<span class="fc bfc" id="L61" title="All 2 branches covered.">            if(data != null) {</span>
-<span class="fc" id="L62">                toStore = this.processor.prepareStorage(&quot;n&quot;, data);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if(data != null) {</span>
+<span class="fc" id="L71">                toStore = this.processor.prepareStorage(&quot;n&quot;, data);</span>
             } else {
-<span class="fc" id="L64">                toStore = Neo4jPropertiesStorageProcessor.NOTHING;</span>
+<span class="fc" id="L73">                toStore = Neo4jPropertiesStorageProcessor.NOTHING;</span>
             }
-            
-<span class="fc" id="L67">            String queryString = String.format(</span>
+
+<span class="fc" id="L76">            String queryString = String.format(</span>
                     &quot;MERGE (n:%s {name: {name}}) &quot; +
                             &quot;ON CREATE SET n.source = {source}, n.shortName = {shortName}, n.created = timestamp(), n.updated = timestamp()%s &quot; +
                             &quot;ON MATCH  SET n.source = {source}, n.shortName = {shortName}, n.updated = timestamp()%s &quot; +
-                            &quot;RETURN n&quot;, 
+                            &quot;RETURN n&quot;,
                     Dictionnary.label(ref).name(),
                     toStore.getPropertyMergerString(true),
                     toStore.getPropertyMergerString(true)
             );
 
-<span class="fc" id="L77">            Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L78">            parameters.put(&quot;source&quot;, ref.getSource());</span>
-<span class="fc" id="L79">            parameters.put(&quot;shortName&quot;, ref.getShortName());</span>
-<span class="fc" id="L80">            parameters.put(&quot;name&quot;, ref.getName());</span>
-<span class="fc" id="L81">            parameters.putAll(toStore.getParameters());</span>
+<span class="fc" id="L86">            Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L87">            parameters.put(&quot;source&quot;, ref.getSource());</span>
+<span class="fc" id="L88">            parameters.put(&quot;shortName&quot;, ref.getShortName());</span>
+<span class="fc" id="L89">            parameters.put(&quot;name&quot;, ref.getName());</span>
+<span class="fc" id="L90">            parameters.putAll(toStore.getParameters());</span>
 
-<span class="fc" id="L83">            return this.engine.execute(queryString, parameters).columnAs(&quot;n&quot;);</span>
+<span class="fc" id="L92">            return this.engine.execute(queryString, parameters).columnAs(&quot;n&quot;);</span>
         }
-    
-        public ResourceIterator&lt;Object&gt; mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
-<span class="fc" id="L87">            Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+        
+        private ResourceIterator&lt;Object&gt; mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
+<span class="fc" id="L96">            Map&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
             
-<span class="fc" id="L89">            String queryString = String.format(</span>
+<span class="fc" id="L98">            String queryString = String.format(</span>
                     &quot;MATCH (source:%s {name: {sourceName}}), (target:%s {name: {targetName}}) &quot; +
                             &quot;MERGE (source)-[r:%s]-&gt;(target) &quot; +
                             &quot;RETURN r&quot;,
@@ -94,10 +103,10 @@ public interface Codec {
                     Dictionnary.label(target),
                     relationshipType.name()
             );
-<span class="fc" id="L97">            parameters.put(&quot;sourceName&quot;, source.getName());</span>
-<span class="fc" id="L98">            parameters.put(&quot;targetName&quot;, target.getName());</span>
+<span class="fc" id="L106">            parameters.put(&quot;sourceName&quot;, source.getName());</span>
+<span class="fc" id="L107">            parameters.put(&quot;targetName&quot;, target.getName());</span>
             
-<span class="fc" id="L100">            return this.engine.execute(queryString, parameters).columnAs(&quot;r&quot;);</span>
+<span class="fc" id="L109">            return this.engine.execute(queryString, parameters).columnAs(&quot;r&quot;);</span>
         }
     }
 }
