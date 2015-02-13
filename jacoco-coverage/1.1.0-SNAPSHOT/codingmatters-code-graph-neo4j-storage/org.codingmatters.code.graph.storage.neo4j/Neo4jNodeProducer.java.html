@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>Neo4jNodeProducer.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-neo4j-storage</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.storage.neo4j</a> &gt; <span class="el_source">Neo4jNodeProducer.java</span></div><h1>Neo4jNodeProducer.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.storage.neo4j;
+
+import org.codingmatters.code.graph.api.nodes.ClassNode;
+import org.codingmatters.code.graph.api.nodes.FieldNode;
+import org.codingmatters.code.graph.api.nodes.MethodNode;
+import org.codingmatters.code.graph.api.producer.NodeProducer;
+import org.codingmatters.code.graph.api.producer.exception.ProducerException;
+import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Transaction;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: nel
+ * Date: 25/06/14
+ * Time: 00:20
+ * To change this template use File | Settings | File Templates.
+ */
+public class Neo4jNodeProducer implements NodeProducer {
+    private final GraphDatabaseService graphDb;
+    private final Codec.Querier querier;
+
+<span class="fc" id="L25">    public Neo4jNodeProducer(GraphDatabaseService graphDb, ExecutionEngine engine) {</span>
+<span class="fc" id="L26">        this.graphDb = graphDb;</span>
+<span class="fc" id="L27">        this.querier = new Codec.Querier(engine);</span>
+<span class="fc" id="L28">    }</span>
+
+    @Override
+    public void aClass(ClassNode node) throws ProducerException {
+<span class="fc" id="L32">        this.querier.justMergeRefNode(node.getRef(), node.getProperties());</span>
+<span class="fc" id="L33">    }</span>
+
+    @Override
+    public void aField(FieldNode node) throws ProducerException {
+<span class="fc" id="L37">        this.querier.justMergeRefNode(node.getRef());</span>
+<span class="fc" id="L38">    }</span>
+
+    @Override
+    public void aMethod(MethodNode node) throws ProducerException {
+<span class="fc" id="L42">        this.querier.justMergeRefNode(node.getRef(), node.getProperties());</span>
+<span class="fc" id="L43">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>AbstractRef.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-api</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.api.references</a> &gt; <span class="el_source">AbstractRef.java</span></div><h1>AbstractRef.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.api.references;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: nel
+ * Date: 02/07/14
+ * Time: 01:22
+ * To change this template use File | Settings | File Templates.
+ */
+public abstract class AbstractRef implements Ref {
+    
+    private final String source;
+    private final String shortName;
+
+    public AbstractRef(String shortName) {
+<span class="fc" id="L16">        this(null, shortName);</span>
+<span class="fc" id="L17">    }</span>
+    
+<span class="fc" id="L19">    public AbstractRef(String source, String shortName) {</span>
+<span class="fc" id="L20">        this.source = source;</span>
+<span class="fc" id="L21">        this.shortName = shortName;</span>
+<span class="fc" id="L22">    }</span>
+
+    @Override
+    public String getName() {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if(this.getSource() != null) {</span>
+<span class="fc" id="L27">            return this.getSource() + &quot;:&quot; + this.getShortName();    </span>
+        } else {
+<span class="fc" id="L29">            return this.getShortName();</span>
+        }
+    }
+
+    @Override
+    public String getSource() {
+<span class="fc" id="L35">        return this.source;</span>
+    }
+
+    @Override
+    public String getShortName() {
+<span class="fc" id="L40">        return this.shortName;</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+
+<span class="fc" id="L48">        AbstractRef that = (AbstractRef) o;</span>
+
+<span class="pc bpc" id="L50" title="3 of 6 branches missed.">        if (shortName != null ? !shortName.equals(that.shortName) : that.shortName != null) return false;</span>
+<span class="fc bfc" id="L51" title="All 6 branches covered.">        if (source != null ? !source.equals(that.source) : that.source != null) return false;</span>
+
+<span class="fc" id="L53">        return true;</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        int result = source != null ? source.hashCode() : 0;</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        result = 31 * result + (shortName != null ? shortName.hashCode() : 0);</span>
+<span class="fc" id="L60">        return result;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L65">        return this.getClass().getSimpleName() + &quot;{&quot; +</span>
+                &quot;name='&quot; + this.getName() + '\'' +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
