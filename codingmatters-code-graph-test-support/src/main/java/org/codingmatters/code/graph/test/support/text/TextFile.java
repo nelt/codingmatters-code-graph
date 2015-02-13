@@ -12,7 +12,7 @@ import java.io.*;
 public class TextFile {
 
     static public TextFile read(String resource) throws IOException {
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);){
+        try (InputStream stream = resourceAsStream(resource)){
             return read(stream);
         }
     }
@@ -42,7 +42,15 @@ public class TextFile {
         if(content == null) throw new IOException("null string");
         return new TextFile(content);
     }
-
+    
+    private static InputStream resourceAsStream(String resource) {
+        if(Thread.currentThread().getContextClassLoader() != null) {
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        } else {
+            return null;
+        }
+    }
+    
     private final String content;
 
     public TextFile(String content) {
