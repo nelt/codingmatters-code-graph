@@ -8,6 +8,7 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 
 /**
@@ -28,17 +29,17 @@ public class Neo4jNodeProducer implements NodeProducer {
 
     @Override
     public void aClass(ClassNode node) throws ProducerException {
-        this.querier.mergeRefNode(node.getRef(), node.getProperties());
+        this.querier.justMergeRefNode(node.getRef(), node.getProperties());
     }
 
     @Override
     public void aField(FieldNode node) throws ProducerException {
-        this.querier.mergeRefNode(node.getRef());
+        this.querier.justMergeRefNode(node.getRef());
     }
 
     @Override
     public void aMethod(MethodNode node) throws ProducerException {
-        this.querier.mergeRefNode(node.getRef(), node.getProperties());
+        this.querier.justMergeRefNode(node.getRef(), node.getProperties());
     }
 
 }

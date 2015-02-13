@@ -26,43 +26,43 @@ public class Neo4jPredicateProducer implements PredicateProducer {
 
     @Override
     public void hasField(HasFieldPredicate predicate) throws ProducerException {
-        this.querier.mergeRefNode(predicate.getCls()).next();
-        this.querier.mergeRefNode(predicate.getField()).next();
-        this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_FIELD, predicate.getField());
+        this.querier.justMergeRefNode(predicate.getCls());
+        this.querier.justMergeRefNode(predicate.getField());
+        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_FIELD, predicate.getField());
     }
 
     @Override
     public void hasMethod(HasMethodPredicate predicate) throws ProducerException {
-        this.querier.mergeRefNode(predicate.getCls());
-        this.querier.mergeRefNode(predicate.getMethod());
-        this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_METHOD, predicate.getMethod());
+        this.querier.justMergeRefNode(predicate.getCls());
+        this.querier.justMergeRefNode(predicate.getMethod());
+        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_METHOD, predicate.getMethod());
     }
 
     @Override
     public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {
-        this.querier.mergeRefNode(predicate.getCls());
-        this.querier.mergeRefNode(predicate.getInner());
-        this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_INNER_CLASS, predicate.getInner());
+        this.querier.justMergeRefNode(predicate.getCls());
+        this.querier.justMergeRefNode(predicate.getInner());
+        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_INNER_CLASS, predicate.getInner());
     }
 
     @Override
     public void hasParent(ExtendsPredicate predicate) throws ProducerException {
-        this.querier.mergeRefNode(predicate.getCls());
-        this.querier.mergeRefNode(predicate.getExtended());
-        this.querier.mergeRelationship(predicate.getCls(), Codec.RelationshipType.EXTENDS, predicate.getExtended());
+        this.querier.justMergeRefNode(predicate.getCls());
+        this.querier.justMergeRefNode(predicate.getExtended());
+        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.EXTENDS, predicate.getExtended());
     }
     
     @Override
     public void usage(UsesPredicate predicate) throws ProducerException {
-        this.querier.mergeRefNode(predicate.getUser());
-        this.querier.mergeRefNode(predicate.getUsed());
-        this.querier.mergeRelationship(predicate.getUser(), Codec.RelationshipType.USES, predicate.getUsed());
+        this.querier.justMergeRefNode(predicate.getUser());
+        this.querier.justMergeRefNode(predicate.getUsed());
+        this.querier.justMergeRelationship(predicate.getUser(), Codec.RelationshipType.USES, predicate.getUsed());
     }
 
     @Override
     public void hasInterface(ImplementsPredicate predicate) throws ProducerException {
-        this.querier.mergeRefNode(predicate.getImplementer());
-        this.querier.mergeRefNode(predicate.getImplemented());
-        this.querier.mergeRelationship(predicate.getImplementer(), Codec.RelationshipType.IMPLEMENTS, predicate.getImplemented());
+        this.querier.justMergeRefNode(predicate.getImplementer());
+        this.querier.justMergeRefNode(predicate.getImplemented());
+        this.querier.justMergeRelationship(predicate.getImplementer(), Codec.RelationshipType.IMPLEMENTS, predicate.getImplemented());
     }
 }

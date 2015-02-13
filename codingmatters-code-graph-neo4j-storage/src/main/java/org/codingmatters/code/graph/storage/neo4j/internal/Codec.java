@@ -7,6 +7,7 @@ import org.codingmatters.code.graph.api.references.Ref;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Resource;
 import org.neo4j.graphdb.ResourceIterator;
 import scala.collection.Iterator;
 
@@ -52,23 +53,31 @@ public interface Codec {
             this.engine = engine;
         }
         
-        public ResourceIterator<Object> mergeRefNode(Ref ref) {
-            return this.mergeRefNode(ref, null);
+        public void justMergeRefNode(Ref ref) { 
+            this.justMergeRefNode(ref, null);
+        }
+
+        public void justMergeRefNode(Ref ref, Object data) {
+            try(Resource r = this.mergeRefNode(ref, data)) {}
         }
         
-        public ResourceIterator<Object> mergeRefNode(Ref ref, Object data) {
+        public void justMergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
+            try(Resource r = this.mergeRelationship(source, relationshipType, target)) {}
+        }
+
+        private ResourceIterator<Object> mergeRefNode(Ref ref, Object data) {
             Neo4jPropertiesStorageProcessor.ToStore toStore;
             if(data != null) {
                 toStore = this.processor.prepareStorage("n", data);
             } else {
                 toStore = Neo4jPropertiesStorageProcessor.NOTHING;
             }
-            
+
             String queryString = String.format(
                     "MERGE (n:%s {name: {name}}) " +
                             "ON CREATE SET n.source = {source}, n.shortName = {shortName}, n.created = timestamp(), n.updated = timestamp()%s " +
                             "ON MATCH  SET n.source = {source}, n.shortName = {shortName}, n.updated = timestamp()%s " +
-                            "RETURN n", 
+                            "RETURN n",
                     Dictionnary.label(ref).name(),
                     toStore.getPropertyMergerString(true),
                     toStore.getPropertyMergerString(true)
@@ -82,8 +91,8 @@ public interface Codec {
 
             return this.engine.execute(queryString, parameters).columnAs("n");
         }
-    
-        public ResourceIterator<Object> mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
+        
+        private ResourceIterator<Object> mergeRelationship(Ref source, RelationshipType relationshipType, Ref target) {
             Map<String, Object> parameters = new HashMap<>();
             
             String queryString = String.format(
