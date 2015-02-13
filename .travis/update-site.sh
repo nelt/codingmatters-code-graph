@@ -14,7 +14,7 @@ git clone -b gh-pages https://github.com/nelt/codingmatters-code-graph.git targe
 ant -f jacoco-merged-coverage-report.xml -lib jacoco/lib
 
 mkdir -p target/gh-pages/jacoco-coverage
-cp -r target/report target/gh-pages/jacoco-coverage/$VERSION
+cp -r target/report/* target/gh-pages/jacoco-coverage/$VERSION/
 
 HERE=` pwd`  
 cd target/gh-pages
