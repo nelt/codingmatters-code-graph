@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -29,7 +30,9 @@ public class JarResolver implements ByteCodeResolver, Closeable {
         if(entry == null) {
             throw new IOException("no such class " + name + " in jar file");
         }
-        return new ClassReader(this.jar.getInputStream(entry));
+        try(InputStream entryStream = this.jar.getInputStream(entry)) {
+            return new ClassReader(entryStream);
+        }
     }
 
     @Override
