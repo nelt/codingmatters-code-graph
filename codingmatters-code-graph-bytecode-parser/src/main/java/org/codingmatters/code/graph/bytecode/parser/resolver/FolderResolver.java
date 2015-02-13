@@ -24,6 +24,8 @@ public class FolderResolver implements ByteCodeResolver {
     @Override
     public ClassReader resolve(String name) throws IOException {
         File classFile = new File(this.resolverRoot, name.replace('.', '/') + ".class");
-        return new ClassReader(new FileInputStream(classFile));
+        try(FileInputStream fileStream = new FileInputStream(classFile)) {
+            return new ClassReader(fileStream);
+        }
     }
 }
