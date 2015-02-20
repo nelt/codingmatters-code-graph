@@ -85,23 +85,6 @@
         </dependency>
     </dependencies>
     
-    <repositories>
-        <repository>
-            <id>codingmatters-snapshot</id>
-            <url>http://repository-codingmatters.forge.cloudbees.com/snapshot/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>synergian-repo</id>
-            <url>https://raw.github.com/synergian/wagon-git/releases</url>
-        </pluginRepository>
-    </pluginRepositories>
-    
     <dependencyManagement>
         <dependencies>
             <!--INTERNAL DEPENDENCIES-->
@@ -192,7 +175,20 @@
                 <version>${neo4j.version}</version>
                 <type>test-jar</type>
             </dependency>
-            
+
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>${antlr.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-annotations</artifactId>
+                <version>${antlr.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-all</artifactId>
@@ -217,23 +213,6 @@
                 <version>${fest.assert.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-runtime</artifactId>
-                <version>${antlr.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-annotations</artifactId>
-                <version>${antlr.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jacoco</groupId>
-                <artifactId>org.jacoco.ant</artifactId>
-                <version>0.7.2.201409121644</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     
@@ -274,12 +253,6 @@
                     <groupId>org.antlr</groupId>
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>${antlr.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>com.github.github</groupId>
-                    <artifactId>site-maven-plugin</artifactId>
-                    <version>0.11</version>
                 </plugin>
                 
                 <plugin>
