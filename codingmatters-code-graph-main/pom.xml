@@ -31,7 +31,16 @@
             <groupId>org.codingmatters.code.graph</groupId>
             <artifactId>codingmatters-code-graph-cross-cutting</artifactId>
         </dependency>
-        
+
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-cypher</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.neo4j.app</groupId>
             <artifactId>neo4j-server</artifactId>

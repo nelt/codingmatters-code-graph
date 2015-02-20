@@ -19,6 +19,15 @@
             <groupId>org.codingmatters.code.graph</groupId>
             <artifactId>codingmatters-code-graph-java-ast</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-annotations</artifactId>
+        </dependency>
     </dependencies>
     
 </project>
