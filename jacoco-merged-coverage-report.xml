@@ -27,14 +27,6 @@
                     <fileset dir="./codingmatters-code-graph-bytecode-parser/src/main/java/"/>
                 </sourcefiles>
             </group>
-            <group name="codingmatters-code-graph-cross-cutting">
-                <classfiles>
-                    <fileset dir="./codingmatters-code-graph-cross-cutting/target/classes/"/>
-                </classfiles>
-                <sourcefiles>
-                    <fileset dir="./codingmatters-code-graph-cross-cutting/src/main/java/"/>
-                </sourcefiles>
-            </group>
             
             <group name="codingmatters-code-graph-java-parser">
                 <classfiles>
