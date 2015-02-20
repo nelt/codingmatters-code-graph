@@ -4,7 +4,8 @@ import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParserException;
 import org.codingmatters.code.graph.bytecode.parser.resolver.JarResolver;
-import org.codingmatters.code.graph.cross.cutting.logs.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.jar.JarFile;
  */
 public class JarParser {
 
-    static private final Log log = Log.get(JarParser.class);
+    static private final Logger log = LoggerFactory.getLogger(JarParser.class);
 
     static public void parse(File jarFile, NodeProducer nodeProducer, PredicateProducer predicateProducer, String source) throws ClassParserException {
         try(JarResolver resolver = new JarResolver(jarFile);JarFile jar = new JarFile(jarFile)) {
@@ -45,7 +46,7 @@ public class JarParser {
         while(entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             if(this.isClassEntry(entry)) {
-                log.info("parsing jar entry %s", entry.getName());
+                log.info("parsing jar entry {}", entry.getName());
                 this.parser.parse(this.getClassName(entry));
             }
         }

@@ -4,7 +4,6 @@ import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.bytecode.parser.JarParser;
 import org.codingmatters.code.graph.bytecode.parser.exception.ClassParserException;
-import org.codingmatters.code.graph.cross.cutting.logs.Log;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jNodeProducer;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jPredicateProducer;
 import org.codingmatters.code.graph.storage.neo4j.Neo4jStore;
@@ -14,6 +13,8 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.impl.util.StringLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -26,7 +27,7 @@ import java.io.File;
  */
 public class CodeGraphRunner {
     
-    static private final Log log = Log.get(CodeGraphRunner.class);
+    static private final Logger log = LoggerFactory.getLogger(CodeGraphRunner.class);
     
     public static void main(String[] args) {
         if(args.length < 1) throw new RuntimeException("usage : <db path> {<jar path>...}");
@@ -45,21 +46,21 @@ public class CodeGraphRunner {
         NodeProducer nodeProducer = new Neo4jNodeProducer(graphDb, engine);
         PredicateProducer predicateProducer = new Neo4jPredicateProducer(graphDb, engine);
 
-        log.info("will parse %s jar files...", args.length - 1);
+        log.info("will parse {} jar files...", args.length - 1);
         for(int i = 1 ; i < args.length ; i++) {
             try {
-                log.info("parsing %s...", args[i]);
+                log.info("parsing {}...", args[i]);
                 try(Transaction tx = graphDb.beginTx();) {
                     JarParser.parse(new File(args[i]), nodeProducer, predicateProducer, source);
                     tx.success();
                 }
-                log.info("done parsing %s.", args[i]);
+                log.info("done parsing {}.", args[i]);
             } catch (ClassParserException e) {
-                log.report(e).error("error parsing jar file " + args[i]);
+                log.error("error parsing jar file " + args[i], e);
             }
         }
 
-        log.info("postprocessing source %s", source);
+        log.info("postprocessing source {}", source);
         new OverridesPostProcessor(graphDb, engine).process(source);
         
         log.info("done.");

@@ -4,7 +4,6 @@ import org.codingmatters.code.graph.api.beans.ClassBean;
 import org.codingmatters.code.graph.api.beans.FieldBean;
 import org.codingmatters.code.graph.api.beans.MethodBean;
 import org.codingmatters.code.graph.api.references.ClassRef;
-import org.codingmatters.code.graph.cross.cutting.logs.Log;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -15,6 +14,8 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 import org.neo4j.graphdb.schema.ConstraintType;
 import org.neo4j.graphdb.schema.IndexDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ import static org.codingmatters.code.graph.storage.neo4j.internal.Codec.Relation
  */
 public class Neo4jStore {
     
-    static private final Log log = Log.get(Neo4jStore.class);
+    static private final Logger log = LoggerFactory.getLogger(Neo4jStore.class);
     
     static public Runnable initializer(final GraphDatabaseService graphDb) {
         return new Runnable() {
@@ -58,7 +59,7 @@ public class Neo4jStore {
                     graphDb.schema().indexFor(Codec.Label.METHOD)
                             .on(property)
                             .create();
-                    log.info("created %s.%s index", Codec.Label.METHOD.name(), property);
+                    log.info("created {}.{} index", Codec.Label.METHOD.name(), property);
                 }
             }
 
@@ -67,7 +68,7 @@ public class Neo4jStore {
                     graphDb.schema().constraintFor(label)
                             .assertPropertyIsUnique(property)
                             .create();
-                    log.info("created %s.%s unique index", label.name(), property);
+                    log.info("created {}.{} unique index", label.name(), property);
                 }
             }
 

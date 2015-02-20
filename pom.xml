@@ -47,7 +47,6 @@
         <module>codingmatters-code-graph-bytecode-parser</module>
         <module>codingmatters-code-graph-neo4j-storage</module>
         <module>codingmatters-code-graph-main</module>
-        <module>codingmatters-code-graph-cross-cutting</module>
         <module>codingmatters-code-graph-java-source</module>
         <module>codingmatters-code-graph-test-support</module>
         <module>codingmatters-code-graph-ui</module>
@@ -60,9 +59,15 @@
         <hamcrest.version>1.3</hamcrest.version>
         <junit.version>4.11</junit.version>
         <antlr.version>4.3</antlr.version>
+        <slf4j.version>1.7.10</slf4j.version>
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -106,11 +111,6 @@
             <dependency>
                 <groupId>org.codingmatters.code.graph</groupId>
                 <artifactId>codingmatters-code-graph-main</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codingmatters.code.graph</groupId>
-                <artifactId>codingmatters-code-graph-cross-cutting</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -186,6 +186,12 @@
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-annotations</artifactId>
                 <version>${antlr.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
 
 

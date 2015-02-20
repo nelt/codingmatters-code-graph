@@ -2,7 +2,8 @@ package org.codingmatters.code.graph.storage.neo4j.internal;
 
 import org.codingmatters.code.graph.api.nodes.properties.annotations.Storable;
 import org.codingmatters.code.graph.api.nodes.properties.annotations.StorableProperties;
-import org.codingmatters.code.graph.cross.cutting.logs.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -19,7 +20,7 @@ import java.util.*;
  */
 public class Neo4jPropertiesStorageProcessor {
     
-    static private final Log log = Log.get(Neo4jPropertiesStorageProcessor.class);
+    static private final Logger log = LoggerFactory.getLogger(Neo4jPropertiesStorageProcessor.class);
     
 
     public ToStore prepareStorage(String nodeName, Object data) {
@@ -61,7 +62,7 @@ public class Neo4jPropertiesStorageProcessor {
         try {
             return propertiesGetter.invoke(o);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            log.error("cannot invoke getter %s on %s", propertiesGetter, o);
+            log.error("cannot invoke getter {} on {}", propertiesGetter, o);
             return null;
         }
     }
