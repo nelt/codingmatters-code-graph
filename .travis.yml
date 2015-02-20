@@ -9,9 +9,9 @@ env:
 before_install: 
 install: true
 script:
-- '[ ${COVERITY_SCAN_BRANCH} != 1 ] && mvn deploy -Pjacoco-coverage --settings .travis/settings.xml || true'
+- if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then mvn deploy -Pjacoco-coverage --settings .travis/settings.xml ; fi
 after_success:
-- '[ "${TRAVIS_BRANCH}" = "master" ] && .travis/update-site.sh || true'
+- if [ "${TRAVIS_BRANCH}" = "master" ]; then .travis/update-site.sh ; fi
 addons:
   coverity_scan:
     project:
