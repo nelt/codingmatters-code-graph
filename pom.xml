@@ -42,6 +42,10 @@
         </snapshotRepository>
     </distributionManagement>
     
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+    
     <modules>
         <module>codingmatters-code-graph-api</module>
         <module>codingmatters-code-graph-bytecode-parser</module>
