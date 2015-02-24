@@ -97,7 +97,11 @@ public class SourceFragmentGeneratorListenerTest {
                 ClassUsageFragment.class, "java.lang.Runnable");
         fragmentsAssertions.assertFragment(
                 FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#run");
-        
+        fragmentsAssertions.assertFragment(
+                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$1#run()");
+
+
+
         fragmentsAssertions.assertFragment(
                 ClassUsageFragment.class, "java.lang.String");
         fragmentsAssertions.assertFragment(
@@ -107,7 +111,14 @@ public class SourceFragmentGeneratorListenerTest {
                 ClassUsageFragment.class, "java.util.concurrent.atomic.AtomicBoolean");
         fragmentsAssertions.assertFragment(
                 FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#dd");
-
+        
+        fragmentsAssertions.assertFragment(
+                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#getField()Ljava/lang/String;");
+        
+        fragmentsAssertions.assertFragment(
+                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#method(Ljava/lang/String;)Ljava/lang/String;");
+        
+        
         fragmentsAssertions.assertNoMoreFragment();
 
         for (SourceFragment fragment : this.fragments) {

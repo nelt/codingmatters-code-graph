@@ -10,6 +10,7 @@ import org.codingmatters.code.graph.java.parser.fragments.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
 * Created with IntelliJ IDEA.
@@ -101,15 +102,21 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         }
         
         this.namingStack.push(qualifiedName);
+        this.addInnerClassCounterLevel();
+        
         this.inClass = true;
+        
         super.enterClassDeclaration(ctx);
     }
 
     @Override
     public void exitClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
-        super.exitClassDeclaration(ctx);
         this.inClass = false;
+
+        this.popInnerClassCounterLevel();
         this.namingStack.pop();
+        
+        super.exitClassDeclaration(ctx);
     }
 
     @Override
@@ -122,14 +129,67 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         for (JavaParser.VariableDeclaratorContext variableDeclaratorContext : ctx.variableDeclarators().variableDeclarator()) {
             this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);
         }
+    }
 
+    @Override
+    public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
+        super.enterMethodDeclaration(ctx);
 
+        try {
+            this.stream.fragment(new AbstractFragment.Builder()
+                    .withQualifiedName(this.namingStack.peek() + "#" + this.methodLocalName(ctx))
+                    .withText(ctx.Identifier().getText())
+                    .withStart(ctx.Identifier().getSymbol().getStartIndex())
+                    .withEnd(ctx.Identifier().getSymbol().getStopIndex())
+                    .build(MethodDeclarationFragment.class)
+            );
+        } catch (AbstractFragment.Builder.BuilderException e) {
+            e.printStackTrace();
+        } catch (DisambiguizerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Stack<AtomicInteger> innerClassCounters = new Stack<>();
+    
+
+    @Override
+    public void enterCreator(@NotNull JavaParser.CreatorContext ctx) {
+        super.enterCreator(ctx);
+        if(this.isAnonymousClassDeclaration(ctx)) {
+            int innerCount = this.innerClassCounters.peek().incrementAndGet();
+            this.namingStack.push(this.namingStack.peek() + "$" + innerCount);
+
+            this.addInnerClassCounterLevel();
+        }
+    }
+
+    @Override
+    public void exitCreator(@NotNull JavaParser.CreatorContext ctx) {
+        if(this.isAnonymousClassDeclaration(ctx)) {
+            this.popInnerClassCounterLevel();
+            this.namingStack.pop();
+        }
+        super.exitCreator(ctx);
+    }
+
+    private boolean isAnonymousClassDeclaration(@NotNull JavaParser.CreatorContext ctx) {
+        return ctx.classCreatorRest() != null && ctx.classCreatorRest().classBody() != null;
+    }
+    
+
+    private void addInnerClassCounterLevel() {
+        this.innerClassCounters.push(new AtomicInteger(0));
+    }
+
+    private void popInnerClassCounterLevel() {
+        this.innerClassCounters.pop();
     }
 
     private void emmitClassUsageForType(JavaParser.TypeContext type) {
         String name = type.getText();
         try {
-            String packageName = this.disambiguizer.choosePackage(name, this.builCandidates());
+            String packageName = this.choosePackageForTypeName(name);
             this.stream.fragment(new AbstractFragment.Builder()
                     .withQualifiedName(packageName + "." + name)
                     .withText(name)
@@ -141,6 +201,10 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         } catch (AbstractFragment.Builder.BuilderException e) {
             e.printStackTrace();
         }
+    }
+
+    private String choosePackageForTypeName(String name) throws DisambiguizerException {
+        return this.disambiguizer.choosePackage(name, this.builCandidates());
     }
 
 
@@ -167,5 +231,34 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         }
     }
 
+    private String methodLocalName(JavaParser.MethodDeclarationContext ctx) throws DisambiguizerException {
+        String returnType = "";
+        if(ctx.type() != null) {
+            String typeName = ctx.type().getText();
+            returnType = this.typeInMethodIdentifier(typeName);
+        }
+        
+        StringBuilder argumentTypes = new StringBuilder("");
+        if(ctx.formalParameters().formalParameterList() != null) {
+            for (JavaParser.FormalParameterContext formalParameterContext : ctx.formalParameters().formalParameterList().formalParameter()) {
+                String typeName = formalParameterContext.type().getText();
+                argumentTypes.append(this.typeInMethodIdentifier(typeName));
+            }
+            if(ctx.formalParameters().formalParameterList().lastFormalParameter() != null) {
+                String typeName = ctx.formalParameters().formalParameterList().lastFormalParameter().type().getText();
+                argumentTypes.append(this.typeInMethodIdentifier(typeName));
+            }
+        }
 
+        return String.format("%s(%s)%s", 
+                ctx.Identifier().getText(), 
+                argumentTypes.toString(), 
+                returnType);
+    }
+    
+    private String typeInMethodIdentifier(String simpleName) throws DisambiguizerException {
+        return String.format("L%s/%s;", 
+                this.choosePackageForTypeName(simpleName).replace('.', '/'), 
+                simpleName);
+    }
 }
