@@ -78,7 +78,14 @@ public class SourceFragmentGeneratorListenerTest {
             System.out.println(fragment);
         }
         System.out.println("-------------------------------------");
+        
+        
+        /*
+        package org.codingmatters.code.graph.bytecode.parser.util;
 
+        import java.util.Date;
+        import java.util.concurrent.atomic.*;
+         */
         fragmentsAssertions.assertFragment(
                 PackageFragment.class, "org.codingmatters.code.graph.bytecode.parser.util");
         fragmentsAssertions.assertFragment(
@@ -86,13 +93,30 @@ public class SourceFragmentGeneratorListenerTest {
         fragmentsAssertions.assertFragment(
                 ImportFragment.class, "java.util.concurrent.atomic");
         
+        /*
+        public class TestClass {
+         */
         fragmentsAssertions.assertFragment(
                 ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass");
+        
+        /*
+        static public class InnerStaticClass {
+           class InnerInner {
+            }
+        }
+         */
         fragmentsAssertions.assertFragment(
                 ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass");
         fragmentsAssertions.assertFragment(
                 ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass$InnerInner");
         
+        /*
+        static private Runnable run = new Runnable() {
+            @Override
+            public void run() {
+            }
+        };
+         */
         fragmentsAssertions.assertFragment(
                 ClassUsageFragment.class, "java.lang.Runnable");
         fragmentsAssertions.assertFragment(
@@ -101,7 +125,10 @@ public class SourceFragmentGeneratorListenerTest {
                 MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$1#run()");
 
 
-
+        /*
+        private final String field;
+        private AtomicBoolean dd;
+         */
         fragmentsAssertions.assertFragment(
                 ClassUsageFragment.class, "java.lang.String");
         fragmentsAssertions.assertFragment(
@@ -112,9 +139,29 @@ public class SourceFragmentGeneratorListenerTest {
         fragmentsAssertions.assertFragment(
                 FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#dd");
         
+        /*
+        public TestClass(String field) {
+            this.field = field;
+        }
+         */
+        fragmentsAssertions.assertFragment(
+                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#<init>(Ljava/lang/String;)V");
+        
+        
+        /*
+        public String getField() {
+            return field;
+        }
+         */
         fragmentsAssertions.assertFragment(
                 MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#getField()Ljava/lang/String;");
-        
+     
+        /*
+        public String method(String arg) throws Exception {
+            Date d = new Date();
+            return d.toString();
+        }
+         */
         fragmentsAssertions.assertFragment(
                 MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#method(Ljava/lang/String;)Ljava/lang/String;");
         
