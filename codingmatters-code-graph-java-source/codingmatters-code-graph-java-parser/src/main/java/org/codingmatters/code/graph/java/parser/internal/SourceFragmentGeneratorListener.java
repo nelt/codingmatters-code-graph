@@ -2,6 +2,7 @@ package org.codingmatters.code.graph.java.parser.internal;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.codingmatters.code.graph.java.ast.JavaBaseListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
 import org.codingmatters.code.graph.java.parser.fragments.*;
@@ -114,54 +115,57 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     @Override
     public void enterFieldDeclaration(@NotNull JavaParser.FieldDeclarationContext ctx) {
         super.enterFieldDeclaration(ctx);
+        JavaParser.TypeContext type = ctx.type();
 
-        String name = ctx.type().getText();
-        String qualifiedName = null;
-        System.out.println(name);
+        this.emmitClassUsageForType(type);
+
+        for (JavaParser.VariableDeclaratorContext variableDeclaratorContext : ctx.variableDeclarators().variableDeclarator()) {
+            this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);
+        }
 
 
-        ArrayList<String> candidates = new ArrayList<>();
-        candidates.add("java.lang");
-        candidates.addAll(this.imports);
-        candidates.add(this.namingStack.peek());
+    }
 
+    private void emmitClassUsageForType(JavaParser.TypeContext type) {
+        String name = type.getText();
         try {
-            String packageName = this.disambiguizer.choosePackage(name, candidates.toArray(new String[candidates.size()]));
+            String packageName = this.disambiguizer.choosePackage(name, this.builCandidates());
             this.stream.fragment(new AbstractFragment.Builder()
                     .withQualifiedName(packageName + "." + name)
                     .withText(name)
-                    .withStart(ctx.type().getStart().getStartIndex())
-                    .withEnd(ctx.type().getStart().getStopIndex())
+                    .withStart(type.getStart().getStartIndex())
+                    .withEnd(type.getStart().getStopIndex())
                     .build(ClassUsageFragment.class));
         } catch (DisambiguizerException e) {
             e.printStackTrace();
         } catch (AbstractFragment.Builder.BuilderException e) {
             e.printStackTrace();
         }
-
-        if(this.exists("java.lang." + name)) {
-            qualifiedName = "java.lang." + name;
-        } else {
-            for (String anImport : this.imports) {
-                if(anImport.endsWith("." + name)) {
-                    qualifiedName = anImport + "." + name;
-                    break;
-                }
-            }
-        }
-        System.out.println(qualifiedName);
-
-
-
     }
 
-    private boolean exists(String qualifiedName) {
-        boolean isLang = true;
+
+    private String[] builCandidates() {
+        ArrayList<String> candidates = new ArrayList<>();
+        candidates.add("java.lang");
+        candidates.addAll(this.imports);
+        candidates.add(this.namingStack.peek());
+
+        return candidates.toArray(new String[candidates.size()]);
+    }
+
+    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) {
+        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
         try {
-            Class.forName(qualifiedName);
-        } catch (ClassNotFoundException e) {
-            isLang = false;
+            this.stream.fragment(new AbstractFragment.Builder()
+                    .withQualifiedName(this.namingStack.peek() + "#" + identifier.getText())
+                    .withText(identifier.getText())
+                    .withStart(identifier.getSymbol().getStartIndex())
+                    .withEnd(identifier.getSymbol().getStopIndex())
+                    .build(FieldDeclarationFragment.class));
+        } catch (AbstractFragment.Builder.BuilderException e) {
+            e.printStackTrace();
         }
-        return isLang;
     }
+
+
 }

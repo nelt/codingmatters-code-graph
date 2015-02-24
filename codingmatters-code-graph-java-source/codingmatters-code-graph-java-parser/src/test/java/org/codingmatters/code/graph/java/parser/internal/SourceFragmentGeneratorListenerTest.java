@@ -85,18 +85,28 @@ public class SourceFragmentGeneratorListenerTest {
                 ImportFragment.class, "java.util.Date");
         fragmentsAssertions.assertFragment(
                 ImportFragment.class, "java.util.concurrent.atomic");
+        
         fragmentsAssertions.assertFragment(
                 ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass");
         fragmentsAssertions.assertFragment(
                 ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass");
         fragmentsAssertions.assertFragment(
                 ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass$InnerInner");
+        
         fragmentsAssertions.assertFragment(
                 ClassUsageFragment.class, "java.lang.Runnable");
         fragmentsAssertions.assertFragment(
+                FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#run");
+        
+        fragmentsAssertions.assertFragment(
                 ClassUsageFragment.class, "java.lang.String");
         fragmentsAssertions.assertFragment(
+                FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#field");
+        
+        fragmentsAssertions.assertFragment(
                 ClassUsageFragment.class, "java.util.concurrent.atomic.AtomicBoolean");
+        fragmentsAssertions.assertFragment(
+                FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#dd");
 
         fragmentsAssertions.assertNoMoreFragment();
 
