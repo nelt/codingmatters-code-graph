@@ -73,10 +73,11 @@ public class SourceFragmentGeneratorListenerTest {
 
         FragmentsAssertions fragmentsAssertions = new FragmentsAssertions(this.fragments);
 
-
+        System.out.println("-----------FRAGMENTS-----------------");
         for (SourceFragment fragment : this.fragments) {
             System.out.println(fragment);
         }
+        System.out.println("-------------------------------------");
 
         fragmentsAssertions.assertFragment(
                 PackageFragment.class, "org.codingmatters.code.graph.bytecode.parser.util");
@@ -124,10 +125,6 @@ public class SourceFragmentGeneratorListenerTest {
 
     }
 
-    private void assertFragment(Class clazz, String qualifiedName, SourceFragment actual) {
-        assertThat(actual).isOfAnyClassIn(clazz);
-        assertThat(actual.qualifiedName()).isEqualTo(qualifiedName);
-    }
 
     private void parseResourceWith(String resource, JavaListener lst) throws IOException {
         this.parseWith(fromResourceFile(resource), lst);
