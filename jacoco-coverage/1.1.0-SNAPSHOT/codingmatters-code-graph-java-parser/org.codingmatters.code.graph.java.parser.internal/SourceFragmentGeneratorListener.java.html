@@ -2,6 +2,7 @@
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.codingmatters.code.graph.java.ast.JavaBaseListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
 import org.codingmatters.code.graph.java.parser.fragments.*;
@@ -9,6 +10,7 @@ import org.codingmatters.code.graph.java.parser.fragments.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
 * Created with IntelliJ IDEA.
@@ -22,147 +24,242 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     private final FragmentStream stream;
     private final ClassDisambiguizer disambiguizer;
 
-<span class="fc" id="L25">    private final Stack&lt;String&gt; namingStack = new Stack&lt;&gt;();</span>
-<span class="fc" id="L26">    private boolean inClass = false;</span>
+<span class="fc" id="L27">    private final Stack&lt;String&gt; namingStack = new Stack&lt;&gt;();</span>
+<span class="fc" id="L28">    private boolean inClass = false;</span>
 
-<span class="fc" id="L28">    private final LinkedList&lt;String&gt; imports = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L30">    private final LinkedList&lt;String&gt; imports = new LinkedList&lt;&gt;();</span>
 
-<span class="fc" id="L30">    public SourceFragmentGeneratorListener(FragmentStream stream, ClassDisambiguizer disambiguizer) {</span>
-<span class="fc" id="L31">        this.stream = stream;</span>
-<span class="fc" id="L32">        this.disambiguizer = disambiguizer;</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L32">    public SourceFragmentGeneratorListener(FragmentStream stream, ClassDisambiguizer disambiguizer) {</span>
+<span class="fc" id="L33">        this.stream = stream;</span>
+<span class="fc" id="L34">        this.disambiguizer = disambiguizer;</span>
+<span class="fc" id="L35">    }</span>
 
     @Override
     public void enterCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
-<span class="fc" id="L37">        JavaParser.QualifiedNameContext qualifiedName = ctx.packageDeclaration().qualifiedName();</span>
-<span class="fc" id="L38">        Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();</span>
-<span class="fc" id="L39">        Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();</span>
+<span class="fc" id="L39">        JavaParser.QualifiedNameContext qualifiedName = ctx.packageDeclaration().qualifiedName();</span>
+<span class="fc" id="L40">        Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();</span>
+<span class="fc" id="L41">        Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();</span>
         
         try {
-<span class="fc" id="L42">            this.stream.fragment(new AbstractFragment.Builder()</span>
+<span class="fc" id="L44">            this.stream.fragment(new AbstractFragment.Builder()</span>
                     .withText(qualifiedName.getText())
                     .withQualifiedName(qualifiedName.getText())
                     .withStart(firstSymbol.getStartIndex())
                     .withEnd(lastSymbol.getStopIndex())
                     .build(PackageFragment.class));
-<span class="nc" id="L48">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
-<span class="nc" id="L49">            e.printStackTrace();</span>
-<span class="fc" id="L50">        }</span>
+<span class="nc" id="L50">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
+<span class="nc" id="L51">            e.printStackTrace();</span>
+<span class="fc" id="L52">        }</span>
 
-<span class="fc" id="L52">        this.namingStack.push(qualifiedName.getText());</span>
+<span class="fc" id="L54">        this.namingStack.push(qualifiedName.getText());</span>
         
-<span class="fc" id="L54">        super.enterCompilationUnit(ctx);</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L56">        super.enterCompilationUnit(ctx);</span>
+<span class="fc" id="L57">    }</span>
 
     @Override
     public void enterImportDeclaration(@NotNull JavaParser.ImportDeclarationContext ctx) {
-<span class="fc" id="L59">        JavaParser.QualifiedNameContext qualifiedName = ctx.qualifiedName();</span>
-<span class="fc" id="L60">        Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();</span>
-<span class="fc" id="L61">        Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();</span>
+<span class="fc" id="L61">        JavaParser.QualifiedNameContext qualifiedName = ctx.qualifiedName();</span>
+<span class="fc" id="L62">        Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();</span>
+<span class="fc" id="L63">        Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();</span>
 
-<span class="fc" id="L63">        this.imports.add(qualifiedName.getText());</span>
+<span class="fc" id="L65">        this.imports.add(qualifiedName.getText());</span>
 
         try {
-<span class="fc" id="L66">            this.stream.fragment(new AbstractFragment.Builder()</span>
+<span class="fc" id="L68">            this.stream.fragment(new AbstractFragment.Builder()</span>
                     .withText(qualifiedName.getText())
                     .withQualifiedName(qualifiedName.getText())
                     .withStart(firstSymbol.getStartIndex())
                     .withEnd(lastSymbol.getStopIndex())
                     .build(ImportFragment.class));
-<span class="nc" id="L72">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
-<span class="nc" id="L73">            e.printStackTrace();</span>
-<span class="fc" id="L74">        }</span>
+<span class="nc" id="L74">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
+<span class="nc" id="L75">            e.printStackTrace();</span>
+<span class="fc" id="L76">        }</span>
         
-<span class="fc" id="L76">        super.enterImportDeclaration(ctx);</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L78">        super.enterImportDeclaration(ctx);</span>
+<span class="fc" id="L79">    }</span>
 
     @Override
     public void exitCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
-<span class="fc" id="L81">        super.exitCompilationUnit(ctx);</span>
-<span class="fc" id="L82">        this.namingStack.pop();</span>
-<span class="fc" id="L83">    }</span>
+<span class="fc" id="L83">        super.exitCompilationUnit(ctx);</span>
+<span class="fc" id="L84">        this.namingStack.pop();</span>
+<span class="fc" id="L85">    }</span>
 
     @Override
     public void enterClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
-<span class="fc" id="L87">        String name = ctx.Identifier().getText();</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">        String qualifiedName = this.namingStack.peek() + (this.inClass ? &quot;$&quot; : &quot;.&quot;) + name;</span>
-<span class="fc" id="L89">        Token symbol = ctx.Identifier().getSymbol();</span>
+<span class="fc" id="L89">        String name = ctx.Identifier().getText();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        String qualifiedName = this.namingStack.peek() + (this.inClass ? &quot;$&quot; : &quot;.&quot;) + name;</span>
+<span class="fc" id="L91">        Token symbol = ctx.Identifier().getSymbol();</span>
 
         try {
-<span class="fc" id="L92">            this.stream.fragment(new AbstractFragment.Builder()</span>
+<span class="fc" id="L94">            this.stream.fragment(new AbstractFragment.Builder()</span>
                     .withText(ctx.Identifier().getText())
                     .withQualifiedName(qualifiedName)
                     .withStart(symbol.getStartIndex())
                     .withEnd(symbol.getStopIndex())
                     .build(ClassDeclarationFragment.class));
-<span class="nc" id="L98">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
-<span class="nc" id="L99">            e.printStackTrace();</span>
-<span class="fc" id="L100">        }</span>
+<span class="nc" id="L100">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
+<span class="nc" id="L101">            e.printStackTrace();</span>
+<span class="fc" id="L102">        }</span>
         
-<span class="fc" id="L102">        this.namingStack.push(qualifiedName);</span>
-<span class="fc" id="L103">        this.inClass = true;</span>
-<span class="fc" id="L104">        super.enterClassDeclaration(ctx);</span>
-<span class="fc" id="L105">    }</span>
+<span class="fc" id="L104">        this.namingStack.push(qualifiedName);</span>
+<span class="fc" id="L105">        this.addInnerClassCounterLevel();</span>
+        
+<span class="fc" id="L107">        this.inClass = true;</span>
+        
+<span class="fc" id="L109">        super.enterClassDeclaration(ctx);</span>
+<span class="fc" id="L110">    }</span>
 
     @Override
     public void exitClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
-<span class="fc" id="L109">        super.exitClassDeclaration(ctx);</span>
-<span class="fc" id="L110">        this.inClass = false;</span>
-<span class="fc" id="L111">        this.namingStack.pop();</span>
-<span class="fc" id="L112">    }</span>
+<span class="fc" id="L114">        this.inClass = false;</span>
+
+<span class="fc" id="L116">        this.popInnerClassCounterLevel();</span>
+<span class="fc" id="L117">        this.namingStack.pop();</span>
+        
+<span class="fc" id="L119">        super.exitClassDeclaration(ctx);</span>
+<span class="fc" id="L120">    }</span>
 
     @Override
     public void enterFieldDeclaration(@NotNull JavaParser.FieldDeclarationContext ctx) {
-<span class="fc" id="L116">        super.enterFieldDeclaration(ctx);</span>
+<span class="fc" id="L124">        super.enterFieldDeclaration(ctx);</span>
+<span class="fc" id="L125">        JavaParser.TypeContext type = ctx.type();</span>
 
-<span class="fc" id="L118">        String name = ctx.type().getText();</span>
-<span class="fc" id="L119">        String qualifiedName = null;</span>
-<span class="fc" id="L120">        System.out.println(name);</span>
+<span class="fc" id="L127">        this.emmitClassUsageForType(type);</span>
 
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        for (JavaParser.VariableDeclaratorContext variableDeclaratorContext : ctx.variableDeclarators().variableDeclarator()) {</span>
+<span class="fc" id="L130">            this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);</span>
+<span class="fc" id="L131">        }</span>
+<span class="fc" id="L132">    }</span>
 
-<span class="fc" id="L123">        ArrayList&lt;String&gt; candidates = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L124">        candidates.add(&quot;java.lang&quot;);</span>
-<span class="fc" id="L125">        candidates.addAll(this.imports);</span>
-<span class="fc" id="L126">        candidates.add(this.namingStack.peek());</span>
+    @Override
+    public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
+<span class="fc" id="L136">        super.enterMethodDeclaration(ctx);</span>
 
         try {
-<span class="fc" id="L129">            String packageName = this.disambiguizer.choosePackage(name, candidates.toArray(new String[candidates.size()]));</span>
-<span class="fc" id="L130">            this.stream.fragment(new AbstractFragment.Builder()</span>
+<span class="fc" id="L139">            this.stream.fragment(new AbstractFragment.Builder()</span>
+                    .withQualifiedName(this.namingStack.peek() + &quot;#&quot; + this.methodLocalName(ctx))
+                    .withText(ctx.Identifier().getText())
+                    .withStart(ctx.Identifier().getSymbol().getStartIndex())
+                    .withEnd(ctx.Identifier().getSymbol().getStopIndex())
+                    .build(MethodDeclarationFragment.class)
+            );
+<span class="nc" id="L146">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
+<span class="nc" id="L147">            e.printStackTrace();</span>
+<span class="nc" id="L148">        } catch (DisambiguizerException e) {</span>
+<span class="nc" id="L149">            e.printStackTrace();</span>
+<span class="pc" id="L150">        }</span>
+<span class="fc" id="L151">    }</span>
+
+<span class="fc" id="L153">    private Stack&lt;AtomicInteger&gt; innerClassCounters = new Stack&lt;&gt;();</span>
+    
+
+    @Override
+    public void enterCreator(@NotNull JavaParser.CreatorContext ctx) {
+<span class="fc" id="L158">        super.enterCreator(ctx);</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if(this.isAnonymousClassDeclaration(ctx)) {</span>
+<span class="fc" id="L160">            int innerCount = this.innerClassCounters.peek().incrementAndGet();</span>
+<span class="fc" id="L161">            this.namingStack.push(this.namingStack.peek() + &quot;$&quot; + innerCount);</span>
+
+<span class="fc" id="L163">            this.addInnerClassCounterLevel();</span>
+        }
+<span class="fc" id="L165">    }</span>
+
+    @Override
+    public void exitCreator(@NotNull JavaParser.CreatorContext ctx) {
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if(this.isAnonymousClassDeclaration(ctx)) {</span>
+<span class="fc" id="L170">            this.popInnerClassCounterLevel();</span>
+<span class="fc" id="L171">            this.namingStack.pop();</span>
+        }
+<span class="fc" id="L173">        super.exitCreator(ctx);</span>
+<span class="fc" id="L174">    }</span>
+
+    private boolean isAnonymousClassDeclaration(@NotNull JavaParser.CreatorContext ctx) {
+<span class="pc bpc" id="L177" title="1 of 4 branches missed.">        return ctx.classCreatorRest() != null &amp;&amp; ctx.classCreatorRest().classBody() != null;</span>
+    }
+    
+
+    private void addInnerClassCounterLevel() {
+<span class="fc" id="L182">        this.innerClassCounters.push(new AtomicInteger(0));</span>
+<span class="fc" id="L183">    }</span>
+
+    private void popInnerClassCounterLevel() {
+<span class="fc" id="L186">        this.innerClassCounters.pop();</span>
+<span class="fc" id="L187">    }</span>
+
+    private void emmitClassUsageForType(JavaParser.TypeContext type) {
+<span class="fc" id="L190">        String name = type.getText();</span>
+        try {
+<span class="fc" id="L192">            String packageName = this.choosePackageForTypeName(name);</span>
+<span class="fc" id="L193">            this.stream.fragment(new AbstractFragment.Builder()</span>
                     .withQualifiedName(packageName + &quot;.&quot; + name)
                     .withText(name)
-                    .withStart(ctx.type().getStart().getStartIndex())
-                    .withEnd(ctx.type().getStart().getStopIndex())
+                    .withStart(type.getStart().getStartIndex())
+                    .withEnd(type.getStart().getStopIndex())
                     .build(ClassUsageFragment.class));
-<span class="nc" id="L136">        } catch (DisambiguizerException e) {</span>
-<span class="nc" id="L137">            e.printStackTrace();</span>
-<span class="nc" id="L138">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
-<span class="nc" id="L139">            e.printStackTrace();</span>
-<span class="pc" id="L140">        }</span>
+<span class="nc" id="L199">        } catch (DisambiguizerException e) {</span>
+<span class="nc" id="L200">            e.printStackTrace();</span>
+<span class="nc" id="L201">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
+<span class="nc" id="L202">            e.printStackTrace();</span>
+<span class="pc" id="L203">        }</span>
+<span class="fc" id="L204">    }</span>
 
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        if(this.exists(&quot;java.lang.&quot; + name)) {</span>
-<span class="fc" id="L143">            qualifiedName = &quot;java.lang.&quot; + name;</span>
-        } else {
-<span class="fc bfc" id="L145" title="All 2 branches covered.">            for (String anImport : this.imports) {</span>
-<span class="pc bpc" id="L146" title="1 of 2 branches missed.">                if(anImport.endsWith(&quot;.&quot; + name)) {</span>
-<span class="nc" id="L147">                    qualifiedName = anImport + &quot;.&quot; + name;</span>
-<span class="nc" id="L148">                    break;</span>
-                }
-<span class="fc" id="L150">            }</span>
-        }
-<span class="fc" id="L152">        System.out.println(qualifiedName);</span>
+    private String choosePackageForTypeName(String name) throws DisambiguizerException {
+<span class="fc" id="L207">        return this.disambiguizer.choosePackage(name, this.builCandidates());</span>
+    }
 
 
+    private String[] builCandidates() {
+<span class="fc" id="L212">        ArrayList&lt;String&gt; candidates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L213">        candidates.add(&quot;java.lang&quot;);</span>
+<span class="fc" id="L214">        candidates.addAll(this.imports);</span>
+<span class="fc" id="L215">        candidates.add(this.namingStack.peek());</span>
 
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L217">        return candidates.toArray(new String[candidates.size()]);</span>
+    }
 
-    private boolean exists(String qualifiedName) {
-<span class="fc" id="L159">        boolean isLang = true;</span>
+    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) {
+<span class="fc" id="L221">        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();</span>
         try {
-<span class="fc" id="L161">            Class.forName(qualifiedName);</span>
-<span class="fc" id="L162">        } catch (ClassNotFoundException e) {</span>
-<span class="fc" id="L163">            isLang = false;</span>
-<span class="fc" id="L164">        }</span>
-<span class="fc" id="L165">        return isLang;</span>
+<span class="fc" id="L223">            this.stream.fragment(new AbstractFragment.Builder()</span>
+                    .withQualifiedName(this.namingStack.peek() + &quot;#&quot; + identifier.getText())
+                    .withText(identifier.getText())
+                    .withStart(identifier.getSymbol().getStartIndex())
+                    .withEnd(identifier.getSymbol().getStopIndex())
+                    .build(FieldDeclarationFragment.class));
+<span class="nc" id="L229">        } catch (AbstractFragment.Builder.BuilderException e) {</span>
+<span class="nc" id="L230">            e.printStackTrace();</span>
+<span class="fc" id="L231">        }</span>
+<span class="fc" id="L232">    }</span>
+
+    private String methodLocalName(JavaParser.MethodDeclarationContext ctx) throws DisambiguizerException {
+<span class="fc" id="L235">        String returnType = &quot;&quot;;</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        if(ctx.type() != null) {</span>
+<span class="fc" id="L237">            String typeName = ctx.type().getText();</span>
+<span class="fc" id="L238">            returnType = this.typeInMethodIdentifier(typeName);</span>
+        }
+        
+<span class="fc" id="L241">        StringBuilder argumentTypes = new StringBuilder(&quot;&quot;);</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        if(ctx.formalParameters().formalParameterList() != null) {</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">            for (JavaParser.FormalParameterContext formalParameterContext : ctx.formalParameters().formalParameterList().formalParameter()) {</span>
+<span class="fc" id="L244">                String typeName = formalParameterContext.type().getText();</span>
+<span class="fc" id="L245">                argumentTypes.append(this.typeInMethodIdentifier(typeName));</span>
+<span class="fc" id="L246">            }</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">            if(ctx.formalParameters().formalParameterList().lastFormalParameter() != null) {</span>
+<span class="nc" id="L248">                String typeName = ctx.formalParameters().formalParameterList().lastFormalParameter().type().getText();</span>
+<span class="nc" id="L249">                argumentTypes.append(this.typeInMethodIdentifier(typeName));</span>
+            }
+        }
+
+<span class="fc" id="L253">        return String.format(&quot;%s(%s)%s&quot;, </span>
+                ctx.Identifier().getText(), 
+                argumentTypes.toString(), 
+                returnType);
+    }
+    
+    private String typeInMethodIdentifier(String simpleName) throws DisambiguizerException {
+<span class="fc" id="L260">        return String.format(&quot;L%s/%s;&quot;, </span>
+                this.choosePackageForTypeName(simpleName).replace('.', '/'), 
+                simpleName);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
