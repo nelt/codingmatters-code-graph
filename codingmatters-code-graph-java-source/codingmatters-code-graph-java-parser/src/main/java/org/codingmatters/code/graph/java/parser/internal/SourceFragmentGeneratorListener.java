@@ -36,22 +36,33 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
 
     @Override
     public void enterCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
-        JavaParser.QualifiedNameContext qualifiedName = ctx.packageDeclaration().qualifiedName();
-        Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();
-        Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();
-        
-        try {
-            this.stream.fragment(fragmentBuilder()
-                    .withText(qualifiedName.getText())
-                    .withQualifiedName(qualifiedName.getText())
-                    .withStart(firstSymbol.getStartIndex())
-                    .withEnd(lastSymbol.getStopIndex())
-                    .build(PackageFragment.class));
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            throw new SourceFragmentUncheckedException("error parsing compilation unit", e);
-        }
+        if(ctx.packageDeclaration() != null) {
+            JavaParser.QualifiedNameContext qualifiedName = ctx.packageDeclaration().qualifiedName();
+            Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();
+            Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();
 
-        this.namingContext.next(qualifiedName.getText());
+            try {
+                String cannonicalName = this.support.canonical(qualifiedName.getText());
+                this.stream.fragment(fragmentBuilder()
+                        .withText(qualifiedName.getText())
+                        .withQualifiedName(cannonicalName)
+                        .withStart(firstSymbol.getStartIndex())
+                        .withEnd(lastSymbol.getStopIndex())
+                        .build(PackageFragment.class));
+            } catch (AbstractFragment.Builder.BuilderException e) {
+                throw new SourceFragmentUncheckedException("error parsing compilation unit", e);
+            }
+
+            this.namingContext.next(qualifiedName.getText());
+        } else {
+            this.namingContext.next("");
+        }
+    }
+
+
+    @Override
+    public void exitCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
+        this.namingContext.previous();
     }
  
     @Override
@@ -63,9 +74,10 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         this.support.addImport(qualifiedName.getText());
 
         try {
+            String cannonicalName = this.support.canonical(qualifiedName.getText());
             this.stream.fragment(fragmentBuilder()
                     .withText(qualifiedName.getText())
-                    .withQualifiedName(qualifiedName.getText())
+                    .withQualifiedName(cannonicalName)
                     .withStart(firstSymbol.getStartIndex())
                     .withEnd(lastSymbol.getStopIndex())
                     .build(ImportFragment.class));
@@ -73,22 +85,26 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             throw new SourceFragmentUncheckedException("error parsing import declaration", e);
         }
     }
-
-    @Override
-    public void exitCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
-        this.namingContext.previous();
-    }
     
     @Override
     public void enterClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         String name = ctx.Identifier().getText();
-        String qualifiedName = this.namingContext.current() + (this.inClass ? "$" : ".") + name;
+        String qualifiedName;
+        if(this.inClass) {
+            qualifiedName = this.namingContext.current() + "$" + name;
+        } else if(this.namingContext.current().isEmpty()) {
+            qualifiedName = name;
+        } else {
+            qualifiedName = this.namingContext.current() + "." + name;
+        }
+        String canonicalName = this.support.canonical(qualifiedName);
+        
         Token symbol = ctx.Identifier().getSymbol();
 
         try {
             this.stream.fragment(fragmentBuilder()
                     .withText(ctx.Identifier().getText())
-                    .withQualifiedName(qualifiedName)
+                    .withQualifiedName(canonicalName)
                     .withStart(symbol.getStartIndex())
                     .withEnd(symbol.getStopIndex())
                     .build(ClassDeclarationFragment.class));
@@ -124,7 +140,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         String name = type.getText();
         String packageName = this.support.choosePackageForTypeName(name);
         this.stream.fragment(fragmentBuilder()
-                .withQualifiedName(packageName + "." + name)
+                .withQualifiedName(this.support.canonical(packageName + "." + name))
                 .withText(name)
                 .withStart(type.getStart().getStartIndex())
                 .withEnd(type.getStart().getStopIndex())
@@ -134,7 +150,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) throws AbstractFragment.Builder.BuilderException {
         TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
         this.stream.fragment(fragmentBuilder()
-                .withQualifiedName(this.namingContext.current() + "#" + identifier.getText())
+                .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + identifier.getText())
                 .withText(identifier.getText())
                 .withStart(identifier.getSymbol().getStartIndex())
                 .withEnd(identifier.getSymbol().getStopIndex())
@@ -145,7 +161,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
         try {
             this.stream.fragment(fragmentBuilder()
-                            .withQualifiedName(this.namingContext.current() + "#" + this.support.methodLocalName(ctx))
+                            .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + this.support.methodLocalName(ctx))
                             .withText(ctx.Identifier().getText())
                             .withStart(ctx.Identifier().getSymbol().getStartIndex())
                             .withEnd(ctx.Identifier().getSymbol().getStopIndex())
@@ -160,7 +176,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     public void enterConstructorDeclaration(@NotNull JavaParser.ConstructorDeclarationContext ctx) {
         try {
             this.stream.fragment(fragmentBuilder()
-                            .withQualifiedName(this.namingContext.current() + "#" + this.support.constructorLocalName(ctx))
+                            .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + this.support.constructorLocalName(ctx))
                             .withText(ctx.Identifier().getText())
                             .withStart(ctx.Identifier().getSymbol().getStartIndex())
                             .withEnd(ctx.Identifier().getSymbol().getStopIndex())

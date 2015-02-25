@@ -25,10 +25,42 @@ public class SourceFragmentGeneratorListenerTest {
                 .withPackage("java.util.concurrent.atomic").forClass("AtomicBoolean")
                 .build();
     }
+
+    @Test
+    public void testClassWithPackage() throws Exception {
+        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass-package";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+
+        parsedFragments.assertFragment(
+                PackageFragment.class, "org/codingmatters/code/graph/bytecode/parser/util");
+        parsedFragments.assertFragment(
+                ClassDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass");
+
+        parsedFragments.assertNoMoreFragment();
+        parsedFragments.assertAllFragmentAreCoherent(resourceClass);
+    }
     
     @Test
+    public void testClassWithNoPackage() throws Exception {
+        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass-no-package";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+
+        parsedFragments.assertFragment(
+                ClassDeclarationFragment.class, "TestClass");
+        parsedFragments.assertFragment(
+                ClassUsageFragment.class, "java/lang/String");
+        parsedFragments.assertFragment(
+                FieldDeclarationFragment.class, "TestClass#field");
+        parsedFragments.assertFragment(
+                MethodDeclarationFragment.class, "TestClass#method()V");
+
+        parsedFragments.assertNoMoreFragment();
+        parsedFragments.assertAllFragmentAreCoherent(resourceClass);
+    }
+
+    @Test
     public void testParse() throws Exception {
-        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass";
+        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass-complete";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
         System.out.println("-----------FRAGMENTS-----------------");
@@ -45,17 +77,17 @@ public class SourceFragmentGeneratorListenerTest {
         import java.util.concurrent.atomic.*;
          */
         parsedFragments.assertFragment(
-                PackageFragment.class, "org.codingmatters.code.graph.bytecode.parser.util");
+                PackageFragment.class, "org/codingmatters/code/graph/bytecode/parser/util");
         parsedFragments.assertFragment(
-                ImportFragment.class, "java.util.Date");
+                ImportFragment.class, "java/util/Date");
         parsedFragments.assertFragment(
-                ImportFragment.class, "java.util.concurrent.atomic");
+                ImportFragment.class, "java/util/concurrent/atomic");
         
         /*
         public class TestClass {
          */
         parsedFragments.assertFragment(
-                ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass");
+                ClassDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass");
         
         /*
         static public class InnerStaticClass {
@@ -64,9 +96,9 @@ public class SourceFragmentGeneratorListenerTest {
         }
          */
         parsedFragments.assertFragment(
-                ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass");
+                ClassDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass$InnerStaticClass");
         parsedFragments.assertFragment(
-                ClassDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$InnerStaticClass$InnerInner");
+                ClassDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass$InnerStaticClass$InnerInner");
         
         /*
         static private Runnable run = new Runnable() {
@@ -76,11 +108,11 @@ public class SourceFragmentGeneratorListenerTest {
         };
          */
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java.lang.Runnable");
+                ClassUsageFragment.class, "java/lang/Runnable");
         parsedFragments.assertFragment(
-                FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#run");
+                FieldDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#run");
         parsedFragments.assertFragment(
-                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass$1#run()");
+                MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass$1#run()V");
 
 
         /*
@@ -88,14 +120,14 @@ public class SourceFragmentGeneratorListenerTest {
         private AtomicBoolean dd;
          */
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java.lang.String");
+                ClassUsageFragment.class, "java/lang/String");
         parsedFragments.assertFragment(
-                FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#field");
+                FieldDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#field");
 
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java.util.concurrent.atomic.AtomicBoolean");
+                ClassUsageFragment.class, "java/util/concurrent/atomic/AtomicBoolean");
         parsedFragments.assertFragment(
-                FieldDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#dd");
+                FieldDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#dd");
         
         /*
         public TestClass(String field) {
@@ -103,7 +135,7 @@ public class SourceFragmentGeneratorListenerTest {
         }
          */
         parsedFragments.assertFragment(
-                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#<init>(Ljava/lang/String;)V");
+                MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#<init>(Ljava/lang/String;)V");
         
         
         /*
@@ -112,7 +144,7 @@ public class SourceFragmentGeneratorListenerTest {
         }
          */
         parsedFragments.assertFragment(
-                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#getField()Ljava/lang/String;");
+                MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#getField()Ljava/lang/String;");
      
         /*
         public String method(String arg) throws Exception {
@@ -121,7 +153,7 @@ public class SourceFragmentGeneratorListenerTest {
         }
          */
         parsedFragments.assertFragment(
-                MethodDeclarationFragment.class, "org.codingmatters.code.graph.bytecode.parser.util.TestClass#method(Ljava/lang/String;)Ljava/lang/String;");
+                MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#method(Ljava/lang/String;)Ljava/lang/String;");
 
 
         parsedFragments.assertNoMoreFragment();

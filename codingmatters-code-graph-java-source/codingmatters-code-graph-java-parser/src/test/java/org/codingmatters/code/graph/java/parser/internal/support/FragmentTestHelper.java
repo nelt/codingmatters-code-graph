@@ -55,6 +55,9 @@ public class FragmentTestHelper {
 
         String source = fileContents.toString();
 
-        Assert.assertEquals("expected " + sourceFragment.toString(), source.substring(sourceFragment.start(), sourceFragment.end() + 1), sourceFragment.text());
+        Assert.assertEquals(
+                "expected " + sourceFragment.toString(), 
+                source.substring(sourceFragment.start(), sourceFragment.end() + 1), 
+                sourceFragment.text());
     }
 }

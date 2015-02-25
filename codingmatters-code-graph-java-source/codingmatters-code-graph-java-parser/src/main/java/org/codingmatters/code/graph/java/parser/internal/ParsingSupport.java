@@ -47,18 +47,17 @@ public class ParsingSupport {
         this.imports.add(qualifiedNameText);
     }
     
-    
-    
-    
     private String typeSpec(JavaParser.TypeContext type) throws DisambiguizerException {
-        String returnType = "";
         if(type != null) {
-            String typeName = type.getText();
-            returnType = this.typeInMethodIdentifier(typeName);
+            return this.typeInMethodIdentifier(type.getText());
+        } else {
+            return "V";
         }
-        return returnType;
     }
-
+    
+    public String canonical(String text) {
+        return text.replaceAll("\\.", "/");
+    }
 
     private String formalParametersTypesSpec(JavaParser.FormalParametersContext formalParameters) throws DisambiguizerException {
         StringBuilder result = new StringBuilder("");
@@ -87,8 +86,9 @@ public class ParsingSupport {
         ArrayList<String> candidates = new ArrayList<>();
         candidates.add("java.lang");
         candidates.addAll(this.imports);
-        candidates.add(this.namingContext.current());
-
+        if(! this.namingContext.current().isEmpty()) {
+            candidates.add(this.namingContext.current());
+        }
         return candidates.toArray(new String[candidates.size()]);
     }
 
