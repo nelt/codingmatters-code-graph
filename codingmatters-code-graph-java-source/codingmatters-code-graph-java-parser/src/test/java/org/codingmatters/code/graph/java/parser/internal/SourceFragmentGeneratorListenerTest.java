@@ -28,7 +28,7 @@ public class SourceFragmentGeneratorListenerTest {
 
     @Test
     public void testClassWithPackage() throws Exception {
-        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass-package";
+        String resourceClass = "TestClass-package";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
         parsedFragments.assertFragment(
@@ -42,7 +42,7 @@ public class SourceFragmentGeneratorListenerTest {
     
     @Test
     public void testClassWithNoPackage() throws Exception {
-        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass-no-package";
+        String resourceClass = "TestClass-no-package";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
         parsedFragments.assertFragment(
@@ -60,7 +60,7 @@ public class SourceFragmentGeneratorListenerTest {
 
     @Test
     public void testParse() throws Exception {
-        String resourceClass = "org.codingmatters.code.graph.bytecode.parser.util.TestClass-complete";
+        String resourceClass = "TestClass-complete";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
         System.out.println("-----------FRAGMENTS-----------------");
