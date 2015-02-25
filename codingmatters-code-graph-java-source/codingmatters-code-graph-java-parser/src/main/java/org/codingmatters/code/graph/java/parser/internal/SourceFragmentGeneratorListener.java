@@ -15,8 +15,7 @@ import org.codingmatters.code.graph.java.parser.fragments.*;
 * To change this template use File | Settings | File Templates.
 */
 public class SourceFragmentGeneratorListener extends JavaBaseListener {
-
-
+    
     private static AbstractFragment.Builder fragmentBuilder() {
         return new AbstractFragment.Builder();
     }
@@ -49,12 +48,10 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
                     .withEnd(lastSymbol.getStopIndex())
                     .build(PackageFragment.class));
         } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
+            throw new SourceFragmentUncheckedException("error parsing compilation unit", e);
         }
 
         this.namingContext.next(qualifiedName.getText());
-        
-        super.enterCompilationUnit(ctx);
     }
  
     @Override
@@ -73,19 +70,15 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
                     .withEnd(lastSymbol.getStopIndex())
                     .build(ImportFragment.class));
         } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
+            throw new SourceFragmentUncheckedException("error parsing import declaration", e);
         }
-        
-        super.enterImportDeclaration(ctx);
     }
 
     @Override
     public void exitCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
-        super.exitCompilationUnit(ctx);
         this.namingContext.previous();
     }
     
-
     @Override
     public void enterClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         String name = ctx.Identifier().getText();
@@ -100,74 +93,56 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
                     .withEnd(symbol.getStopIndex())
                     .build(ClassDeclarationFragment.class));
         } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
+            throw new SourceFragmentUncheckedException("error parsing class declaration", e);
         }
 
         this.namingContext.next(qualifiedName);
         this.innerClassCounter.next();
-        
         this.inClass = true;
-        
-        super.enterClassDeclaration(ctx);
     }
 
     @Override
     public void exitClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         this.inClass = false;
-
         this.innerClassCounter.previous();
         this.namingContext.previous();
-        
-        super.exitClassDeclaration(ctx);
     }
 
     @Override
     public void enterFieldDeclaration(@NotNull JavaParser.FieldDeclarationContext ctx) {
-        super.enterFieldDeclaration(ctx);
-        JavaParser.TypeContext type = ctx.type();
-
-        this.emmitClassUsageForType(type);
-
-        for (JavaParser.VariableDeclaratorContext variableDeclaratorContext : ctx.variableDeclarators().variableDeclarator()) {
-            this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);
+        try {
+            this.emmitClassUsageForType(ctx.type());
+            for (JavaParser.VariableDeclaratorContext variableDeclaratorContext : ctx.variableDeclarators().variableDeclarator()) {
+                this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);
+            }
+        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
+            throw new SourceFragmentUncheckedException("error parsing field declaration", e);
         }
     }
     
-    private void emmitClassUsageForType(JavaParser.TypeContext type) {
+    private void emmitClassUsageForType(JavaParser.TypeContext type) throws DisambiguizerException, AbstractFragment.Builder.BuilderException {
         String name = type.getText();
-        try {
-            String packageName = this.support.choosePackageForTypeName(name);
-            this.stream.fragment(fragmentBuilder()
-                    .withQualifiedName(packageName + "." + name)
-                    .withText(name)
-                    .withStart(type.getStart().getStartIndex())
-                    .withEnd(type.getStart().getStopIndex())
-                    .build(ClassUsageFragment.class));
-        } catch (DisambiguizerException e) {
-            e.printStackTrace();
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
-        }
+        String packageName = this.support.choosePackageForTypeName(name);
+        this.stream.fragment(fragmentBuilder()
+                .withQualifiedName(packageName + "." + name)
+                .withText(name)
+                .withStart(type.getStart().getStartIndex())
+                .withEnd(type.getStart().getStopIndex())
+                .build(ClassUsageFragment.class));
     }
 
-    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) {
+    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) throws AbstractFragment.Builder.BuilderException {
         TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
-        try {
-            this.stream.fragment(fragmentBuilder()
-                    .withQualifiedName(this.namingContext.current() + "#" + identifier.getText())
-                    .withText(identifier.getText())
-                    .withStart(identifier.getSymbol().getStartIndex())
-                    .withEnd(identifier.getSymbol().getStopIndex())
-                    .build(FieldDeclarationFragment.class));
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
-        }
+        this.stream.fragment(fragmentBuilder()
+                .withQualifiedName(this.namingContext.current() + "#" + identifier.getText())
+                .withText(identifier.getText())
+                .withStart(identifier.getSymbol().getStartIndex())
+                .withEnd(identifier.getSymbol().getStopIndex())
+                .build(FieldDeclarationFragment.class));
     }
 
     @Override
     public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
-        super.enterMethodDeclaration(ctx);
-
         try {
             this.stream.fragment(fragmentBuilder()
                             .withQualifiedName(this.namingContext.current() + "#" + this.support.methodLocalName(ctx))
@@ -176,18 +151,13 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
                             .withEnd(ctx.Identifier().getSymbol().getStopIndex())
                             .build(MethodDeclarationFragment.class)
             );
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
-        } catch (DisambiguizerException e) {
-            e.printStackTrace();
+        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
+            throw new SourceFragmentUncheckedException("error parsing method declaration", e);
         }
     }
-
-
+    
     @Override
     public void enterConstructorDeclaration(@NotNull JavaParser.ConstructorDeclarationContext ctx) {
-        super.enterConstructorDeclaration(ctx);
-        
         try {
             this.stream.fragment(fragmentBuilder()
                             .withQualifiedName(this.namingContext.current() + "#" + this.support.constructorLocalName(ctx))
@@ -196,17 +166,13 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
                             .withEnd(ctx.Identifier().getSymbol().getStopIndex())
                             .build(MethodDeclarationFragment.class)
             );
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
-        } catch (DisambiguizerException e) {
-            e.printStackTrace();
+        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
+            throw new SourceFragmentUncheckedException("error parsing constructor declaration", e);
         }
     }
 
-
     @Override
     public void enterCreator(@NotNull JavaParser.CreatorContext ctx) {
-        super.enterCreator(ctx);
         if(this.support.isAnonymousClassDeclaration(ctx)) {
             this.namingContext.next(this.namingContext.current() + "$" + this.innerClassCounter.currentNextValue());
 
@@ -220,7 +186,5 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             this.innerClassCounter.previous();
             this.namingContext.previous();
         }
-        super.exitCreator(ctx);
     }
-    
 }
