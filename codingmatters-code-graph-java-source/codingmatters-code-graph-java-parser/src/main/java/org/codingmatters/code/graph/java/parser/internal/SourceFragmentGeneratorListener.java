@@ -7,11 +7,6 @@ import org.codingmatters.code.graph.java.ast.JavaBaseListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
 import org.codingmatters.code.graph.java.parser.fragments.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
 * Created with IntelliJ IDEA.
 * User: nel
@@ -27,18 +22,17 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     }
     
     private final FragmentStream stream;
-    private final ClassDisambiguizer disambiguizer;
-
-    private final Stack<String> namingStack = new Stack<>();
+    private final ParsingSupport support;
+    
+    private final NamingContext namingContext = new NamingContext();
+    private final InnerClassCounter innerClassCounter = new InnerClassCounter();
+    
     private boolean inClass = false;
 
-    private final LinkedList<String> imports = new LinkedList<>();
-
-    private Stack<AtomicInteger> innerClassCounters = new Stack<>();
 
     public SourceFragmentGeneratorListener(FragmentStream stream, ClassDisambiguizer disambiguizer) {
         this.stream = stream;
-        this.disambiguizer = disambiguizer;
+        this.support = new ParsingSupport(disambiguizer, this.namingContext);
     }
 
     @Override
@@ -58,18 +52,18 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             e.printStackTrace();
         }
 
-        this.namingStack.push(qualifiedName.getText());
+        this.namingContext.next(qualifiedName.getText());
         
         super.enterCompilationUnit(ctx);
     }
-
+ 
     @Override
     public void enterImportDeclaration(@NotNull JavaParser.ImportDeclarationContext ctx) {
         JavaParser.QualifiedNameContext qualifiedName = ctx.qualifiedName();
         Token firstSymbol = qualifiedName.Identifier().get(0).getSymbol();
         Token lastSymbol = qualifiedName.Identifier().get(qualifiedName.Identifier().size() - 1).getSymbol();
 
-        this.imports.add(qualifiedName.getText());
+        this.support.addImport(qualifiedName.getText());
 
         try {
             this.stream.fragment(fragmentBuilder()
@@ -88,13 +82,14 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     @Override
     public void exitCompilationUnit(@NotNull JavaParser.CompilationUnitContext ctx) {
         super.exitCompilationUnit(ctx);
-        this.namingStack.pop();
+        this.namingContext.previous();
     }
+    
 
     @Override
     public void enterClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         String name = ctx.Identifier().getText();
-        String qualifiedName = this.namingStack.peek() + (this.inClass ? "$" : ".") + name;
+        String qualifiedName = this.namingContext.current() + (this.inClass ? "$" : ".") + name;
         Token symbol = ctx.Identifier().getSymbol();
 
         try {
@@ -107,9 +102,9 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         } catch (AbstractFragment.Builder.BuilderException e) {
             e.printStackTrace();
         }
-        
-        this.namingStack.push(qualifiedName);
-        this.addInnerClassCounterLevel();
+
+        this.namingContext.next(qualifiedName);
+        this.innerClassCounter.next();
         
         this.inClass = true;
         
@@ -120,8 +115,8 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     public void exitClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         this.inClass = false;
 
-        this.popInnerClassCounterLevel();
-        this.namingStack.pop();
+        this.innerClassCounter.previous();
+        this.namingContext.previous();
         
         super.exitClassDeclaration(ctx);
     }
@@ -137,6 +132,37 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);
         }
     }
+    
+    private void emmitClassUsageForType(JavaParser.TypeContext type) {
+        String name = type.getText();
+        try {
+            String packageName = this.support.choosePackageForTypeName(name);
+            this.stream.fragment(fragmentBuilder()
+                    .withQualifiedName(packageName + "." + name)
+                    .withText(name)
+                    .withStart(type.getStart().getStartIndex())
+                    .withEnd(type.getStart().getStopIndex())
+                    .build(ClassUsageFragment.class));
+        } catch (DisambiguizerException e) {
+            e.printStackTrace();
+        } catch (AbstractFragment.Builder.BuilderException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) {
+        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
+        try {
+            this.stream.fragment(fragmentBuilder()
+                    .withQualifiedName(this.namingContext.current() + "#" + identifier.getText())
+                    .withText(identifier.getText())
+                    .withStart(identifier.getSymbol().getStartIndex())
+                    .withEnd(identifier.getSymbol().getStopIndex())
+                    .build(FieldDeclarationFragment.class));
+        } catch (AbstractFragment.Builder.BuilderException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
@@ -144,11 +170,11 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
 
         try {
             this.stream.fragment(fragmentBuilder()
-                    .withQualifiedName(this.namingStack.peek() + "#" + this.methodLocalName(ctx))
-                    .withText(ctx.Identifier().getText())
-                    .withStart(ctx.Identifier().getSymbol().getStartIndex())
-                    .withEnd(ctx.Identifier().getSymbol().getStopIndex())
-                    .build(MethodDeclarationFragment.class)
+                            .withQualifiedName(this.namingContext.current() + "#" + this.support.methodLocalName(ctx))
+                            .withText(ctx.Identifier().getText())
+                            .withStart(ctx.Identifier().getSymbol().getStartIndex())
+                            .withEnd(ctx.Identifier().getSymbol().getStopIndex())
+                            .build(MethodDeclarationFragment.class)
             );
         } catch (AbstractFragment.Builder.BuilderException e) {
             e.printStackTrace();
@@ -164,7 +190,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         
         try {
             this.stream.fragment(fragmentBuilder()
-                            .withQualifiedName(this.namingStack.peek() + "#" + this.constructorLocalName(ctx))
+                            .withQualifiedName(this.namingContext.current() + "#" + this.support.constructorLocalName(ctx))
                             .withText(ctx.Identifier().getText())
                             .withStart(ctx.Identifier().getSymbol().getStartIndex())
                             .withEnd(ctx.Identifier().getSymbol().getStopIndex())
@@ -181,121 +207,20 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     @Override
     public void enterCreator(@NotNull JavaParser.CreatorContext ctx) {
         super.enterCreator(ctx);
-        if(this.isAnonymousClassDeclaration(ctx)) {
-            int innerCount = this.innerClassCounters.peek().incrementAndGet();
-            this.namingStack.push(this.namingStack.peek() + "$" + innerCount);
+        if(this.support.isAnonymousClassDeclaration(ctx)) {
+            this.namingContext.next(this.namingContext.current() + "$" + this.innerClassCounter.currentNextValue());
 
-            this.addInnerClassCounterLevel();
+            this.innerClassCounter.next();
         }
     }
 
     @Override
     public void exitCreator(@NotNull JavaParser.CreatorContext ctx) {
-        if(this.isAnonymousClassDeclaration(ctx)) {
-            this.popInnerClassCounterLevel();
-            this.namingStack.pop();
+        if(this.support.isAnonymousClassDeclaration(ctx)) {
+            this.innerClassCounter.previous();
+            this.namingContext.previous();
         }
         super.exitCreator(ctx);
     }
-
-    private boolean isAnonymousClassDeclaration(@NotNull JavaParser.CreatorContext ctx) {
-        return ctx.classCreatorRest() != null && ctx.classCreatorRest().classBody() != null;
-    }
     
-
-    private void addInnerClassCounterLevel() {
-        this.innerClassCounters.push(new AtomicInteger(0));
-    }
-
-    private void popInnerClassCounterLevel() {
-        this.innerClassCounters.pop();
-    }
-
-    private void emmitClassUsageForType(JavaParser.TypeContext type) {
-        String name = type.getText();
-        try {
-            String packageName = this.choosePackageForTypeName(name);
-            this.stream.fragment(fragmentBuilder()
-                    .withQualifiedName(packageName + "." + name)
-                    .withText(name)
-                    .withStart(type.getStart().getStartIndex())
-                    .withEnd(type.getStart().getStopIndex())
-                    .build(ClassUsageFragment.class));
-        } catch (DisambiguizerException e) {
-            e.printStackTrace();
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String choosePackageForTypeName(String name) throws DisambiguizerException {
-        return this.disambiguizer.choosePackage(name, this.builCandidates());
-    }
-
-
-    private String[] builCandidates() {
-        ArrayList<String> candidates = new ArrayList<>();
-        candidates.add("java.lang");
-        candidates.addAll(this.imports);
-        candidates.add(this.namingStack.peek());
-
-        return candidates.toArray(new String[candidates.size()]);
-    }
-
-    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) {
-        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
-        try {
-            this.stream.fragment(fragmentBuilder()
-                    .withQualifiedName(this.namingStack.peek() + "#" + identifier.getText())
-                    .withText(identifier.getText())
-                    .withStart(identifier.getSymbol().getStartIndex())
-                    .withEnd(identifier.getSymbol().getStopIndex())
-                    .build(FieldDeclarationFragment.class));
-        } catch (AbstractFragment.Builder.BuilderException e) {
-            e.printStackTrace();
-        }
-    }
-
-    
-    private String constructorLocalName(JavaParser.ConstructorDeclarationContext ctx) throws DisambiguizerException {
-        return String.format("<init>(%s)V",
-                this.formalParametersTypesSpec(ctx.formalParameters()));
-    }
-    
-    private String methodLocalName(JavaParser.MethodDeclarationContext ctx) throws DisambiguizerException {
-        return String.format("%s(%s)%s",
-                ctx.Identifier().getText(),
-                this.formalParametersTypesSpec(ctx.formalParameters()),
-                this.typeSpec(ctx.type()));
-    }
-
-    private String typeSpec(JavaParser.TypeContext type) throws DisambiguizerException {
-        String returnType = "";
-        if(type != null) {
-            String typeName = type.getText();
-            returnType = this.typeInMethodIdentifier(typeName);
-        }
-        return returnType;
-    }
-
-    private String typeInMethodIdentifier(String simpleName) throws DisambiguizerException {
-        return String.format("L%s/%s;", 
-                this.choosePackageForTypeName(simpleName).replace('.', '/'), 
-                simpleName);
-    }
-
-    private String formalParametersTypesSpec(JavaParser.FormalParametersContext formalParameters) throws DisambiguizerException {
-        StringBuilder result = new StringBuilder("");
-        if(formalParameters.formalParameterList() != null) {
-            for (JavaParser.FormalParameterContext formalParameterContext : formalParameters.formalParameterList().formalParameter()) {
-                String typeName = formalParameterContext.type().getText();
-                result.append(this.typeInMethodIdentifier(typeName));
-            }
-            if(formalParameters.formalParameterList().lastFormalParameter() != null) {
-                String typeName = formalParameters.formalParameterList().lastFormalParameter().type().getText();
-                result.append(this.typeInMethodIdentifier(typeName));
-            }
-        }
-        return result.toString();
-    }
 }
