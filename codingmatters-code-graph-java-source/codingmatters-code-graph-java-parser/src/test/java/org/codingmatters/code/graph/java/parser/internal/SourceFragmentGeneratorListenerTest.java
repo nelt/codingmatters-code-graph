@@ -33,7 +33,6 @@ public class SourceFragmentGeneratorListenerTest {
     private JavaListener listener;
     private List<SourceFragment> fragments = new LinkedList<>();
 
-    private ClassDisambiguizer disambiguizer;
     private HashSet<ClassDisambiguizerCall> disambiguizerCalls = new HashSet<>();
     private HashMap<ClassDisambiguizerCall, String> disambiguizerCallResults = new HashMap<>();
 
@@ -42,12 +41,12 @@ public class SourceFragmentGeneratorListenerTest {
         this.fragments.clear();
         this.disambiguizerCalls.clear();
 
-        this.disambiguizer = new ClassDisambiguizer() {
+        ClassDisambiguizer disambiguizer = new ClassDisambiguizer() {
             @Override
             public String choosePackage(String forClass, String[] orderedCandidates) throws DisambiguizerException {
-                if(Arrays.asList("Runnable", "String").contains(forClass)) {
+                if (Arrays.asList("Runnable", "String").contains(forClass)) {
                     return "java.lang";
-                } else if("AtomicBoolean".equals(forClass)) {
+                } else if ("AtomicBoolean".equals(forClass)) {
                     return "java.util.concurrent.atomic";
                 }
 
@@ -63,7 +62,7 @@ public class SourceFragmentGeneratorListenerTest {
             public void fragment(SourceFragment fragment) {
                 fragments.add(fragment);
             }
-        }, this.disambiguizer);
+        }, disambiguizer);
     }
 
     @Test
