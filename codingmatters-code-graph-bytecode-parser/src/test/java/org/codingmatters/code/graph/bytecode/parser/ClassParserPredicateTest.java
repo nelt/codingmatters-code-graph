@@ -45,6 +45,10 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethod.class)),
                         new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;")
+                ),
+                Predicates.hasMethod(
+                        new ClassRef(className(ClassWithMethod.class)),
+                        new MethodRef(className(ClassWithMethod.class) + "#varArgMethod([Ljava/lang/String;)V")
                 )
         );
     }

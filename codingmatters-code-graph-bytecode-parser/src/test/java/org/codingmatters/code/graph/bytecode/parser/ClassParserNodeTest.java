@@ -50,7 +50,8 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
         this.assertProducedExactly(
                 Nodes.classNode(new ClassRef(className(ClassWithMethod.class))),
                 defaultConstructorNode(ClassWithMethod.class),
-                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;"))
+                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;")),
+                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#varArgMethod([Ljava/lang/String;)V"))
         );
     }
 }
