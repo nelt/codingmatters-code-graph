@@ -72,11 +72,8 @@ public class SourceFragmentGeneratorListenerTest {
         String resourceClass = "TestClass-method-declaration";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
         
-        parsedFragments.assertFragment(
-                PackageFragment.class, "org/test");
-        parsedFragments.assertFragment(
-                ClassDeclarationFragment.class, "org/test/TestClass");
-        
+        parsedFragments.assertFragment(PackageFragment.class, "org/test");
+        parsedFragments.assertFragment(ClassDeclarationFragment.class, "org/test/TestClass");
         
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#noArg()V");
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#oneArg(Ljava/lang/String;)V");
@@ -86,6 +83,23 @@ public class SourceFragmentGeneratorListenerTest {
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#primitiveArgs(IJFDC[I)V");
         
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#returnValue()Ljava/lang/String;");
+        
+        parsedFragments.assertNoMoreFragment();
+        parsedFragments.assertAllFragmentAreCoherent(resourceClass);
+    }
+
+    @Test
+    public void testInnerClass() throws Exception {
+        String resourceClass = "TestClass-inner-class";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+
+        parsedFragments.assertFragment(PackageFragment.class, "org/test");
+        parsedFragments.assertFragment(ClassDeclarationFragment.class, "org/test/TestClass");
+
+        parsedFragments.assertFragment(
+                ClassDeclarationFragment.class, "org/test/TestClass$InnerStaticClass");
+        parsedFragments.assertFragment(
+                ClassDeclarationFragment.class, "org/test/TestClass$InnerStaticClass$InnerInner");
         
         parsedFragments.assertNoMoreFragment();
         parsedFragments.assertAllFragmentAreCoherent(resourceClass);
