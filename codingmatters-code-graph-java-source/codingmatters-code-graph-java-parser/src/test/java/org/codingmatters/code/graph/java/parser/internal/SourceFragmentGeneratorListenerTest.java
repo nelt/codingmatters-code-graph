@@ -106,6 +106,25 @@ public class SourceFragmentGeneratorListenerTest {
     }
 
     @Test
+    public void testAnonymousClass() throws Exception {
+        String resourceClass = "TestClass-anonymous-class";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+
+        parsedFragments.assertFragment(PackageFragment.class, "org/test");
+        parsedFragments.assertFragment(ClassDeclarationFragment.class, "org/test/TestClass");
+
+        parsedFragments.assertFragment(
+                ClassUsageFragment.class, "java/lang/Runnable");
+        parsedFragments.assertFragment(
+                FieldDeclarationFragment.class, "org/test/TestClass#run");
+        parsedFragments.assertFragment(
+                MethodDeclarationFragment.class, "org/test/TestClass$1#run()V");
+
+        parsedFragments.assertNoMoreFragment();
+        parsedFragments.assertAllFragmentAreCoherent(resourceClass);
+    }
+
+    @Test
     public void testComplete() throws Exception {
         String resourceClass = "TestClass-complete";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
