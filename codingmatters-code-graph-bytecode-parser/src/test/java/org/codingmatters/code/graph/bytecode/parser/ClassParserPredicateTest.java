@@ -56,7 +56,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
                 ),
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethod.class)),
-                        new MethodRef(className(ClassWithMethod.class) + "#primitiveMethod(IJFDC)V")
+                        new MethodRef(className(ClassWithMethod.class) + "#primitiveMethod(IJFDC[I)V")
                 )
         );
     }
