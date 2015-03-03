@@ -10,8 +10,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ClassWithMethod {
-    public String method(Integer arg1, List arg2) throws Exception { return "";};
-    public void varArgMethod(String ... args) throws Exception {};
-    public void arrayMethod(String [] args) throws Exception {};
-    public void primitiveMethod(int arg) throws Exception {};
+    public String method(Integer arg1, List arg2) throws Exception { return "";}
+    public void varArgMethod(String ... args) throws Exception {}
+    public void arrayMethod(String [] args) throws Exception {}
+    public void primitiveMethod(int arg1, long arg2, float arg3, double arg4, char arg5) throws Exception {}
 }

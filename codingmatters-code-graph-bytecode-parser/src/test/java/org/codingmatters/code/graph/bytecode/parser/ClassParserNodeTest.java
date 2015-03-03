@@ -53,7 +53,7 @@ public class ClassParserNodeTest extends AbstractClassParserTest {
                 Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;")),
                 Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#varArgMethod([Ljava/lang/String;)V")),
                 Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#arrayMethod([Ljava/lang/String;)V")),
-                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#primitiveMethod(I)V"))
+                Nodes.methodNode(new MethodRef(className(ClassWithMethod.class) + "#primitiveMethod(IJFDC)V"))
         );
     }
 }
