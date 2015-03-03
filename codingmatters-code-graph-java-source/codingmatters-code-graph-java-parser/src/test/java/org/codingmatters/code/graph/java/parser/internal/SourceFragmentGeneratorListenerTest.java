@@ -83,7 +83,7 @@ public class SourceFragmentGeneratorListenerTest {
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#twoArgs(Ljava/lang/String;Ljava/lang/String;)V");
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#varArgs([Ljava/lang/String;)V");
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#arrayArg([Ljava/lang/String;)V");
-        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#integerArg(I)V");
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#primitiveArgs(IJFDC[I)V");
         
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#returnValue()Ljava/lang/String;");
         

@@ -18,7 +18,7 @@ public class TestClass {
     
     public void arrayArg(String [] args) {}
     
-    public void integerArg(int arg) {}
+    public void primitiveArgs(int arg1, long arg2, float arg3, double arg4, char arg5, int [] arg6) {}
     
     public String returnValue() {}
 }

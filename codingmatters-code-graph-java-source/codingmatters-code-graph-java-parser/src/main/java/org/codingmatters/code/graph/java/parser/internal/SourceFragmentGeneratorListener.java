@@ -15,12 +15,14 @@ import org.codingmatters.code.graph.java.parser.fragments.*;
 * To change this template use File | Settings | File Templates.
 */
 public class SourceFragmentGeneratorListener extends JavaBaseListener {
-    
+
+
     private static AbstractFragment.Builder fragmentBuilder() {
         return new AbstractFragment.Builder();
     }
     
     private final FragmentStream stream;
+    private final TypeSupport typeSupport;
     private final ParsingSupport support;
     
     private final NamingContext namingContext = new NamingContext();
@@ -31,7 +33,8 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
 
     public SourceFragmentGeneratorListener(FragmentStream stream, ClassDisambiguizer disambiguizer) {
         this.stream = stream;
-        this.support = new ParsingSupport(disambiguizer, this.namingContext);
+        this.typeSupport = new TypeSupport(this.namingContext, disambiguizer);
+        this.support = new ParsingSupport(this.typeSupport);
     }
 
     @Override
