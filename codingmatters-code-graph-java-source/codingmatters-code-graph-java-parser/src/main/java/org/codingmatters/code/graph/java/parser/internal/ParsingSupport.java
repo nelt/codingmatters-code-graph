@@ -5,8 +5,6 @@ import org.codingmatters.code.graph.java.ast.JavaParser;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by nel on 25/02/15.
@@ -49,7 +47,7 @@ public class ParsingSupport {
     
     private String typeSpec(JavaParser.TypeContext type) throws DisambiguizerException {
         if(type != null) {
-            return this.typeInMethodIdentifier(type.getText());
+            return this.qualifiedTypeSpec(type.getText());
         } else {
             return "V";
         }
@@ -64,22 +62,52 @@ public class ParsingSupport {
         if(formalParameters.formalParameterList() != null) {
             for (JavaParser.FormalParameterContext formalParameterContext : formalParameters.formalParameterList().formalParameter()) {
                 String typeName = formalParameterContext.type().getText();
-                result.append(this.typeInMethodIdentifier(typeName));
+                result.append(this.qualifiedTypeSpec(typeName));
             }
             if(formalParameters.formalParameterList().lastFormalParameter() != null) {
                 String typeName = formalParameters.formalParameterList().lastFormalParameter().type().getText();
-                result.append(this.typeInMethodIdentifier(typeName));
+                result.append(this.qualifiedTypeSpec(typeName + "[]"));
             }
         }
         return result.toString();
     }
     
-    private String typeInMethodIdentifier(String simpleName) throws DisambiguizerException {
-        return String.format("L%s/%s;",
-                this.choosePackageForTypeName(simpleName).replace('.', '/'),
-                simpleName);
+    private String qualifiedTypeSpec(String simpleName) throws DisambiguizerException {
+        String arrayMark = "";
+        if(simpleName.endsWith("[]")) {
+            simpleName = simpleName.substring(0, simpleName.length() - "[]".length());
+            arrayMark = "[";
+        }
+        
+        if(this.isPrimitive(simpleName)) {
+            return String.format("%s%s",
+                    arrayMark,
+                    this.primitiveTypeMarker(simpleName)
+            );
+        } else {
+            String packageName = this.choosePackageForTypeName(simpleName);
+            if (packageName != null && !packageName.isEmpty()) {
+                packageName = packageName.replace('.', '/') + "/";
+            }
+            return String.format("%sL%s%s;",
+                    arrayMark,
+                    packageName,
+                    simpleName
+            );
+        }
     }
 
+    private String primitiveTypeMarker(String simpleName) {
+        if(simpleName.equals("int")) {
+            return "I";
+        } else {
+            throw new SourceFragmentUncheckedException("unsupported primitive type : " + simpleName);
+        }
+    }
+
+    private boolean isPrimitive(String simpleName) {
+        return simpleName.equals("int");
+    }
 
 
     private String[] builCandidates() {

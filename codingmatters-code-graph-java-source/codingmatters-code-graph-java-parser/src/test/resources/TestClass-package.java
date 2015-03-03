@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.bytecode.parser.util;
+package org.test;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,4 +8,6 @@ package org.codingmatters.code.graph.bytecode.parser.util;
  * To change this template use File | Settings | File Templates.
  */
 public class TestClass {
+    private String field;
+    public void method() {}
 }

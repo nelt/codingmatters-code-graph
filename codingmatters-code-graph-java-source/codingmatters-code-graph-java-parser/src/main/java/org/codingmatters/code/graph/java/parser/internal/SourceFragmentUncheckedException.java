@@ -7,4 +7,8 @@ public class SourceFragmentUncheckedException extends RuntimeException {
     public SourceFragmentUncheckedException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public SourceFragmentUncheckedException(String message) {
+        super(message);
+    }
 }

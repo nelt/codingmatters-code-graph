@@ -27,21 +27,30 @@ public class SourceFragmentGeneratorListenerTest {
     }
 
     @Test
-    public void testClassWithPackage() throws Exception {
+    public void testPackage() throws Exception {
         String resourceClass = "TestClass-package";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
         parsedFragments.assertFragment(
-                PackageFragment.class, "org/codingmatters/code/graph/bytecode/parser/util");
+                PackageFragment.class, "org/test");
         parsedFragments.assertFragment(
-                ClassDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass");
+                ClassDeclarationFragment.class, "org/test/TestClass");
 
+        parsedFragments.assertFragment(
+                ClassUsageFragment.class, "java/lang/String");
+        parsedFragments.assertFragment(
+                FieldDeclarationFragment.class, "org/test/TestClass#field");
+
+        parsedFragments.assertFragment(
+                MethodDeclarationFragment.class, "org/test/TestClass#method()V");
+
+        
         parsedFragments.assertNoMoreFragment();
         parsedFragments.assertAllFragmentAreCoherent(resourceClass);
     }
     
     @Test
-    public void testClassWithNoPackage() throws Exception {
+    public void testNoPackage() throws Exception {
         String resourceClass = "TestClass-no-package";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
@@ -59,7 +68,31 @@ public class SourceFragmentGeneratorListenerTest {
     }
 
     @Test
-    public void testParse() throws Exception {
+    public void testClassMethodDeclaration() throws Exception {
+        String resourceClass = "TestClass-method-declaration";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+        
+        parsedFragments.assertFragment(
+                PackageFragment.class, "org/test");
+        parsedFragments.assertFragment(
+                ClassDeclarationFragment.class, "org/test/TestClass");
+        
+        
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#noArg()V");
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#oneArg(Ljava/lang/String;)V");
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#twoArgs(Ljava/lang/String;Ljava/lang/String;)V");
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#varArgs([Ljava/lang/String;)V");
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#arrayArg([Ljava/lang/String;)V");
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#integerArg(I)V");
+        
+        parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#returnValue()Ljava/lang/String;");
+        
+        parsedFragments.assertNoMoreFragment();
+        parsedFragments.assertAllFragmentAreCoherent(resourceClass);
+    }
+
+    @Test
+    public void testComplete() throws Exception {
         String resourceClass = "TestClass-complete";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
 
