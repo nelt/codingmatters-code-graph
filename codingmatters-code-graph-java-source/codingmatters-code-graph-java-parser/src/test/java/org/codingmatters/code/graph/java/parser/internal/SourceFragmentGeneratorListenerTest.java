@@ -95,14 +95,7 @@ public class SourceFragmentGeneratorListenerTest {
     public void testComplete() throws Exception {
         String resourceClass = "TestClass-complete";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
-
-        System.out.println("-----------FRAGMENTS-----------------");
-        for (SourceFragment fragment : parsedFragments.getFragments()) {
-            System.out.println(fragment);
-        }
-        System.out.println("-------------------------------------");
-        
-        
+     
         /*
         package org.codingmatters.code.graph.bytecode.parser.util;
 
