@@ -141,14 +141,17 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     
     private void emmitClassUsageForType(JavaParser.TypeContext type) throws DisambiguizerException, AbstractFragment.Builder.BuilderException {
         String name = type.getText();
-        String packageName = this.support.choosePackageForTypeName(name);
+
+//        String qualifiedType = this.typeSupport.qualifiedType(name);
+        
         this.stream.fragment(fragmentBuilder()
-                .withQualifiedName(this.support.canonical(packageName + "." + name))
+                .withQualifiedName(this.typeSupport.typeSpec(name))
                 .withText(name)
                 .withStart(type.getStart().getStartIndex())
                 .withEnd(type.getStart().getStopIndex())
                 .build(ClassUsageFragment.class));
     }
+
 
     private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) throws AbstractFragment.Builder.BuilderException {
         TerminalNode identifier = ctx.variableDeclaratorId().Identifier();

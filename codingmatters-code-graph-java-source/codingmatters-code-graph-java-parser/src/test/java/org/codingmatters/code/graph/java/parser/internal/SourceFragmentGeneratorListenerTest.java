@@ -21,7 +21,7 @@ public class SourceFragmentGeneratorListenerTest {
     @Before
     public void setUp() throws Exception {
         this.disambiguizer = TestClassDisambiguizer.builder()
-                .withPackage("java.lang").forClass("Runnable", "String")
+                .withPackage("java.lang").forClass("Runnable", "String", "Object")
                 .withPackage("java.util.concurrent.atomic").forClass("AtomicBoolean")
                 .build();
     }
@@ -37,7 +37,7 @@ public class SourceFragmentGeneratorListenerTest {
                 ClassDeclarationFragment.class, "org/test/TestClass");
 
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java/lang/String");
+                ClassUsageFragment.class, "Ljava/lang/String;");
         parsedFragments.assertFragment(
                 FieldDeclarationFragment.class, "org/test/TestClass#field");
 
@@ -57,7 +57,7 @@ public class SourceFragmentGeneratorListenerTest {
         parsedFragments.assertFragment(
                 ClassDeclarationFragment.class, "TestClass");
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java/lang/String");
+                ClassUsageFragment.class, "Ljava/lang/String;");
         parsedFragments.assertFragment(
                 FieldDeclarationFragment.class, "TestClass#field");
         parsedFragments.assertFragment(
@@ -114,12 +114,34 @@ public class SourceFragmentGeneratorListenerTest {
         parsedFragments.assertFragment(ClassDeclarationFragment.class, "org/test/TestClass");
 
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java/lang/Runnable");
+                ClassUsageFragment.class, "Ljava/lang/Runnable;");
         parsedFragments.assertFragment(
                 FieldDeclarationFragment.class, "org/test/TestClass#run");
         parsedFragments.assertFragment(
                 MethodDeclarationFragment.class, "org/test/TestClass$1#run()V");
 
+        parsedFragments.assertNoMoreFragment();
+        parsedFragments.assertAllFragmentAreCoherent(resourceClass);
+    }
+
+    @Test
+    public void testFields() throws Exception {
+        String resourceClass = "TestClass-fields";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+
+
+        parsedFragments.assertFragment(PackageFragment.class, "org/test");
+        parsedFragments.assertFragment(ClassDeclarationFragment.class, "org/test/TestClass");
+        
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        parsedFragments.assertFragment(FieldDeclarationFragment.class, "org/test/TestClass#staticField");
+
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/Object;");
+        parsedFragments.assertFragment(FieldDeclarationFragment.class, "org/test/TestClass#objectField");
+
+        parsedFragments.assertFragment(ClassUsageFragment.class, "I");
+        parsedFragments.assertFragment(FieldDeclarationFragment.class, "org/test/TestClass#primitiveField");
+        
         parsedFragments.assertNoMoreFragment();
         parsedFragments.assertAllFragmentAreCoherent(resourceClass);
     }
@@ -167,7 +189,7 @@ public class SourceFragmentGeneratorListenerTest {
         };
          */
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java/lang/Runnable");
+                ClassUsageFragment.class, "Ljava/lang/Runnable;");
         parsedFragments.assertFragment(
                 FieldDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#run");
         parsedFragments.assertFragment(
@@ -179,12 +201,12 @@ public class SourceFragmentGeneratorListenerTest {
         private AtomicBoolean dd;
          */
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java/lang/String");
+                ClassUsageFragment.class, "Ljava/lang/String;");
         parsedFragments.assertFragment(
                 FieldDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#field");
 
         parsedFragments.assertFragment(
-                ClassUsageFragment.class, "java/util/concurrent/atomic/AtomicBoolean");
+                ClassUsageFragment.class, "Ljava/util/concurrent/atomic/AtomicBoolean;");
         parsedFragments.assertFragment(
                 FieldDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#dd");
         

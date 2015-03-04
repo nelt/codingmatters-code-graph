@@ -30,10 +30,6 @@ public class ParsingSupport {
                 this.typeSupport.typeSpec(ctx.type()));
     }
 
-    public String choosePackageForTypeName(String name) throws DisambiguizerException {
-        return this.typeSupport.choosePackageForTypeName(name);
-    }
-
     public void addImport(String qualifiedNameText) {
         this.typeSupport.addImport(qualifiedNameText);
     }

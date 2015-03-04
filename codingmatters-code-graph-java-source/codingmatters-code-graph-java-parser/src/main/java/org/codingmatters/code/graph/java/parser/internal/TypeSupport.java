@@ -28,22 +28,7 @@ public class TypeSupport {
         }
     }
 
-    public String formalParametersTypesSpec(JavaParser.FormalParametersContext formalParameters) throws DisambiguizerException {
-        StringBuilder result = new StringBuilder("");
-        if(formalParameters.formalParameterList() != null) {
-            for (JavaParser.FormalParameterContext formalParameterContext : formalParameters.formalParameterList().formalParameter()) {
-                String typeName = formalParameterContext.type().getText();
-                result.append(this.typeSpec(typeName));
-            }
-            if(formalParameters.formalParameterList().lastFormalParameter() != null) {
-                String typeName = formalParameters.formalParameterList().lastFormalParameter().type().getText();
-                result.append(this.typeSpec(typeName + "[]"));
-            }
-        }
-        return result.toString();
-    }
-    
-    private String typeSpec(String simpleName) throws DisambiguizerException {
+    public String typeSpec(String simpleName) throws DisambiguizerException {
         String arrayMark = "";
         if(simpleName.endsWith("[]")) {
             simpleName = simpleName.substring(0, simpleName.length() - "[]".length());
@@ -67,8 +52,31 @@ public class TypeSupport {
             );
         }
     }
+
+
+    public String qualifiedType(String typeName) throws DisambiguizerException {
+        String packageName = this.choosePackageForTypeName(typeName);
+        return packageName + "." + typeName;
+    }
     
-    public String choosePackageForTypeName(String name) throws DisambiguizerException {
+    public String formalParametersTypesSpec(JavaParser.FormalParametersContext formalParameters) throws DisambiguizerException {
+        StringBuilder result = new StringBuilder("");
+        if(formalParameters.formalParameterList() != null) {
+            for (JavaParser.FormalParameterContext formalParameterContext : formalParameters.formalParameterList().formalParameter()) {
+                String typeName = formalParameterContext.type().getText();
+                result.append(this.typeSpec(typeName));
+            }
+            if(formalParameters.formalParameterList().lastFormalParameter() != null) {
+                String typeName = formalParameters.formalParameterList().lastFormalParameter().type().getText();
+                result.append(this.typeSpec(typeName + "[]"));
+            }
+        }
+        return result.toString();
+    }
+
+
+    
+    private String choosePackageForTypeName(String name) throws DisambiguizerException {
         return this.disambiguizer.choosePackage(name, this.builCandidates());
     }
 
@@ -85,5 +93,5 @@ public class TypeSupport {
     public void addImport(String qualifiedNameText) {
         this.imports.add(qualifiedNameText);
     }
-    
+
 }
