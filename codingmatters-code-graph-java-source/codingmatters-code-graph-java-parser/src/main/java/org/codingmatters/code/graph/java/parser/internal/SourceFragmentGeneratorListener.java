@@ -140,13 +140,9 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     }
     
     private void emmitClassUsageForType(JavaParser.TypeContext type) throws DisambiguizerException, AbstractFragment.Builder.BuilderException {
-        String name = type.getText();
-
-//        String qualifiedType = this.typeSupport.qualifiedType(name);
-        
         this.stream.fragment(fragmentBuilder()
-                .withQualifiedName(this.typeSupport.typeSpec(name))
-                .withText(name)
+                .withQualifiedName(this.typeSupport.typeSpec(type.getText()))
+                .withText(type.getText())
                 .withStart(type.getStart().getStartIndex())
                 .withEnd(type.getStart().getStopIndex())
                 .build(ClassUsageFragment.class));
@@ -167,11 +163,11 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
         try {
             this.stream.fragment(fragmentBuilder()
-                            .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + this.support.methodLocalName(ctx))
-                            .withText(ctx.Identifier().getText())
-                            .withStart(ctx.Identifier().getSymbol().getStartIndex())
-                            .withEnd(ctx.Identifier().getSymbol().getStopIndex())
-                            .build(MethodDeclarationFragment.class)
+                .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + this.support.methodLocalName(ctx))
+                .withText(ctx.Identifier().getText())
+                .withStart(ctx.Identifier().getSymbol().getStartIndex())
+                .withEnd(ctx.Identifier().getSymbol().getStopIndex())
+                .build(MethodDeclarationFragment.class)
             );
         } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
             throw new SourceFragmentUncheckedException("error parsing method declaration", e);
