@@ -140,71 +140,70 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
 <span class="fc" id="L140">    }</span>
     
     private void emmitClassUsageForType(JavaParser.TypeContext type) throws DisambiguizerException, AbstractFragment.Builder.BuilderException {
-<span class="fc" id="L143">        String name = type.getText();</span>
-<span class="fc" id="L144">        String packageName = this.support.choosePackageForTypeName(name);</span>
-<span class="fc" id="L145">        this.stream.fragment(fragmentBuilder()</span>
-                .withQualifiedName(this.support.canonical(packageName + &quot;.&quot; + name))
-                .withText(name)
+<span class="fc" id="L143">        this.stream.fragment(fragmentBuilder()</span>
+                .withQualifiedName(this.typeSupport.typeSpec(type.getText()))
+                .withText(type.getText())
                 .withStart(type.getStart().getStartIndex())
                 .withEnd(type.getStart().getStopIndex())
                 .build(ClassUsageFragment.class));
-<span class="fc" id="L151">    }</span>
+<span class="fc" id="L149">    }</span>
+
 
     private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) throws AbstractFragment.Builder.BuilderException {
-<span class="fc" id="L154">        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();</span>
-<span class="fc" id="L155">        this.stream.fragment(fragmentBuilder()</span>
+<span class="fc" id="L153">        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();</span>
+<span class="fc" id="L154">        this.stream.fragment(fragmentBuilder()</span>
                 .withQualifiedName(this.support.canonical(this.namingContext.current()) + &quot;#&quot; + identifier.getText())
                 .withText(identifier.getText())
                 .withStart(identifier.getSymbol().getStartIndex())
                 .withEnd(identifier.getSymbol().getStopIndex())
                 .build(FieldDeclarationFragment.class));
-<span class="fc" id="L161">    }</span>
+<span class="fc" id="L160">    }</span>
 
     @Override
     public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
         try {
-<span class="fc" id="L166">            this.stream.fragment(fragmentBuilder()</span>
-                            .withQualifiedName(this.support.canonical(this.namingContext.current()) + &quot;#&quot; + this.support.methodLocalName(ctx))
-                            .withText(ctx.Identifier().getText())
-                            .withStart(ctx.Identifier().getSymbol().getStartIndex())
-                            .withEnd(ctx.Identifier().getSymbol().getStopIndex())
-                            .build(MethodDeclarationFragment.class)
+<span class="fc" id="L165">            this.stream.fragment(fragmentBuilder()</span>
+                .withQualifiedName(this.support.canonical(this.namingContext.current()) + &quot;#&quot; + this.support.methodLocalName(ctx))
+                .withText(ctx.Identifier().getText())
+                .withStart(ctx.Identifier().getSymbol().getStartIndex())
+                .withEnd(ctx.Identifier().getSymbol().getStopIndex())
+                .build(MethodDeclarationFragment.class)
             );
-<span class="nc" id="L173">        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {</span>
-<span class="nc" id="L174">            throw new SourceFragmentUncheckedException(&quot;error parsing method declaration&quot;, e);</span>
-<span class="fc" id="L175">        }</span>
-<span class="fc" id="L176">    }</span>
+<span class="nc" id="L172">        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {</span>
+<span class="nc" id="L173">            throw new SourceFragmentUncheckedException(&quot;error parsing method declaration&quot;, e);</span>
+<span class="fc" id="L174">        }</span>
+<span class="fc" id="L175">    }</span>
     
     @Override
     public void enterConstructorDeclaration(@NotNull JavaParser.ConstructorDeclarationContext ctx) {
         try {
-<span class="fc" id="L181">            this.stream.fragment(fragmentBuilder()</span>
+<span class="fc" id="L180">            this.stream.fragment(fragmentBuilder()</span>
                             .withQualifiedName(this.support.canonical(this.namingContext.current()) + &quot;#&quot; + this.support.constructorLocalName(ctx))
                             .withText(ctx.Identifier().getText())
                             .withStart(ctx.Identifier().getSymbol().getStartIndex())
                             .withEnd(ctx.Identifier().getSymbol().getStopIndex())
                             .build(MethodDeclarationFragment.class)
             );
-<span class="nc" id="L188">        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {</span>
-<span class="nc" id="L189">            throw new SourceFragmentUncheckedException(&quot;error parsing constructor declaration&quot;, e);</span>
-<span class="fc" id="L190">        }</span>
-<span class="fc" id="L191">    }</span>
+<span class="nc" id="L187">        } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {</span>
+<span class="nc" id="L188">            throw new SourceFragmentUncheckedException(&quot;error parsing constructor declaration&quot;, e);</span>
+<span class="fc" id="L189">        }</span>
+<span class="fc" id="L190">    }</span>
 
     @Override
     public void enterCreator(@NotNull JavaParser.CreatorContext ctx) {
-<span class="fc bfc" id="L195" title="All 2 branches covered.">        if(this.support.isAnonymousClassDeclaration(ctx)) {</span>
-<span class="fc" id="L196">            this.namingContext.next(this.namingContext.current() + &quot;$&quot; + this.innerClassCounter.currentNextValue());</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if(this.support.isAnonymousClassDeclaration(ctx)) {</span>
+<span class="fc" id="L195">            this.namingContext.next(this.namingContext.current() + &quot;$&quot; + this.innerClassCounter.currentNextValue());</span>
 
-<span class="fc" id="L198">            this.innerClassCounter.next();</span>
+<span class="fc" id="L197">            this.innerClassCounter.next();</span>
         }
-<span class="fc" id="L200">    }</span>
+<span class="fc" id="L199">    }</span>
 
     @Override
     public void exitCreator(@NotNull JavaParser.CreatorContext ctx) {
-<span class="fc bfc" id="L204" title="All 2 branches covered.">        if(this.support.isAnonymousClassDeclaration(ctx)) {</span>
-<span class="fc" id="L205">            this.innerClassCounter.previous();</span>
-<span class="fc" id="L206">            this.namingContext.previous();</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        if(this.support.isAnonymousClassDeclaration(ctx)) {</span>
+<span class="fc" id="L204">            this.innerClassCounter.previous();</span>
+<span class="fc" id="L205">            this.namingContext.previous();</span>
         }
-<span class="fc" id="L208">    }</span>
+<span class="fc" id="L207">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
