@@ -3,122 +3,44 @@
 import org.antlr.v4.runtime.misc.NotNull;
 import org.codingmatters.code.graph.java.ast.JavaParser;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 /**
  * Created by nel on 25/02/15.
  */
 public class ParsingSupport {
     
-    private final ClassDisambiguizer disambiguizer;
-    private final NamingContext namingContext;
-            
-<span class="fc" id="L17">    private final LinkedList&lt;String&gt; imports = new LinkedList&lt;&gt;();</span>
+    private final TypeSupport typeSupport;
 
-<span class="fc" id="L19">    public ParsingSupport(ClassDisambiguizer disambiguizer, NamingContext namingContext) {</span>
-<span class="fc" id="L20">        this.disambiguizer = disambiguizer;</span>
-<span class="fc" id="L21">        this.namingContext = namingContext;</span>
-<span class="fc" id="L22">    }</span>
+<span class="fc" id="L13">    public ParsingSupport(TypeSupport typeSupport) {</span>
+<span class="fc" id="L14">        this.typeSupport = typeSupport;</span>
+<span class="fc" id="L15">    }</span>
 
     public boolean isAnonymousClassDeclaration(@NotNull JavaParser.CreatorContext ctx) {
-<span class="pc bpc" id="L25" title="1 of 4 branches missed.">        return ctx.classCreatorRest() != null &amp;&amp; ctx.classCreatorRest().classBody() != null;</span>
+<span class="pc bpc" id="L18" title="1 of 4 branches missed.">        return ctx.classCreatorRest() != null &amp;&amp; ctx.classCreatorRest().classBody() != null;</span>
     }
 
     public String constructorLocalName(JavaParser.ConstructorDeclarationContext ctx) throws DisambiguizerException {
-<span class="fc" id="L29">        return String.format(&quot;&lt;init&gt;(%s)V&quot;,</span>
-                this.formalParametersTypesSpec(ctx.formalParameters()));
+<span class="fc" id="L22">        return String.format(&quot;&lt;init&gt;(%s)V&quot;,</span>
+                this.typeSupport.formalParametersTypesSpec(ctx.formalParameters()));
     }
 
     public String methodLocalName(JavaParser.MethodDeclarationContext ctx) throws DisambiguizerException {
-<span class="fc" id="L34">        return String.format(&quot;%s(%s)%s&quot;,</span>
+<span class="fc" id="L27">        return String.format(&quot;%s(%s)%s&quot;,</span>
                 ctx.Identifier().getText(),
-                this.formalParametersTypesSpec(ctx.formalParameters()),
-                this.typeSpec(ctx.type()));
+                this.typeSupport.formalParametersTypesSpec(ctx.formalParameters()),
+                this.typeSupport.typeSpec(ctx.type()));
     }
 
     public String choosePackageForTypeName(String name) throws DisambiguizerException {
-<span class="fc" id="L41">        return this.disambiguizer.choosePackage(name, this.builCandidates());</span>
+<span class="fc" id="L34">        return this.typeSupport.choosePackageForTypeName(name);</span>
     }
 
     public void addImport(String qualifiedNameText) {
-<span class="fc" id="L45">        this.imports.add(qualifiedNameText);</span>
-<span class="fc" id="L46">    }</span>
-    
-    private String typeSpec(JavaParser.TypeContext type) throws DisambiguizerException {
-<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(type != null) {</span>
-<span class="fc" id="L50">            return this.qualifiedTypeSpec(type.getText());</span>
-        } else {
-<span class="fc" id="L52">            return &quot;V&quot;;</span>
-        }
-    }
+<span class="fc" id="L38">        this.typeSupport.addImport(qualifiedNameText);</span>
+<span class="fc" id="L39">    }</span>
     
     public String canonical(String text) {
-<span class="fc" id="L57">        return text.replaceAll(&quot;\\.&quot;, &quot;/&quot;);</span>
-    }
-
-    private String formalParametersTypesSpec(JavaParser.FormalParametersContext formalParameters) throws DisambiguizerException {
-<span class="fc" id="L61">        StringBuilder result = new StringBuilder(&quot;&quot;);</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">        if(formalParameters.formalParameterList() != null) {</span>
-<span class="fc bfc" id="L63" title="All 2 branches covered.">            for (JavaParser.FormalParameterContext formalParameterContext : formalParameters.formalParameterList().formalParameter()) {</span>
-<span class="fc" id="L64">                String typeName = formalParameterContext.type().getText();</span>
-<span class="fc" id="L65">                result.append(this.qualifiedTypeSpec(typeName));</span>
-<span class="fc" id="L66">            }</span>
-<span class="fc bfc" id="L67" title="All 2 branches covered.">            if(formalParameters.formalParameterList().lastFormalParameter() != null) {</span>
-<span class="fc" id="L68">                String typeName = formalParameters.formalParameterList().lastFormalParameter().type().getText();</span>
-<span class="fc" id="L69">                result.append(this.qualifiedTypeSpec(typeName + &quot;[]&quot;));</span>
-            }
-        }
-<span class="fc" id="L72">        return result.toString();</span>
+<span class="fc" id="L42">        return text.replaceAll(&quot;\\.&quot;, &quot;/&quot;);</span>
     }
     
-    private String qualifiedTypeSpec(String simpleName) throws DisambiguizerException {
-<span class="fc" id="L76">        String arrayMark = &quot;&quot;;</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        if(simpleName.endsWith(&quot;[]&quot;)) {</span>
-<span class="fc" id="L78">            simpleName = simpleName.substring(0, simpleName.length() - &quot;[]&quot;.length());</span>
-<span class="fc" id="L79">            arrayMark = &quot;[&quot;;</span>
-        }
-        
-<span class="fc bfc" id="L82" title="All 2 branches covered.">        if(this.isPrimitive(simpleName)) {</span>
-<span class="fc" id="L83">            return String.format(&quot;%s%s&quot;,</span>
-                    arrayMark,
-                    this.primitiveTypeMarker(simpleName)
-            );
-        } else {
-<span class="fc" id="L88">            String packageName = this.choosePackageForTypeName(simpleName);</span>
-<span class="pc bpc" id="L89" title="2 of 4 branches missed.">            if (packageName != null &amp;&amp; !packageName.isEmpty()) {</span>
-<span class="fc" id="L90">                packageName = packageName.replace('.', '/') + &quot;/&quot;;</span>
-            }
-<span class="fc" id="L92">            return String.format(&quot;%sL%s%s;&quot;,</span>
-                    arrayMark,
-                    packageName,
-                    simpleName
-            );
-        }
-    }
-
-    private String primitiveTypeMarker(String simpleName) {
-<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if(simpleName.equals(&quot;int&quot;)) {</span>
-<span class="fc" id="L102">            return &quot;I&quot;;</span>
-        } else {
-<span class="nc" id="L104">            throw new SourceFragmentUncheckedException(&quot;unsupported primitive type : &quot; + simpleName);</span>
-        }
-    }
-
-    private boolean isPrimitive(String simpleName) {
-<span class="fc" id="L109">        return simpleName.equals(&quot;int&quot;);</span>
-    }
-
-
-    private String[] builCandidates() {
-<span class="fc" id="L114">        ArrayList&lt;String&gt; candidates = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L115">        candidates.add(&quot;java.lang&quot;);</span>
-<span class="fc" id="L116">        candidates.addAll(this.imports);</span>
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if(! this.namingContext.current().isEmpty()) {</span>
-<span class="fc" id="L118">            candidates.add(this.namingContext.current());</span>
-        }
-<span class="fc" id="L120">        return candidates.toArray(new String[candidates.size()]);</span>
-    }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

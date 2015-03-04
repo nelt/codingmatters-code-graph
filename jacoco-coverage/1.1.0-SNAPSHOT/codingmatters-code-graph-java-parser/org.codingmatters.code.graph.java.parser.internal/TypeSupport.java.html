@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../.resources/report.gif" type="image/gif"/><title>TypeSupport.java</title><link rel="stylesheet" href="../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../.sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Codingmatters' CodeGraph Coverage</a> &gt; <a href="../index.html" class="el_bundle">codingmatters-code-graph-java-parser</a> &gt; <a href="index.source.html" class="el_package">org.codingmatters.code.graph.java.parser.internal</a> &gt; <span class="el_source">TypeSupport.java</span></div><h1>TypeSupport.java</h1><pre class="source lang-java linenums">package org.codingmatters.code.graph.java.parser.internal;
+
+import org.codingmatters.code.graph.java.ast.JavaParser;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+/**
+ * Created by nel on 03/03/15.
+ */
+public class TypeSupport {
+
+    private final NamingContext namingContext;
+    private final ClassDisambiguizer disambiguizer;
+
+<span class="fc" id="L16">    private final LinkedList&lt;String&gt; imports = new LinkedList&lt;&gt;();</span>
+
+<span class="fc" id="L18">    public TypeSupport(NamingContext namingContext, ClassDisambiguizer disambiguizer) {</span>
+<span class="fc" id="L19">        this.namingContext = namingContext;</span>
+<span class="fc" id="L20">        this.disambiguizer = disambiguizer;</span>
+<span class="fc" id="L21">    }</span>
+
+    public String typeSpec(JavaParser.TypeContext type) throws DisambiguizerException {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if(type != null) {</span>
+<span class="fc" id="L25">            return this.typeSpec(type.getText());</span>
+        } else {
+<span class="fc" id="L27">            return &quot;V&quot;;</span>
+        }
+    }
+
+    public String formalParametersTypesSpec(JavaParser.FormalParametersContext formalParameters) throws DisambiguizerException {
+<span class="fc" id="L32">        StringBuilder result = new StringBuilder(&quot;&quot;);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if(formalParameters.formalParameterList() != null) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (JavaParser.FormalParameterContext formalParameterContext : formalParameters.formalParameterList().formalParameter()) {</span>
+<span class="fc" id="L35">                String typeName = formalParameterContext.type().getText();</span>
+<span class="fc" id="L36">                result.append(this.typeSpec(typeName));</span>
+<span class="fc" id="L37">            }</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            if(formalParameters.formalParameterList().lastFormalParameter() != null) {</span>
+<span class="fc" id="L39">                String typeName = formalParameters.formalParameterList().lastFormalParameter().type().getText();</span>
+<span class="fc" id="L40">                result.append(this.typeSpec(typeName + &quot;[]&quot;));</span>
+            }
+        }
+<span class="fc" id="L43">        return result.toString();</span>
+    }
+    
+    private String typeSpec(String simpleName) throws DisambiguizerException {
+<span class="fc" id="L47">        String arrayMark = &quot;&quot;;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if(simpleName.endsWith(&quot;[]&quot;)) {</span>
+<span class="fc" id="L49">            simpleName = simpleName.substring(0, simpleName.length() - &quot;[]&quot;.length());</span>
+<span class="fc" id="L50">            arrayMark = &quot;[&quot;;</span>
+        }
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if(PrimitiveType.isPrimitive(simpleName)) {</span>
+<span class="fc" id="L54">            return String.format(&quot;%s%s&quot;,</span>
+                    arrayMark,
+                    PrimitiveType.forType(simpleName).getSpec()
+            );
+        } else {
+<span class="fc" id="L59">            String packageName = this.choosePackageForTypeName(simpleName);</span>
+<span class="pc bpc" id="L60" title="2 of 4 branches missed.">            if (packageName != null &amp;&amp; !packageName.isEmpty()) {</span>
+<span class="fc" id="L61">                packageName = packageName.replace('.', '/') + &quot;/&quot;;</span>
+            }
+<span class="fc" id="L63">            return String.format(&quot;%sL%s%s;&quot;,</span>
+                    arrayMark,
+                    packageName,
+                    simpleName
+            );
+        }
+    }
+    
+    public String choosePackageForTypeName(String name) throws DisambiguizerException {
+<span class="fc" id="L72">        return this.disambiguizer.choosePackage(name, this.builCandidates());</span>
+    }
+
+    private String[] builCandidates() {
+<span class="fc" id="L76">        ArrayList&lt;String&gt; candidates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L77">        candidates.add(&quot;java.lang&quot;);</span>
+<span class="fc" id="L78">        candidates.addAll(this.imports);</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if(! this.namingContext.current().isEmpty()) {</span>
+<span class="fc" id="L80">            candidates.add(this.namingContext.current());</span>
+        }
+<span class="fc" id="L82">        return candidates.toArray(new String[candidates.size()]);</span>
+    }
+
+    public void addImport(String qualifiedNameText) {
+<span class="fc" id="L86">        this.imports.add(qualifiedNameText);</span>
+<span class="fc" id="L87">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
