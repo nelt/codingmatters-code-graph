@@ -43,22 +43,23 @@ public class MethodParserVisitor extends MethodVisitor {
     public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 <span class="fc bfc" id="L44" title="All 2 branches covered.">        if(Opcodes.GETFIELD == opcode) {</span>
             try {
-<span class="fc" id="L46">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));</span>
-<span class="nc" id="L47">            } catch (ProducerException e) {</span>
-<span class="nc" id="L48">                this.errorReporter.report(e);</span>
-<span class="pc" id="L49">            }</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">        } else if(Opcodes.PUTFIELD == opcode) {</span>
+<span class="fc" id="L46">                this.predicateProducer.usage(</span>
+                        new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);
+<span class="nc" id="L48">            } catch (ProducerException e) {</span>
+<span class="nc" id="L49">                this.errorReporter.report(e);</span>
+<span class="pc" id="L50">            }</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        } else if(Opcodes.PUTFIELD == opcode) {</span>
             try {
-<span class="fc" id="L52">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));</span>
-<span class="nc" id="L53">            } catch (ProducerException e) {</span>
-<span class="nc" id="L54">                this.errorReporter.report(e);</span>
-<span class="fc" id="L55">            }</span>
+<span class="fc" id="L53">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);</span>
+<span class="nc" id="L54">            } catch (ProducerException e) {</span>
+<span class="nc" id="L55">                this.errorReporter.report(e);</span>
+<span class="fc" id="L56">            }</span>
         }
-<span class="fc" id="L57">        super.visitFieldInsn(opcode, owner, name, desc);</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L58">        super.visitFieldInsn(opcode, owner, name, desc);</span>
+<span class="fc" id="L59">    }</span>
 
     private String fieldName(String owner, String name) {
-<span class="fc" id="L61">        return NameUtil.fieldName(owner, name);</span>
+<span class="fc" id="L62">        return NameUtil.fieldName(owner, name);</span>
     }
     
     
@@ -66,17 +67,18 @@ public class MethodParserVisitor extends MethodVisitor {
     @Override
     public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
         try {
-<span class="fc" id="L69">            this.predicateProducer.usage(</span>
+<span class="fc" id="L70">            this.predicateProducer.usage(</span>
                     new UsesPredicate(
                             this.methodRef, 
                             new MethodRef(this.source, NameUtil.methodName(owner, name, desc))
-                    )
+                    ),
+                    this.currentLine
             );
-<span class="nc" id="L75">        } catch (ProducerException e) {</span>
-<span class="nc" id="L76">            this.errorReporter.report(e);</span>
-<span class="fc" id="L77">        }</span>
-<span class="fc" id="L78">        super.visitMethodInsn(opcode, owner, name, desc, itf);</span>
-<span class="fc" id="L79">    }</span>
+<span class="nc" id="L77">        } catch (ProducerException e) {</span>
+<span class="nc" id="L78">            this.errorReporter.report(e);</span>
+<span class="fc" id="L79">        }</span>
+<span class="fc" id="L80">        super.visitMethodInsn(opcode, owner, name, desc, itf);</span>
+<span class="fc" id="L81">    }</span>
     
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

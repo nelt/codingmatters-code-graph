@@ -6,7 +6,6 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,51 +18,51 @@ public class Neo4jPredicateProducer implements PredicateProducer {
     private final GraphDatabaseService graphDb;
     private final Codec.Querier querier;
 
-<span class="fc" id="L22">    public Neo4jPredicateProducer(GraphDatabaseService graphDb, ExecutionEngine engine) {</span>
-<span class="fc" id="L23">        this.graphDb = graphDb;</span>
-<span class="fc" id="L24">        this.querier = new Codec.Querier(engine);</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L21">    public Neo4jPredicateProducer(GraphDatabaseService graphDb, ExecutionEngine engine) {</span>
+<span class="fc" id="L22">        this.graphDb = graphDb;</span>
+<span class="fc" id="L23">        this.querier = new Codec.Querier(engine);</span>
+<span class="fc" id="L24">    }</span>
 
     @Override
     public void hasField(HasFieldPredicate predicate) throws ProducerException {
-<span class="fc" id="L29">        this.querier.justMergeRefNode(predicate.getCls());</span>
-<span class="fc" id="L30">        this.querier.justMergeRefNode(predicate.getField());</span>
-<span class="fc" id="L31">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_FIELD, predicate.getField());</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L28">        this.querier.justMergeRefNode(predicate.getCls());</span>
+<span class="fc" id="L29">        this.querier.justMergeRefNode(predicate.getField());</span>
+<span class="fc" id="L30">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_FIELD, predicate.getField());</span>
+<span class="fc" id="L31">    }</span>
 
     @Override
     public void hasMethod(HasMethodPredicate predicate) throws ProducerException {
-<span class="fc" id="L36">        this.querier.justMergeRefNode(predicate.getCls());</span>
-<span class="fc" id="L37">        this.querier.justMergeRefNode(predicate.getMethod());</span>
-<span class="fc" id="L38">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_METHOD, predicate.getMethod());</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L35">        this.querier.justMergeRefNode(predicate.getCls());</span>
+<span class="fc" id="L36">        this.querier.justMergeRefNode(predicate.getMethod());</span>
+<span class="fc" id="L37">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_METHOD, predicate.getMethod());</span>
+<span class="fc" id="L38">    }</span>
 
     @Override
     public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {
-<span class="fc" id="L43">        this.querier.justMergeRefNode(predicate.getCls());</span>
-<span class="fc" id="L44">        this.querier.justMergeRefNode(predicate.getInner());</span>
-<span class="fc" id="L45">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_INNER_CLASS, predicate.getInner());</span>
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L42">        this.querier.justMergeRefNode(predicate.getCls());</span>
+<span class="fc" id="L43">        this.querier.justMergeRefNode(predicate.getInner());</span>
+<span class="fc" id="L44">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.HAS_INNER_CLASS, predicate.getInner());</span>
+<span class="fc" id="L45">    }</span>
 
     @Override
     public void hasParent(ExtendsPredicate predicate) throws ProducerException {
-<span class="fc" id="L50">        this.querier.justMergeRefNode(predicate.getCls());</span>
-<span class="fc" id="L51">        this.querier.justMergeRefNode(predicate.getExtended());</span>
-<span class="fc" id="L52">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.EXTENDS, predicate.getExtended());</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L49">        this.querier.justMergeRefNode(predicate.getCls());</span>
+<span class="fc" id="L50">        this.querier.justMergeRefNode(predicate.getExtended());</span>
+<span class="fc" id="L51">        this.querier.justMergeRelationship(predicate.getCls(), Codec.RelationshipType.EXTENDS, predicate.getExtended());</span>
+<span class="fc" id="L52">    }</span>
     
     @Override
-    public void usage(UsesPredicate predicate) throws ProducerException {
-<span class="fc" id="L57">        this.querier.justMergeRefNode(predicate.getUser());</span>
-<span class="fc" id="L58">        this.querier.justMergeRefNode(predicate.getUsed());</span>
-<span class="fc" id="L59">        this.querier.justMergeRelationship(predicate.getUser(), Codec.RelationshipType.USES, predicate.getUsed());</span>
-<span class="fc" id="L60">    }</span>
+    public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
+<span class="fc" id="L56">        this.querier.justMergeRefNode(predicate.getUser());</span>
+<span class="fc" id="L57">        this.querier.justMergeRefNode(predicate.getUsed());</span>
+<span class="fc" id="L58">        this.querier.justMergeRelationship(predicate.getUser(), Codec.RelationshipType.USES, predicate.getUsed());</span>
+<span class="fc" id="L59">    }</span>
 
     @Override
     public void hasInterface(ImplementsPredicate predicate) throws ProducerException {
-<span class="fc" id="L64">        this.querier.justMergeRefNode(predicate.getImplementer());</span>
-<span class="fc" id="L65">        this.querier.justMergeRefNode(predicate.getImplemented());</span>
-<span class="fc" id="L66">        this.querier.justMergeRelationship(predicate.getImplementer(), Codec.RelationshipType.IMPLEMENTS, predicate.getImplemented());</span>
-<span class="fc" id="L67">    }</span>
+<span class="fc" id="L63">        this.querier.justMergeRefNode(predicate.getImplementer());</span>
+<span class="fc" id="L64">        this.querier.justMergeRefNode(predicate.getImplemented());</span>
+<span class="fc" id="L65">        this.querier.justMergeRelationship(predicate.getImplementer(), Codec.RelationshipType.IMPLEMENTS, predicate.getImplemented());</span>
+<span class="fc" id="L66">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
