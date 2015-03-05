@@ -8,28 +8,32 @@
 <span class="fc" id="L8">    LONG(&quot;J&quot;),</span>
 <span class="fc" id="L9">    FLOAT(&quot;F&quot;),</span>
 <span class="fc" id="L10">    DOUBLE(&quot;D&quot;),</span>
-<span class="fc" id="L11">    CHAR(&quot;C&quot;);</span>
+<span class="fc" id="L11">    CHAR(&quot;C&quot;),</span>
+<span class="fc" id="L12">    BOOLEAN(&quot;Z&quot;),</span>
+<span class="fc" id="L13">    BYTE(&quot;B&quot;),</span>
+<span class="fc" id="L14">    SHORT(&quot;S&quot;)</span>
+    ;
 
     static public boolean isPrimitive(String name) {
-<span class="fc bfc" id="L14" title="All 2 branches covered.">        return forType(name) != null;</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        return forType(name) != null;</span>
     }
 
     static public PrimitiveType forType(String name) {
         try {
-<span class="fc" id="L19">            return valueOf(name.toUpperCase());</span>
-<span class="fc" id="L20">        } catch (IllegalArgumentException e) {</span>
-<span class="fc" id="L21">            return null;</span>
+<span class="fc" id="L23">            return valueOf(name.toUpperCase());</span>
+<span class="fc" id="L24">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L25">            return null;</span>
         }
     }
 
     private final String spec;
 
-<span class="fc" id="L27">    PrimitiveType(String spec) {</span>
-<span class="fc" id="L28">        this.spec = spec;</span>
-<span class="fc" id="L29">    }</span>
+<span class="fc" id="L31">    PrimitiveType(String spec) {</span>
+<span class="fc" id="L32">        this.spec = spec;</span>
+<span class="fc" id="L33">    }</span>
 
     public String getSpec() {
-<span class="fc" id="L32">        return spec;</span>
+<span class="fc" id="L36">        return spec;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>
