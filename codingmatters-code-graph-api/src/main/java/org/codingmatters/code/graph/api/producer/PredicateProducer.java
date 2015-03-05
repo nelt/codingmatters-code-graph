@@ -15,6 +15,6 @@ public interface PredicateProducer {
     public void hasField(HasFieldPredicate predicate) throws ProducerException;
     public void hasMethod(HasMethodPredicate predicate) throws ProducerException;
     public void hasInner(HasInnerClassPredicate predicate) throws ProducerException;
-    public void usage(UsesPredicate predicate) throws ProducerException;
+    public void usage(UsesPredicate predicate, int atLine) throws ProducerException;
     public void hasInterface(ImplementsPredicate predicate) throws ProducerException;
 }

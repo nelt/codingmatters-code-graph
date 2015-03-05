@@ -82,7 +82,7 @@ public class ParsingFunctionalTest {
                 assertThat(predicate.getInner(), containsSourcePrefixOnlyOnce(SOURCE));
             }
             @Override
-            public void usage(UsesPredicate predicate) throws ProducerException {
+            public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
                 assertThat(predicate.getUser(), containsSourcePrefixOnlyOnce(SOURCE));
                 assertThat(predicate.getUsed(), containsSourcePrefixOnlyOnce(SOURCE));
             }
@@ -136,7 +136,7 @@ public class ParsingFunctionalTest {
                 }
     
                 @Override
-                public void usage(UsesPredicate predicate) throws ProducerException {
+                public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
                     counters.usageCounter++;
                 }
 

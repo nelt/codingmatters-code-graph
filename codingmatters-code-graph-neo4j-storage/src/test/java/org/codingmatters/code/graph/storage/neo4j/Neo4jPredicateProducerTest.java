@@ -3,14 +3,9 @@ package org.codingmatters.code.graph.storage.neo4j;
 import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.storage.neo4j.internal.Codec;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.kernel.impl.util.StringLogger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -71,8 +66,8 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
     
     @Test
     public void testFieldUsage() throws Exception {
-        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF));
-        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF));
+        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF), 12);
+        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF), 12);
 
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
         assertNodeHasRefProperties(METHOD_REF, methodNode);
@@ -85,8 +80,8 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
     
     @Test
     public void testMethodUsage() throws Exception {
-        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF));
-        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF));
+        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF), 12);
+        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF), 12);
 
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
         assertNodeHasRefProperties(METHOD_REF, methodNode);

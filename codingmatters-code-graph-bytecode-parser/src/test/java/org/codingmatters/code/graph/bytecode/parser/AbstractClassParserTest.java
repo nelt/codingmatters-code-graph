@@ -58,7 +58,7 @@ public class AbstractClassParserTest {
         @Override
         public void hasField(HasFieldPredicate predicate) throws ProducerException {}
         @Override
-        public void usage(UsesPredicate predicate) throws ProducerException {}
+        public void usage(UsesPredicate predicate, int atLine) throws ProducerException {}
         @Override
         public void hasInterface(ImplementsPredicate predicate) throws ProducerException {}
     };
@@ -140,7 +140,7 @@ public class AbstractClassParserTest {
                 }
 
             @Override
-            public void usage(UsesPredicate predicate) throws ProducerException {
+            public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
                 produced.add(predicate);
             }
 

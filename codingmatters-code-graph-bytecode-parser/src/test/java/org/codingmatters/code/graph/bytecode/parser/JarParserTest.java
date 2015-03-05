@@ -45,7 +45,7 @@ public class JarParserTest {
         @Override
         public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {}
         @Override
-        public void usage(UsesPredicate predicate) throws ProducerException {}
+        public void usage(UsesPredicate predicate, int atLine) throws ProducerException {}
         @Override
         public void hasInterface(ImplementsPredicate predicate) throws ProducerException {}
     };

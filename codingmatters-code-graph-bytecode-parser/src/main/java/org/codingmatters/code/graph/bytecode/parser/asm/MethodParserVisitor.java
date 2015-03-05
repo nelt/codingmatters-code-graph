@@ -43,13 +43,14 @@ public class MethodParserVisitor extends MethodVisitor {
     public void visitFieldInsn(int opcode, String owner, String name, String desc) {
         if(Opcodes.GETFIELD == opcode) {
             try {
-                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));
+                this.predicateProducer.usage(
+                        new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);
             } catch (ProducerException e) {
                 this.errorReporter.report(e);
             }
         } else if(Opcodes.PUTFIELD == opcode) {
             try {
-                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))));
+                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);
             } catch (ProducerException e) {
                 this.errorReporter.report(e);
             }
@@ -70,7 +71,8 @@ public class MethodParserVisitor extends MethodVisitor {
                     new UsesPredicate(
                             this.methodRef, 
                             new MethodRef(this.source, NameUtil.methodName(owner, name, desc))
-                    )
+                    ),
+                    this.currentLine
             );
         } catch (ProducerException e) {
             this.errorReporter.report(e);
