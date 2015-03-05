@@ -8,7 +8,11 @@ public enum PrimitiveType {
     LONG("J"),
     FLOAT("F"),
     DOUBLE("D"),
-    CHAR("C");
+    CHAR("C"),
+    BOOLEAN("Z"),
+    BYTE("B"),
+    SHORT("S")
+    ;
 
     static public boolean isPrimitive(String name) {
         return forType(name) != null;
