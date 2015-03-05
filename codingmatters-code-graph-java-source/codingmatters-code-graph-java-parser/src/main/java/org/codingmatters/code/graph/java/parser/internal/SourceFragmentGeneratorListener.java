@@ -7,6 +7,8 @@ import org.codingmatters.code.graph.java.ast.JavaBaseListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
 import org.codingmatters.code.graph.java.parser.fragments.*;
 
+import java.util.Stack;
+
 /**
 * Created with IntelliJ IDEA.
 * User: nel
@@ -15,8 +17,7 @@ import org.codingmatters.code.graph.java.parser.fragments.*;
 * To change this template use File | Settings | File Templates.
 */
 public class SourceFragmentGeneratorListener extends JavaBaseListener {
-
-
+    
     private static AbstractFragment.Builder fragmentBuilder() {
         return new AbstractFragment.Builder();
     }
@@ -29,8 +30,8 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     private final InnerClassCounter innerClassCounter = new InnerClassCounter();
     
     private boolean inClass = false;
-
-
+    private final Stack<Declaration> currentDeclaration = new Stack<>();
+    
     public SourceFragmentGeneratorListener(FragmentStream stream, ClassDisambiguizer disambiguizer) {
         this.stream = stream;
         this.typeSupport = new TypeSupport(this.namingContext, disambiguizer);
@@ -78,8 +79,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
 
         try {
             String cannonicalName = this.support.canonical(qualifiedName.getText());
-            this.stream.fragment(fragmentBuilder()
-                    .withText(qualifiedName.getText())
+            this.stream.fragment(fragmentBuilder().withText(qualifiedName.getText())
                     .withQualifiedName(cannonicalName)
                     .withStart(firstSymbol.getStartIndex())
                     .withEnd(lastSymbol.getStopIndex())
@@ -126,37 +126,46 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         this.innerClassCounter.previous();
         this.namingContext.previous();
     }
-
+    
     @Override
     public void enterFieldDeclaration(@NotNull JavaParser.FieldDeclarationContext ctx) {
+        this.currentDeclaration.push(Declaration.FIELD);
+    }
+    @Override
+    public void exitFieldDeclaration(@NotNull JavaParser.FieldDeclarationContext ctx) {
+        this.currentDeclaration.pop();
+    }
+
+    @Override
+    public void enterClassOrInterfaceType(@NotNull JavaParser.ClassOrInterfaceTypeContext ctx) {
         try {
-            this.emmitClassUsageForType(ctx.type());
-            for (JavaParser.VariableDeclaratorContext variableDeclaratorContext : ctx.variableDeclarators().variableDeclarator()) {
-                this.emmitFieldDeclarationForVariableDeclarator(variableDeclaratorContext);
-            }
+            this.stream.fragment(fragmentBuilder()
+                    .withQualifiedName(this.typeSupport.typeSpec(ctx.getText()))
+                    .withText(ctx.getText())
+                    .withStart(ctx.getStart().getStartIndex())
+                    .withEnd(ctx.getStart().getStopIndex())
+                    .build(ClassUsageFragment.class));
         } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
             throw new SourceFragmentUncheckedException("error parsing field declaration", e);
         }
     }
     
-    private void emmitClassUsageForType(JavaParser.TypeContext type) throws DisambiguizerException, AbstractFragment.Builder.BuilderException {
-        this.stream.fragment(fragmentBuilder()
-                .withQualifiedName(this.typeSupport.typeSpec(type.getText()))
-                .withText(type.getText())
-                .withStart(type.getStart().getStartIndex())
-                .withEnd(type.getStart().getStopIndex())
-                .build(ClassUsageFragment.class));
-    }
 
-
-    private void emmitFieldDeclarationForVariableDeclarator(JavaParser.VariableDeclaratorContext ctx) throws AbstractFragment.Builder.BuilderException {
-        TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
-        this.stream.fragment(fragmentBuilder()
-                .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + identifier.getText())
-                .withText(identifier.getText())
-                .withStart(identifier.getSymbol().getStartIndex())
-                .withEnd(identifier.getSymbol().getStopIndex())
-                .build(FieldDeclarationFragment.class));
+    
+    @Override
+    public void enterVariableDeclarator(@NotNull JavaParser.VariableDeclaratorContext ctx) {
+        if(this.currentDeclaration.isEmpty()) return;
+        try {
+            TerminalNode identifier = ctx.variableDeclaratorId().Identifier();
+            this.stream.fragment(fragmentBuilder()
+                    .withQualifiedName(this.support.canonical(this.namingContext.current()) + "#" + identifier.getText())
+                    .withText(identifier.getText())
+                    .withStart(identifier.getSymbol().getStartIndex())
+                    .withEnd(identifier.getSymbol().getStopIndex())
+                    .build(this.currentDeclaration.peek().variableFragment));
+        } catch (AbstractFragment.Builder.BuilderException e) {
+            throw new SourceFragmentUncheckedException("error parsing field declaration", e);
+        }
     }
 
     @Override
@@ -205,4 +214,14 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             this.namingContext.previous();
         }
     }
+
+
+    enum Declaration {
+        FIELD(FieldDeclarationFragment.class);
+
+        final Class<? extends AbstractFragment> variableFragment;
+        Declaration(Class<? extends AbstractFragment> variableFragment) {
+            this.variableFragment = variableFragment;
+        }
+    }    
 }

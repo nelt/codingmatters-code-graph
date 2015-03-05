@@ -5,6 +5,7 @@ import org.codingmatters.code.graph.java.parser.internal.support.FragmentTestHel
 import org.codingmatters.code.graph.java.parser.internal.support.ParsingTestHelper;
 import org.codingmatters.code.graph.java.parser.internal.support.TestClassDisambiguizer;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -23,6 +24,7 @@ public class SourceFragmentGeneratorListenerTest {
         this.disambiguizer = TestClassDisambiguizer.builder()
                 .withPackage("java.lang").forClass("Runnable", "String", "Object")
                 .withPackage("java.util.concurrent.atomic").forClass("AtomicBoolean")
+                .withPackage("java.util").forClass("Date")
                 .build();
     }
 
@@ -76,13 +78,24 @@ public class SourceFragmentGeneratorListenerTest {
         parsedFragments.assertFragment(ClassDeclarationFragment.class, "org/test/TestClass");
         
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#noArg()V");
+        
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#oneArg(Ljava/lang/String;)V");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#twoArgs(Ljava/lang/String;Ljava/lang/String;)V");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#varArgs([Ljava/lang/String;)V");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#arrayArg([Ljava/lang/String;)V");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#primitiveArgs(IJFDC[I)V");
         
         parsedFragments.assertFragment(MethodDeclarationFragment.class, "org/test/TestClass#returnValue()Ljava/lang/String;");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
         
         parsedFragments.assertNoMoreFragment();
         parsedFragments.assertAllFragmentAreCoherent(resourceClass);
@@ -139,7 +152,6 @@ public class SourceFragmentGeneratorListenerTest {
         parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/Object;");
         parsedFragments.assertFragment(FieldDeclarationFragment.class, "org/test/TestClass#objectField");
 
-        parsedFragments.assertFragment(ClassUsageFragment.class, "I");
         parsedFragments.assertFragment(FieldDeclarationFragment.class, "org/test/TestClass#primitiveField");
         
         parsedFragments.assertNoMoreFragment();
@@ -217,7 +229,7 @@ public class SourceFragmentGeneratorListenerTest {
          */
         parsedFragments.assertFragment(
                 MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#<init>(Ljava/lang/String;)V");
-        
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
         
         /*
         public String getField() {
@@ -226,6 +238,7 @@ public class SourceFragmentGeneratorListenerTest {
          */
         parsedFragments.assertFragment(
                 MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#getField()Ljava/lang/String;");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
      
         /*
         public String method(String arg) throws Exception {
@@ -235,7 +248,9 @@ public class SourceFragmentGeneratorListenerTest {
          */
         parsedFragments.assertFragment(
                 MethodDeclarationFragment.class, "org/codingmatters/code/graph/bytecode/parser/util/TestClass#method(Ljava/lang/String;)Ljava/lang/String;");
-
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/lang/String;");
+        parsedFragments.assertFragment(ClassUsageFragment.class, "Ljava/util/Date;");
 
         parsedFragments.assertNoMoreFragment();
 

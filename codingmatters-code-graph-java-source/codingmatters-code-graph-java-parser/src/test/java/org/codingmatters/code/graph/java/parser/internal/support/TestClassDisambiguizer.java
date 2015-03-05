@@ -58,9 +58,15 @@ public class TestClassDisambiguizer implements ClassDisambiguizer {
     
     @Override
     public String choosePackage(String forClass, String[] orderedCandidates) throws DisambiguizerException {
-        int packageIndex = -1;
-
         List<String> candidates = Arrays.asList(orderedCandidates);
+        for (String candidate : candidates) {
+            if(candidate.endsWith("." + forClass)) {
+                return candidate.substring(0, candidate.length() - ("." + forClass).length());
+            }
+        }
+
+
+        int packageIndex = -1;
         for (List<String> classes : this.packagesForClass.keySet()) {
             if (classes.contains(forClass)) {
                 String p = this.packagesForClass.get(classes);
