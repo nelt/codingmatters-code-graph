@@ -13,7 +13,7 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
  * To change this template use File | Settings | File Templates.
  */
 public interface NodeProducer {
-    public void aClass(ClassNode node) throws ProducerException;
-    public void aField(FieldNode node) throws ProducerException;
-    public void aMethod(MethodNode node) throws ProducerException;
+    void aClass(ClassNode node) throws ProducerException;
+    void aField(FieldNode node) throws ProducerException;
+    void aMethod(MethodNode node) throws ProducerException;
 }

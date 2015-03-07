@@ -11,10 +11,10 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
  * To change this template use File | Settings | File Templates.
  */
 public interface PredicateProducer {
-    public void hasParent(ExtendsPredicate predicate) throws ProducerException;
-    public void hasField(HasFieldPredicate predicate) throws ProducerException;
-    public void hasMethod(HasMethodPredicate predicate) throws ProducerException;
-    public void hasInner(HasInnerClassPredicate predicate) throws ProducerException;
-    public void usage(UsesPredicate predicate, int atLine) throws ProducerException;
-    public void hasInterface(ImplementsPredicate predicate) throws ProducerException;
+    void hasParent(ExtendsPredicate predicate) throws ProducerException;
+    void hasField(HasFieldPredicate predicate) throws ProducerException;
+    void hasMethod(HasMethodPredicate predicate) throws ProducerException;
+    void hasInner(HasInnerClassPredicate predicate) throws ProducerException;
+    void usage(UsesPredicate predicate, int atLine) throws ProducerException;
+    void hasInterface(ImplementsPredicate predicate) throws ProducerException;
 }
