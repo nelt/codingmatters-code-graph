@@ -48,10 +48,9 @@
     
     <modules>
         <module>codingmatters-code-graph-api</module>
-        <module>codingmatters-code-graph-bytecode-parser</module>
+        <module>codingmatters-code-graph-parsers</module>
         <module>codingmatters-code-graph-neo4j-storage</module>
         <module>codingmatters-code-graph-main</module>
-        <module>codingmatters-code-graph-java-source</module>
         <module>codingmatters-code-graph-test-support</module>
         <module>codingmatters-code-graph-ui</module>
     </modules>
