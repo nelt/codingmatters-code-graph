@@ -17,7 +17,8 @@
 
     <modules>
         <module>codingmatters-code-graph-bytecode-parser</module>
-        <module>codingmatters-code-graph-java-source</module>    
+        <module>codingmatters-code-graph-java-source</module>  
+        <module>codingmatters-code-graph-parsers-test-support</module>
     </modules>
 
 </project>

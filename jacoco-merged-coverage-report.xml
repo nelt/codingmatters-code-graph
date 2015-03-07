@@ -21,19 +21,19 @@
             </group>
             <group name="codingmatters-code-graph-bytecode-parser">
                 <classfiles>
-                    <fileset dir="./codingmatters-code-graph-bytecode-parser/target/classes/"/>
+                    <fileset dir="./codingmatters-code-graph-parsers/codingmatters-code-graph-bytecode-parser/target/classes/"/>
                 </classfiles>
                 <sourcefiles>
-                    <fileset dir="./codingmatters-code-graph-bytecode-parser/src/main/java/"/>
+                    <fileset dir=".>/codingmatters-code-graph-parsers/codingmatters-code-graph-bytecode-parser/src/main/java/"/>
                 </sourcefiles>
             </group>
             
             <group name="codingmatters-code-graph-java-parser">
                 <classfiles>
-                    <fileset dir="./codingmatters-code-graph-java-source/codingmatters-code-graph-java-parser/target/classes/"/>
+                    <fileset dir="./codingmatters-code-graph-parsers/codingmatters-code-graph-java-source/codingmatters-code-graph-java-parser/target/classes/"/>
                 </classfiles>
                 <sourcefiles>
-                    <fileset dir="./codingmatters-code-graph-java-source/codingmatters-code-graph-java-parser/src/main/java/"/>
+                    <fileset dir="./codingmatters-code-graph-parsers/codingmatters-code-graph-java-source/codingmatters-code-graph-java-parser/src/main/java/"/>
                 </sourcefiles>
             </group>
             
