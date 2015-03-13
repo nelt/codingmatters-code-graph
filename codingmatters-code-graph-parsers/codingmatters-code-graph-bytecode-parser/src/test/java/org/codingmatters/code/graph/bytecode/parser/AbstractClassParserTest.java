@@ -65,7 +65,11 @@ public class AbstractClassParserTest {
     
     private ClassParser parser;
     private List<Object> produced = new ArrayList<>();
-
+    
+    public void produced(Object o) {
+        this.produced.add(o);
+    }
+    
     static protected Filters<Object> filterClassNodes(List<Object> objects) {
         return filter(objects).with("class", ClassNode.class);
     }
