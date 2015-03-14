@@ -66,8 +66,8 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
     
     @Test
     public void testFieldUsage() throws Exception {
-        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF), 12);
-        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF), 12);
+        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF, 12));
+        this.producer.usage(new UsesPredicate(METHOD_REF, FIELD_REF, 12));
 
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
         assertNodeHasRefProperties(METHOD_REF, methodNode);
@@ -80,8 +80,8 @@ public class Neo4jPredicateProducerTest extends AbstractNeo4jProducerTest {
     
     @Test
     public void testMethodUsage() throws Exception {
-        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF), 12);
-        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF), 12);
+        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF, 12));
+        this.producer.usage(new UsesPredicate(METHOD_REF, USED_METHOD_REF, 12));
 
         Node methodNode = assertUniqueNodeWithLabelAndName(Codec.Label.METHOD, METHOD_REF.getName());
         assertNodeHasRefProperties(METHOD_REF, methodNode);

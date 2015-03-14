@@ -33,7 +33,7 @@ public class SubclassingTest extends AbstractClassParserTest {
                 new ExtendsPredicate(EMPTY_SUBCLASS_REF, EMPTY_CLASS_REF),
                 new MethodNode(EMPTY_SUBCLASS_CONSTRUCTOR_REF),
                 new HasMethodPredicate(EMPTY_SUBCLASS_REF, EMPTY_SUBCLASS_CONSTRUCTOR_REF),
-                new UsesPredicate(EMPTY_SUBCLASS_CONSTRUCTOR_REF, new MethodRef(className(EmptyClass.class) + "#<init>()V"))
+                new UsesPredicate(EMPTY_SUBCLASS_CONSTRUCTOR_REF, new MethodRef(className(EmptyClass.class) + "#<init>()V"), 10)
         );
     }
 }

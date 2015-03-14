@@ -24,11 +24,11 @@ public class RefSourceParserTest extends AbstractClassParserTest {
     public void testEmptyClass() throws Exception {
         this.getParser().parse(EmptyClass.class);
         this.assertProducedExactly(
-                Nodes.classNode(new ClassRef("source", className(EmptyClass.class))),
-                Predicates.extendsClass(new ClassRef("source", className(EmptyClass.class)), new ClassRef("source", "java/lang/Object")),
-                Nodes.methodNode(new MethodRef("source", className(EmptyClass.class) + "#<init>()V")),
-                Predicates.hasMethod(new ClassRef("source", className(EmptyClass.class)), new MethodRef("source", className(EmptyClass.class) + "#<init>()V")),
-                Predicates.uses(new MethodRef("source", className(EmptyClass.class) + "#<init>()V"), new MethodRef("source", "java/lang/Object#<init>()V"))
+                Nodes.classNode(clazz("source", EmptyClass.class)),
+                Predicates.extendsClass(clazz("source", EmptyClass.class), clazz("source", Object.class)),
+                Nodes.methodNode(method("source", EmptyClass.class, "<init>()V")),
+                Predicates.hasMethod(clazz("source", EmptyClass.class), method("source", EmptyClass.class, "<init>()V")),
+                Predicates.uses(method("source", EmptyClass.class, "<init>()V"), method("source", Object.class, "<init>()V"), 10)
         );
     }
 }

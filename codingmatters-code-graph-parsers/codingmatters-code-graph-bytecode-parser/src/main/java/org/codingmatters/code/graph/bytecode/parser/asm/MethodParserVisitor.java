@@ -44,13 +44,13 @@ public class MethodParserVisitor extends MethodVisitor {
         if(Opcodes.GETFIELD == opcode) {
             try {
                 this.predicateProducer.usage(
-                        new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);
+                        new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name)), this.currentLine));
             } catch (ProducerException e) {
                 this.errorReporter.report(e);
             }
         } else if(Opcodes.PUTFIELD == opcode) {
             try {
-                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);
+                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name)), this.currentLine));
             } catch (ProducerException e) {
                 this.errorReporter.report(e);
             }
@@ -70,9 +70,9 @@ public class MethodParserVisitor extends MethodVisitor {
             this.predicateProducer.usage(
                     new UsesPredicate(
                             this.methodRef, 
-                            new MethodRef(this.source, NameUtil.methodName(owner, name, desc))
-                    ),
-                    this.currentLine
+                            new MethodRef(this.source, NameUtil.methodName(owner, name, desc)),
+                            this.currentLine
+                    )
             );
         } catch (ProducerException e) {
             this.errorReporter.report(e);

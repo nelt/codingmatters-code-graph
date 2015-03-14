@@ -31,7 +31,7 @@ public class InnerClassTest extends AbstractClassParserTest {
                 Predicates.hasInner(CLASS_REF, INNER_CLASS_REF),
                 Nodes.methodNode(CLASS_CONSTRUCTOR_REF),
                 Predicates.hasMethod(CLASS_REF, CLASS_CONSTRUCTOR_REF),
-                Predicates.uses(CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF)
+                Predicates.uses(CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF, 10)
         );
     }
 
@@ -44,7 +44,7 @@ public class InnerClassTest extends AbstractClassParserTest {
                 defaultExtends(ClassWithInnerClass.Inner.class),
                 Nodes.methodNode(INNER_CLASS_CONSTRUCTOR_REF),
                 Predicates.hasMethod(INNER_CLASS_REF, INNER_CLASS_CONSTRUCTOR_REF),
-                Predicates.uses(INNER_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF)
+                Predicates.uses(INNER_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF, 11)
         );
     }
 }

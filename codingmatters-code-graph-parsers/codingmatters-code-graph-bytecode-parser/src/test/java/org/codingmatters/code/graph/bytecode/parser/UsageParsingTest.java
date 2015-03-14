@@ -10,7 +10,6 @@ import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
 import org.codingmatters.code.graph.bytecode.parser.parsed.usage.FieldUsage;
 import org.codingmatters.code.graph.bytecode.parser.parsed.usage.MethodUsage;
 import org.codingmatters.code.graph.bytecode.parser.parsed.usage.Used;
-import org.codingmatters.code.graph.bytecode.parser.util.UsageAtLine;
 import org.junit.Test;
 
 import static org.codingmatters.code.graph.api.Predicates.uses;
@@ -54,20 +53,12 @@ public class UsageParsingTest extends AbstractClassParserTest {
     private void assertUsageAt(MethodRef user,  MethodRef used, int atLine) {
         assertProduced(usage(user, used, atLine));
     }
-    static private MethodRef method(Class clazz, String name) {
-        return new MethodRef(className(clazz) + "#" + name);
+    static private UsesPredicate usage(MethodRef user, FieldRef used, int atLine) {
+        return uses(user, used, atLine);
     }
     
-    static private FieldRef field(Class clazz, String name) {
-        return new FieldRef(className(clazz) + "#" + name);
-    }
-    
-    static private UsageAtLine usage(MethodRef user, FieldRef used, int atLine) {
-        return new UsageAtLine(uses(user, used), atLine);
-    }
-    
-    static private UsageAtLine usage(MethodRef user, MethodRef used, int atLine) {
-        return new UsageAtLine(uses(user, used), atLine);
+    static private UsesPredicate usage(MethodRef user, MethodRef used, int atLine) {
+        return uses(user, used, atLine);
     }
 
     @Override
@@ -87,8 +78,8 @@ public class UsageParsingTest extends AbstractClassParserTest {
             @Override
             public void hasInner(HasInnerClassPredicate predicate) throws ProducerException {}
             @Override
-            public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
-                produced(new UsageAtLine(predicate, atLine));
+            public void usage(UsesPredicate predicate) throws ProducerException {
+                produced(predicate);
             }
             @Override
             public void hasInterface(ImplementsPredicate predicate) throws ProducerException {}

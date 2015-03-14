@@ -10,6 +10,7 @@ import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.ClassRef;
+import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.bytecode.parser.asm.ByteCodeResolver;
 import org.codingmatters.code.graph.bytecode.parser.resolver.SystemResourcesResolver;
@@ -38,7 +39,31 @@ public class AbstractClassParserTest {
     public static String className(Class clazz) {
         return clazz.getName().replaceAll("\\.", "/");
     }
+
+    static public MethodRef method(String source, Class clazz, String name) {
+        return new MethodRef(source, className(clazz) + "#" + name);
+    }
+
+    static public FieldRef field(String source, Class clazz, String name) {
+        return new FieldRef(source, className(clazz) + "#" + name);
+    }
+
+    static public ClassRef clazz(String source, Class clazzz) {
+        return new ClassRef(source, className(clazzz));
+    }
+    static public ClassRef clazz(Class clazzz) {
+        return new ClassRef(className(clazzz));
+    }
     
+    static public MethodRef method(Class clazz, String name) {
+        return new MethodRef(className(clazz) + "#" + name);
+    }
+
+    static public FieldRef field(Class clazz, String name) {
+        return new FieldRef(className(clazz) + "#" + name);
+    }
+
+
     public static final NodeProducer NOOP_NODE_PRODUCER = new NodeProducer() {
         @Override
         public void aClass(ClassNode node) throws ProducerException {}
@@ -58,7 +83,7 @@ public class AbstractClassParserTest {
         @Override
         public void hasField(HasFieldPredicate predicate) throws ProducerException {}
         @Override
-        public void usage(UsesPredicate predicate, int atLine) throws ProducerException {}
+        public void usage(UsesPredicate predicate) throws ProducerException {}
         @Override
         public void hasInterface(ImplementsPredicate predicate) throws ProducerException {}
     };
@@ -144,7 +169,7 @@ public class AbstractClassParserTest {
                 }
 
             @Override
-            public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
+            public void usage(UsesPredicate predicate) throws ProducerException {
                 produced.add(predicate);
             }
 
@@ -185,10 +210,11 @@ public class AbstractClassParserTest {
     }
 
 
-    static protected UsesPredicate usesDefaultConstructorPredicate(Class clazz) {
+    static protected UsesPredicate usesDefaultConstructorPredicate(Class clazz, Integer atLine) {
         return Predicates.uses(
                 new MethodRef(className(clazz) + "#<init>()V"),
-                OBJCT_CONSTRUCTOR_REF
+                OBJCT_CONSTRUCTOR_REF,
+                atLine
         );
     }
 

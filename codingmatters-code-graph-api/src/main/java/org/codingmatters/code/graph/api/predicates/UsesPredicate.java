@@ -13,10 +13,12 @@ import org.codingmatters.code.graph.api.references.UsableRef;
 public class UsesPredicate {
     private final MethodRef user;
     private final UsableRef used;
+    private final Integer atLine;
 
-    public UsesPredicate(MethodRef user, UsableRef used) {
+    public UsesPredicate(MethodRef user, UsableRef used, Integer atLine) {
         this.user = user;
         this.used = used;
+        this.atLine = atLine;
     }
 
     public UsableRef getUsed() {
@@ -34,23 +36,25 @@ public class UsesPredicate {
 
         UsesPredicate that = (UsesPredicate) o;
 
-        if (used != null ? !used.equals(that.used) : that.used != null) return false;
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
+        if (used != null ? !used.equals(that.used) : that.used != null) return false;
+        return !(atLine != null ? !atLine.equals(that.atLine) : that.atLine != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
         int result = user != null ? user.hashCode() : 0;
         result = 31 * result + (used != null ? used.hashCode() : 0);
+        result = 31 * result + (atLine != null ? atLine.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "UsesPredicate{" +
-                "user=" + user +
+                "atLine=" + atLine +
+                ", user=" + user +
                 ", used=" + used +
                 '}';
     }

@@ -31,7 +31,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
                         new FieldRef(className(ClassWithField.class) + "#field")
                 ),
                 hasDefaultConstructor(ClassWithField.class),
-                usesDefaultConstructorPredicate(ClassWithField.class)
+                usesDefaultConstructorPredicate(ClassWithField.class, 10)
         );
     }
 
@@ -41,7 +41,7 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
         this.assertProducedExactly(
                 defaultExtends(ClassWithMethod.class),
                 hasDefaultConstructor(ClassWithMethod.class),
-                usesDefaultConstructorPredicate(ClassWithMethod.class),
+                usesDefaultConstructorPredicate(ClassWithMethod.class, 12),
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethod.class)),
                         new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;")
@@ -68,14 +68,15 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
         this.assertProducedExactly(
                 defaultExtends(ClassWithMethodReadingField.class),
                 hasDefaultConstructor(ClassWithMethodReadingField.class),
-                usesDefaultConstructorPredicate(ClassWithMethodReadingField.class),
+                usesDefaultConstructorPredicate(ClassWithMethodReadingField.class, 10),
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethodReadingField.class)),
                         new MethodRef(className(ClassWithMethodReadingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V")
                 ),
                 Predicates.uses(
                         new MethodRef(className(ClassWithMethodReadingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V"),
-                        new FieldRef(className(ClassWithField.class) + "#field")
+                        new FieldRef(className(ClassWithField.class) + "#field"),
+                        13
                 )
         );
     }
@@ -86,14 +87,15 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
         this.assertProducedExactly(
                 defaultExtends(ClassWithMethodWritingField.class),
                 hasDefaultConstructor(ClassWithMethodWritingField.class),
-                usesDefaultConstructorPredicate(ClassWithMethodWritingField.class),
+                usesDefaultConstructorPredicate(ClassWithMethodWritingField.class, 10),
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethodWritingField.class)),
                         new MethodRef(className(ClassWithMethodWritingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V")
                 ),
                 Predicates.uses(
                         new MethodRef(className(ClassWithMethodWritingField.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithField;)V"),
-                        new FieldRef(className(ClassWithField.class) + "#field")
+                        new FieldRef(className(ClassWithField.class) + "#field"),
+                        12
                 )
         );
     }
@@ -101,17 +103,22 @@ public class ClassParserPredicateTest extends AbstractClassParserTest {
     @Test
     public void testClassWithMethodInvokingMethod() throws Exception {
         this.getParser().parse(ClassWithMethodInvokingMethod.class);
+        for (Object o : this.getProduced()) {
+            System.out.println(o);
+        }
+
         this.assertProducedExactly(
                 defaultExtends(ClassWithMethodInvokingMethod.class),
                 hasDefaultConstructor(ClassWithMethodInvokingMethod.class),
-                usesDefaultConstructorPredicate(ClassWithMethodInvokingMethod.class),
+                usesDefaultConstructorPredicate(ClassWithMethodInvokingMethod.class, 10),
                 Predicates.hasMethod(
                         new ClassRef(className(ClassWithMethodInvokingMethod.class)),
                         new MethodRef(className(ClassWithMethodInvokingMethod.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithMethod;)V")
                 ),
                 Predicates.uses(
                         new MethodRef(className(ClassWithMethodInvokingMethod.class) + "#method(Lorg/codingmatters/code/graph/bytecode/parser/parsed/ClassWithMethod;)V"),
-                        new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;")
+                        new MethodRef(className(ClassWithMethod.class) + "#method(Ljava/lang/Integer;Ljava/util/List;)Ljava/lang/String;"),
+                        13
                 )
         );
 

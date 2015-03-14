@@ -25,11 +25,11 @@ public class Predicates {
     static public ExtendsPredicate extendsClass(ClassRef cls, ClassRef superClass) {
         return new ExtendsPredicate(cls, superClass);
     }
-    static public UsesPredicate uses(MethodRef user, MethodRef used) {
-        return new UsesPredicate(user, used);
+    static public UsesPredicate uses(MethodRef user, MethodRef used, Integer atLine) {
+        return new UsesPredicate(user, used, atLine);
     }
-    static public UsesPredicate uses(MethodRef user, FieldRef used) {
-        return new UsesPredicate(user, used);
+    static public UsesPredicate uses(MethodRef user, FieldRef used, Integer atLine) {
+        return new UsesPredicate(user, used, atLine);
     }
     static public ImplementsPredicate implementsInterface(ClassRef implementer, ClassRef implemented) {
         return new ImplementsPredicate(implementer, implemented);

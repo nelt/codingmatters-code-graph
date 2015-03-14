@@ -36,10 +36,10 @@ public class AnonymousClassTest extends AbstractClassParserTest {
 
                 new MethodNode(CLASS_CONSTRUCTOR_REF),
                 new HasMethodPredicate(CLASS_REF, CLASS_CONSTRUCTOR_REF),
-                new UsesPredicate(CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF),
+                new UsesPredicate(CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF, 10),
                 new MethodNode(new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V")),
                 new HasMethodPredicate(CLASS_REF, new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V")),
-                new UsesPredicate(new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V"), ANONYMOUS_CLASS_CONSTRUCTOR_REF)
+                new UsesPredicate(new MethodRef(CLASS_REF.getName() + "#methodWithAnonymous()V"), ANONYMOUS_CLASS_CONSTRUCTOR_REF, 12)
         );
     }
     
@@ -57,8 +57,8 @@ public class AnonymousClassTest extends AbstractClassParserTest {
                 ),
                 new MethodNode(ANONYMOUS_CLASS_CONSTRUCTOR_REF),
                 new HasMethodPredicate(ANONYMOUS_CLASS_REF, ANONYMOUS_CLASS_CONSTRUCTOR_REF),
-                new UsesPredicate(ANONYMOUS_CLASS_CONSTRUCTOR_REF, new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0")),
-                new UsesPredicate(ANONYMOUS_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF),
+                new UsesPredicate(ANONYMOUS_CLASS_CONSTRUCTOR_REF, new FieldRef(ANONYMOUS_CLASS_REF.getName() + "#this$0"), 12),
+                new UsesPredicate(ANONYMOUS_CLASS_CONSTRUCTOR_REF, OBJCT_CONSTRUCTOR_REF, 12),
                 new MethodNode(new MethodRef(ANONYMOUS_CLASS_REF.getName() + "#run()V")),
                 new HasMethodPredicate(ANONYMOUS_CLASS_REF, new MethodRef(ANONYMOUS_CLASS_REF.getName() + "#run()V"))
         );
