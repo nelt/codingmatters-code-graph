@@ -1,8 +1,7 @@
-package org.codingmatters.code.graph.java.parser.internal.support;
+package org.codingmatters.code.graph.java.parser.ast.support;
 
-import org.codingmatters.code.graph.java.parser.internal.ClassDisambiguizer;
-import org.codingmatters.code.graph.java.parser.internal.DisambiguizerException;
-import org.codingmatters.code.graph.java.parser.internal.SourceFragmentGeneratorListenerTest;
+import org.codingmatters.code.graph.java.parser.ast.ClassDisambiguizer;
+import org.codingmatters.code.graph.java.parser.ast.DisambiguizerException;
 
 import java.util.Arrays;
 import java.util.HashMap;

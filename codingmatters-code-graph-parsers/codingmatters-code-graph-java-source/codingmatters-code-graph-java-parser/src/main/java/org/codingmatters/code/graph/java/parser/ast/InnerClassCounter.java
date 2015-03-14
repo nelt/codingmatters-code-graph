@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.java.parser.internal;
+package org.codingmatters.code.graph.java.parser.ast;
 
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;

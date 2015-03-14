@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.java.parser.internal;
+package org.codingmatters.code.graph.java.parser.ast;
 
 /**
  * Created by nel on 03/03/15.

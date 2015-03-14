@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.java.parser.internal;
+package org.codingmatters.code.graph.java.parser.ast;
 
 import org.codingmatters.code.graph.java.ast.JavaParser;
 

@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.java.parser.internal.support;
+package org.codingmatters.code.graph.java.parser.ast.support;
 
 import org.codingmatters.code.graph.java.parser.fragments.SourceFragment;
 import org.junit.Assert;

@@ -8,4 +8,5 @@ package org.codingmatters.code.graph.java.parser;
  * To change this template use File | Settings | File Templates.
  */
 public class JavaSourceParser {
+    
 }

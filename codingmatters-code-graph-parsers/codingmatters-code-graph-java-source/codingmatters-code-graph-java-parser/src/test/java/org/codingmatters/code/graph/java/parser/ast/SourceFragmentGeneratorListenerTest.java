@@ -1,11 +1,10 @@
-package org.codingmatters.code.graph.java.parser.internal;
+package org.codingmatters.code.graph.java.parser.ast;
 
 import org.codingmatters.code.graph.java.parser.fragments.*;
-import org.codingmatters.code.graph.java.parser.internal.support.FragmentTestHelper;
-import org.codingmatters.code.graph.java.parser.internal.support.ParsingTestHelper;
-import org.codingmatters.code.graph.java.parser.internal.support.TestClassDisambiguizer;
+import org.codingmatters.code.graph.java.parser.ast.support.FragmentTestHelper;
+import org.codingmatters.code.graph.java.parser.ast.support.ParsingTestHelper;
+import org.codingmatters.code.graph.java.parser.ast.support.TestClassDisambiguizer;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.java.parser.internal.support;
+package org.codingmatters.code.graph.java.parser.ast.support;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -8,8 +8,8 @@ import org.codingmatters.code.graph.java.ast.JavaListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
 import org.codingmatters.code.graph.java.parser.fragments.FragmentStream;
 import org.codingmatters.code.graph.java.parser.fragments.SourceFragment;
-import org.codingmatters.code.graph.java.parser.internal.ClassDisambiguizer;
-import org.codingmatters.code.graph.java.parser.internal.SourceFragmentGeneratorListener;
+import org.codingmatters.code.graph.java.parser.ast.ClassDisambiguizer;
+import org.codingmatters.code.graph.java.parser.ast.SourceFragmentGeneratorListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;

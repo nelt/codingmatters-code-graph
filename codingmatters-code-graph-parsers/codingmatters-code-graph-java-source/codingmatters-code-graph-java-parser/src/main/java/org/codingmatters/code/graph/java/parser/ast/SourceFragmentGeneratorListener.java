@@ -1,4 +1,4 @@
-package org.codingmatters.code.graph.java.parser.internal;
+package org.codingmatters.code.graph.java.parser.ast;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
