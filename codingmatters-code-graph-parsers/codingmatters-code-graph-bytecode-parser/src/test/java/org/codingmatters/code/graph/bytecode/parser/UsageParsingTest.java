@@ -26,9 +26,13 @@ public class UsageParsingTest extends AbstractClassParserTest {
     public void testName() throws Exception {
         this.getParser().parse(FieldUsage.class);
         
-        assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "used"), 10);
+        assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 10);
+        assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 11);
+        assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field2"), 11);
 
-        System.out.println(this.getProduced());
+        for (Object produced : this.getProduced()) {
+            System.out.println(produced);
+        }
     }
     
     
