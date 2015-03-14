@@ -1,14 +1,11 @@
 package org.codingmatters.code.graph.bytecode.parser;
 
-import org.codingmatters.code.graph.api.Nodes;
-import org.codingmatters.code.graph.api.Predicates;
 import org.codingmatters.code.graph.api.predicates.*;
 import org.codingmatters.code.graph.api.producer.NodeProducer;
 import org.codingmatters.code.graph.api.producer.PredicateProducer;
 import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
-import org.codingmatters.code.graph.bytecode.parser.asm.NameUtil;
 import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
 import org.codingmatters.code.graph.bytecode.parser.parsed.usage.FieldUsage;
 import org.codingmatters.code.graph.bytecode.parser.parsed.usage.MethodUsage;
@@ -41,7 +38,6 @@ public class UsageParsingTest extends AbstractClassParserTest {
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 10);
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 11);
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field2"), 11);
-
     }
 
     @Test
