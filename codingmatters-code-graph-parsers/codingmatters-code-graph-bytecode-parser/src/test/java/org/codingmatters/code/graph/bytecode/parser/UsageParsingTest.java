@@ -23,8 +23,11 @@ public class UsageParsingTest extends AbstractClassParserTest {
     
     
     @Test
-    public void testName() throws Exception {
+    public void testFieldUsage() throws Exception {
         this.getParser().parse(FieldUsage.class);
+        
+        assertUsageAt(method(FieldUsage.class, "<init>()V"), field(FieldUsage.class, "field1"), 8);
+        assertUsageAt(method(FieldUsage.class, "<init>()V"), field(FieldUsage.class, "field2"), 8);
         
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 10);
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 11);
