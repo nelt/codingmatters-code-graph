@@ -9,7 +9,10 @@ import org.codingmatters.code.graph.api.producer.exception.ProducerException;
 import org.codingmatters.code.graph.api.references.FieldRef;
 import org.codingmatters.code.graph.api.references.MethodRef;
 import org.codingmatters.code.graph.bytecode.parser.asm.NameUtil;
+import org.codingmatters.code.graph.bytecode.parser.parsed.EmptyClass;
 import org.codingmatters.code.graph.bytecode.parser.parsed.usage.FieldUsage;
+import org.codingmatters.code.graph.bytecode.parser.parsed.usage.MethodUsage;
+import org.codingmatters.code.graph.bytecode.parser.parsed.usage.Used;
 import org.codingmatters.code.graph.bytecode.parser.util.UsageAtLine;
 import org.junit.Test;
 
@@ -20,8 +23,14 @@ import static org.codingmatters.code.graph.api.Predicates.uses;
  */
 public class UsageParsingTest extends AbstractClassParserTest {
 
-    
-    
+
+    @Test
+    public void testSuperConstructorUsage() throws Exception {
+        this.getParser().parse(EmptyClass.class);
+
+        assertUsageAt(method(EmptyClass.class, "<init>()V"), method(Object.class, "<init>()V"), 10);
+    }
+
     @Test
     public void testFieldUsage() throws Exception {
         this.getParser().parse(FieldUsage.class);
@@ -33,12 +42,16 @@ public class UsageParsingTest extends AbstractClassParserTest {
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field1"), 11);
         assertUsageAt(method(FieldUsage.class, "method()V"), field(FieldUsage.class, "field2"), 11);
 
-        for (Object produced : this.getProduced()) {
-            System.out.println(produced);
-        }
     }
-    
-    
+
+    @Test
+    public void testMethodUsage() throws Exception {
+        this.getParser().parse(MethodUsage.class);
+        
+        assertUsageAt(method(MethodUsage.class, "<init>()V"), method(Used.class, "value()Ljava/lang/String;"), 7);
+        assertUsageAt(method(MethodUsage.class, "method()Ljava/lang/String;"), method(Used.class, "value()Ljava/lang/String;"), 9);
+    }
+
     private void assertUsageAt(MethodRef user,  FieldRef used, int atLine) {
         assertProduced(usage(user, used, atLine));
     }
