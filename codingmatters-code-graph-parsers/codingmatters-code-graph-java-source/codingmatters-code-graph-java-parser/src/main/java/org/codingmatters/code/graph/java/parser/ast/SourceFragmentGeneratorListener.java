@@ -2,11 +2,9 @@ package org.codingmatters.code.graph.java.parser.ast;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.codingmatters.code.graph.java.ast.JavaBaseListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
-import org.codingmatters.code.graph.java.parser.ast.expression.MethodExpressionListener;
 import org.codingmatters.code.graph.java.parser.fragments.*;
 
 import java.util.Stack;
@@ -281,12 +279,6 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     public void exitMethodCallExpression(@NotNull JavaParser.MethodCallExpressionContext ctx) {   
         System.out.println("method call : " + ctx.expression().getText() + " with " + (ctx.expressionList() != null ? ctx.expressionList().expression().size() : 0) + " args");
         System.out.println("\nscope=" + this.scope);
-
-
-        ParseTreeWalker walker = new ParseTreeWalker();
-        MethodExpressionListener listener = new MethodExpressionListener();
-        walker.walk(listener, ctx.expression());
-        
         
         String typeSpec = this.scope.resolveType(ctx.expression());
         System.out.println(ctx.expression().getText() + " isa : " + typeSpec);
