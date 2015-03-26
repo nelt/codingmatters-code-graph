@@ -12,5 +12,6 @@ public class TestClass {
         String used2;
         used1.toString();
         used2.substring(1, 2);
+        "aa".length();
     }
 }

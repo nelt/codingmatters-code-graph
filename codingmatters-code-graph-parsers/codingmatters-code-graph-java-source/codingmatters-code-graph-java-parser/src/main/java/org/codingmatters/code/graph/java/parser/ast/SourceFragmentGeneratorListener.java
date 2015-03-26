@@ -2,9 +2,11 @@ package org.codingmatters.code.graph.java.parser.ast;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.codingmatters.code.graph.java.ast.JavaBaseListener;
 import org.codingmatters.code.graph.java.ast.JavaParser;
+import org.codingmatters.code.graph.java.parser.ast.expression.MethodExpressionListener;
 import org.codingmatters.code.graph.java.parser.fragments.*;
 
 import java.util.Stack;
@@ -94,18 +96,9 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     @Override
     public void enterClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         String name = ctx.Identifier().getText();
-        String qualifiedName;
-        if(this.inClass) {
-            qualifiedName = this.namingContext.current() + "$" + name;
-        } else if(this.namingContext.current().isEmpty()) {
-            qualifiedName = name;
-        } else {
-            qualifiedName = this.namingContext.current() + "." + name;
-        }
-        String canonicalName = this.support.canonical(qualifiedName);
-        
-        Token symbol = ctx.Identifier().getSymbol();
+        String canonicalName = this.canonicalClassName(name);
 
+        Token symbol = ctx.Identifier().getSymbol();
         try {
             this.stream.fragment(fragmentBuilder()
                     .withText(ctx.Identifier().getText())
@@ -117,13 +110,30 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             throw new SourceFragmentUncheckedException("error parsing class declaration", e);
         }
 
-        this.namingContext.next(qualifiedName);
+        this.namingContext.next(this.qualifiedClassName(name));
         this.innerClassCounter.next();
         this.inClass = true;
         
-        this.scope = this.scope.child();
+        this.scope = this.scope.child(canonicalName);
     }
 
+    private String qualifiedClassName(String name) {
+        String qualifiedName;
+        if(this.inClass) {
+            qualifiedName = this.namingContext.current() + "$" + name;
+        } else if(this.namingContext.current().isEmpty()) {
+            qualifiedName = name;
+        } else {
+            qualifiedName = this.namingContext.current() + "." + name;
+        }
+        return qualifiedName;
+    }
+
+
+    private String canonicalClassName(String name) {
+        return this.support.canonical(this.qualifiedClassName(name));
+    }
+    
     @Override
     public void exitClassDeclaration(@NotNull JavaParser.ClassDeclarationContext ctx) {
         this.inClass = false;
@@ -249,7 +259,7 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
 
     @Override
     public void enterInterfaceDeclaration(@NotNull JavaParser.InterfaceDeclarationContext ctx) {
-        this.scope = this.scope.child();
+        this.scope = this.scope.child(this.canonicalClassName(ctx.Identifier().getText()));
     }
 
     @Override
@@ -258,9 +268,28 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     }
 
     @Override
+    public void enterEnumDeclaration(@NotNull JavaParser.EnumDeclarationContext ctx) {
+        this.scope = this.scope.child(this.canonicalClassName(ctx.Identifier().getText()));
+    }
+
+    @Override
+    public void exitEnumDeclaration(@NotNull JavaParser.EnumDeclarationContext ctx) {
+        this.scope = this.scope.parent();
+    }
+
+    @Override
     public void exitMethodCallExpression(@NotNull JavaParser.MethodCallExpressionContext ctx) {   
         System.out.println("method call : " + ctx.expression().getText() + " with " + (ctx.expressionList() != null ? ctx.expressionList().expression().size() : 0) + " args");
-        System.out.println("\t" + this.scope);
+        System.out.println("\nscope=" + this.scope);
+
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        MethodExpressionListener listener = new MethodExpressionListener();
+        walker.walk(listener, ctx.expression());
+        
+        
+        String typeSpec = this.scope.resolveType(ctx.expression());
+        System.out.println(ctx.expression().getText() + " isa : " + typeSpec);
     }
 
     enum Declaration {

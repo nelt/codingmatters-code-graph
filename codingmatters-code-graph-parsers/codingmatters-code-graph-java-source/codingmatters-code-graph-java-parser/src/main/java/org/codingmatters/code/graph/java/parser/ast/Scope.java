@@ -54,9 +54,19 @@ public class Scope {
     public Scope child() {
         return new Scope(this);
     }
+    public Scope child(String thisTypeSpec) {
+        Scope result = new Scope(this);
+        result.define("this", thisTypeSpec);
+        return result;
+    }
     
     public Scope parent() {
         return this.parent;
+    }
+
+    public String resolveType(JavaParser.ExpressionContext expression) {
+        
+        return this.typeSpec(expression.getText());
     }
 
     @Override
