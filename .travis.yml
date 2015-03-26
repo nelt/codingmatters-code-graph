@@ -9,7 +9,8 @@ env:
 before_install: 
 install: true
 script:
-- if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then mvn deploy -Pjacoco-coverage --settings .travis/settings.xml ; fi
+- if [ ${COVERITY_SCAN_BRANCH} != 1 ]; then mvn deploy -Pjacoco-coverage --settings .travis/settings.xml && ant -f jacoco-merged-coverage-report.xml -lib jacoco/lib
+ ; fi
 after_success:
 - if [ "${TRAVIS_BRANCH}" = "master" ]; then .travis/update-site.sh ; fi
 addons:

@@ -11,8 +11,6 @@ echo "updating site for version $VERSION"
 rm -rf target/gh-pages
 git clone -b gh-pages https://github.com/nelt/codingmatters-code-graph.git target/gh-pages
 
-ant -f jacoco-merged-coverage-report.xml -lib jacoco/lib
-
 mkdir -p target/gh-pages/jacoco-coverage
 cp -r target/report/* target/gh-pages/jacoco-coverage/$VERSION/
 

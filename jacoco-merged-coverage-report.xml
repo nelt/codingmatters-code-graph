@@ -24,7 +24,7 @@
                     <fileset dir="./codingmatters-code-graph-parsers/codingmatters-code-graph-bytecode-parser/target/classes/"/>
                 </classfiles>
                 <sourcefiles>
-                    <fileset dir=".>/codingmatters-code-graph-parsers/codingmatters-code-graph-bytecode-parser/src/main/java/"/>
+                    <fileset dir="./codingmatters-code-graph-parsers/codingmatters-code-graph-bytecode-parser/src/main/java/"/>
                 </sourcefiles>
             </group>
             
