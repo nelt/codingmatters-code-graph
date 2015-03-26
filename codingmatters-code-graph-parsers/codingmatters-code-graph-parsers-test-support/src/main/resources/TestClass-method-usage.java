@@ -1,3 +1,4 @@
+import java.lang.String;
 /**
  * Created with IntelliJ IDEA.
  * User: nel
@@ -6,8 +7,10 @@
  * To change this template use File | Settings | File Templates.
  */
 public class TestClass {
+    String used1;
     public void user() {
-        used.method1();
-        used.method2("bla", "bla");
+        String used2;
+        used1.toString();
+        used2.substring(1, 2);
     }
 }

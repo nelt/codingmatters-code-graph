@@ -31,6 +31,8 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     
     private boolean inClass = false;
     private final Stack<Declaration> currentDeclaration = new Stack<>();
+
+    private Scope scope = new Scope();
     
     public SourceFragmentGeneratorListener(FragmentStream stream, ClassDisambiguizer disambiguizer) {
         this.stream = stream;
@@ -118,6 +120,8 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         this.namingContext.next(qualifiedName);
         this.innerClassCounter.next();
         this.inClass = true;
+        
+        this.scope = this.scope.child();
     }
 
     @Override
@@ -125,6 +129,8 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         this.inClass = false;
         this.innerClassCounter.previous();
         this.namingContext.previous();
+        
+        this.scope = this.scope.parent();
     }
     
     @Override
@@ -133,8 +139,15 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     }
     @Override
     public void exitFieldDeclaration(@NotNull JavaParser.FieldDeclarationContext ctx) {
+        try {
+            this.scope.define(this.typeSupport.typeSpec(ctx.type()), ctx.variableDeclarators());
+        } catch (DisambiguizerException e) {
+            throw new SourceFragmentUncheckedException("error populating scope with field declaration", e);
+        }
         this.currentDeclaration.pop();
     }
+
+    
 
     @Override
     public void enterClassOrInterfaceType(@NotNull JavaParser.ClassOrInterfaceTypeContext ctx) {
@@ -149,8 +162,6 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
             throw new SourceFragmentUncheckedException("error parsing field declaration", e);
         }
     }
-    
-
     
     @Override
     public void enterVariableDeclarator(@NotNull JavaParser.VariableDeclaratorContext ctx) {
@@ -169,6 +180,15 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     }
 
     @Override
+    public void exitLocalVariableDeclaration(@NotNull JavaParser.LocalVariableDeclarationContext ctx) {
+        try {
+            this.scope.define(this.typeSupport.typeSpec(ctx.type()), ctx.variableDeclarators());
+        } catch (DisambiguizerException e) {
+            throw new SourceFragmentUncheckedException("error populating scope with local variables", e);
+        }
+    }
+
+    @Override
     public void enterMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
         try {
             this.stream.fragment(fragmentBuilder()
@@ -181,8 +201,14 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
             throw new SourceFragmentUncheckedException("error parsing method declaration", e);
         }
+        this.scope = this.scope.child();
     }
     
+    @Override
+    public void exitMethodDeclaration(@NotNull JavaParser.MethodDeclarationContext ctx) {
+        this.scope = this.scope.parent();
+    }
+
     @Override
     public void enterConstructorDeclaration(@NotNull JavaParser.ConstructorDeclarationContext ctx) {
         try {
@@ -196,6 +222,12 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         } catch (AbstractFragment.Builder.BuilderException | DisambiguizerException e) {
             throw new SourceFragmentUncheckedException("error parsing constructor declaration", e);
         }
+        this.scope = this.scope.child();
+    }
+
+    @Override
+    public void exitConstructorDeclaration(@NotNull JavaParser.ConstructorDeclarationContext ctx) {
+        this.scope = this.scope.parent();
     }
 
     @Override
@@ -216,8 +248,19 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
     }
 
     @Override
+    public void enterInterfaceDeclaration(@NotNull JavaParser.InterfaceDeclarationContext ctx) {
+        this.scope = this.scope.child();
+    }
+
+    @Override
+    public void exitInterfaceDeclaration(@NotNull JavaParser.InterfaceDeclarationContext ctx) {
+        this.scope = this.scope.parent();
+    }
+
+    @Override
     public void exitMethodCallExpression(@NotNull JavaParser.MethodCallExpressionContext ctx) {   
-        System.out.println("soy una method call : " + ctx.expression().getText() + " with " + (ctx.expressionList() != null ? ctx.expressionList().expression().size() : 0) + " args");
+        System.out.println("method call : " + ctx.expression().getText() + " with " + (ctx.expressionList() != null ? ctx.expressionList().expression().size() : 0) + " args");
+        System.out.println("\t" + this.scope);
     }
 
     enum Declaration {
