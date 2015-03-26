@@ -215,6 +215,10 @@ public class SourceFragmentGeneratorListener extends JavaBaseListener {
         }
     }
 
+    @Override
+    public void exitMethodCallExpression(@NotNull JavaParser.MethodCallExpressionContext ctx) {   
+        System.out.println("soy una method call : " + ctx.expression().getText() + " with " + (ctx.expressionList() != null ? ctx.expressionList().expression().size() : 0) + " args");
+    }
 
     enum Declaration {
         FIELD(FieldDeclarationFragment.class);

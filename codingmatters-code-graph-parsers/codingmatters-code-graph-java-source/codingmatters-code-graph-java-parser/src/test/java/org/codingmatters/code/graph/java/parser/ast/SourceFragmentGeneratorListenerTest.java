@@ -158,6 +158,20 @@ public class SourceFragmentGeneratorListenerTest {
     }
 
     @Test
+    public void testFieldUsage() throws Exception {
+        String resourceClass = "TestClass-fields-usage";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+    }
+    
+    @Test
+    public void testMethodUsage() throws Exception {
+        String resourceClass = "TestClass-method-usage";
+        FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);
+    }
+    
+    
+
+    @Test
     public void testComplete() throws Exception {
         String resourceClass = "TestClass-complete";
         FragmentTestHelper parsedFragments = ParsingTestHelper.parseResource(resourceClass, this.disambiguizer);

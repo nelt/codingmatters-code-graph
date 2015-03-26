@@ -94,4 +94,27 @@ public class AbstractFragment implements SourceFragment {
                 ", end=" + end +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractFragment that = (AbstractFragment) o;
+
+        if (start != that.start) return false;
+        if (end != that.end) return false;
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+        return !(qualifiedName != null ? !qualifiedName.equals(that.qualifiedName) : that.qualifiedName != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = text != null ? text.hashCode() : 0;
+        result = 31 * result + (qualifiedName != null ? qualifiedName.hashCode() : 0);
+        result = 31 * result + start;
+        result = 31 * result + end;
+        return result;
+    }
 }

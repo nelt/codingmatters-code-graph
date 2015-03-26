@@ -495,32 +495,32 @@ constantExpression
     ;
 
 expression
-    :   primary
-    |   expression '.' Identifier
-    |   expression '.' 'this'
-    |   expression '.' 'new' nonWildcardTypeArguments? innerCreator
-    |   expression '.' 'super' superSuffix
-    |   expression '.' explicitGenericInvocation
-    |   expression '[' expression ']'
-    |   expression '(' expressionList? ')'
-    |   'new' creator
-    |   '(' type ')' expression
-    |   expression ('++' | '--')
-    |   ('+'|'-'|'++'|'--') expression
-    |   ('~'|'!') expression
-    |   expression ('*'|'/'|'%') expression
-    |   expression ('+'|'-') expression
-    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression
-    |   expression ('<=' | '>=' | '>' | '<') expression
-    |   expression 'instanceof' type
-    |   expression ('==' | '!=') expression
-    |   expression '&' expression
-    |   expression '^' expression
-    |   expression '|' expression
-    |   expression '&&' expression
-    |   expression '||' expression
-    |   expression '?' expression ':' expression
-    |   <assoc=right> expression
+    :   primary # AExpression
+    |   expression '.' Identifier # BExpression
+    |   expression '.' 'this' # CExpression
+    |   expression '.' 'new' nonWildcardTypeArguments? innerCreator # DExpression
+    |   expression '.' 'super' superSuffix # EExpression
+    |   expression '.' explicitGenericInvocation #FExpression
+    |   expression '[' expression ']' # GExpression
+    |   expression '(' expressionList? ')' # MethodCallExpression
+    |   'new' creator # IExpression
+    |   '(' type ')' expression # JExpression
+    |   expression ('++' | '--') # KExpression
+    |   ('+'|'-'|'++'|'--') expression # LExpression
+    |   ('~'|'!') expression # MExpression
+    |   expression ('*'|'/'|'%') expression # NExpression
+    |   expression ('+'|'-') expression # OExpression
+    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression # PExpression
+    |   expression ('<=' | '>=' | '>' | '<') expression # QExpression
+    |   expression 'instanceof' type # RExpression
+    |   expression ('==' | '!=') expression # SExpression
+    |   expression '&' expression # TExpression
+    |   expression '^' expression # UExpression
+    |   expression '|' expression # VExpression
+    |   expression '&&' expression # WExpression
+    |   expression '||' expression # XExpression
+    |   expression '?' expression ':' expression # YExpression
+    |   <assoc=right> expression 
         (   '='
         |   '+='
         |   '-='
@@ -534,7 +534,7 @@ expression
         |   '<<='
         |   '%='
         )
-        expression
+        expression # ZExpression
     ;
 
 primary
