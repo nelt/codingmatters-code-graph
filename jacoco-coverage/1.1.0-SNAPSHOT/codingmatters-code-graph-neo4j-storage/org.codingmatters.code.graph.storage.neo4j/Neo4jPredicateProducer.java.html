@@ -52,7 +52,7 @@ public class Neo4jPredicateProducer implements PredicateProducer {
 <span class="fc" id="L52">    }</span>
     
     @Override
-    public void usage(UsesPredicate predicate, int atLine) throws ProducerException {
+    public void usage(UsesPredicate predicate) throws ProducerException {
 <span class="fc" id="L56">        this.querier.justMergeRefNode(predicate.getUser());</span>
 <span class="fc" id="L57">        this.querier.justMergeRefNode(predicate.getUsed());</span>
 <span class="fc" id="L58">        this.querier.justMergeRelationship(predicate.getUser(), Codec.RelationshipType.USES, predicate.getUsed());</span>

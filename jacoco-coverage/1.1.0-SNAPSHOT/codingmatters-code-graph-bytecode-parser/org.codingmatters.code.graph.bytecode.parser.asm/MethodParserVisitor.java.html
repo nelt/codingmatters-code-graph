@@ -44,13 +44,13 @@ public class MethodParserVisitor extends MethodVisitor {
 <span class="fc bfc" id="L44" title="All 2 branches covered.">        if(Opcodes.GETFIELD == opcode) {</span>
             try {
 <span class="fc" id="L46">                this.predicateProducer.usage(</span>
-                        new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);
+                        new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name)), this.currentLine));
 <span class="nc" id="L48">            } catch (ProducerException e) {</span>
 <span class="nc" id="L49">                this.errorReporter.report(e);</span>
 <span class="pc" id="L50">            }</span>
 <span class="fc bfc" id="L51" title="All 2 branches covered.">        } else if(Opcodes.PUTFIELD == opcode) {</span>
             try {
-<span class="fc" id="L53">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name))), this.currentLine);</span>
+<span class="fc" id="L53">                this.predicateProducer.usage(new UsesPredicate(this.methodRef, new FieldRef(this.source, fieldName(owner, name)), this.currentLine));</span>
 <span class="nc" id="L54">            } catch (ProducerException e) {</span>
 <span class="nc" id="L55">                this.errorReporter.report(e);</span>
 <span class="fc" id="L56">            }</span>
@@ -70,9 +70,9 @@ public class MethodParserVisitor extends MethodVisitor {
 <span class="fc" id="L70">            this.predicateProducer.usage(</span>
                     new UsesPredicate(
                             this.methodRef, 
-                            new MethodRef(this.source, NameUtil.methodName(owner, name, desc))
-                    ),
-                    this.currentLine
+                            new MethodRef(this.source, NameUtil.methodName(owner, name, desc)),
+                            this.currentLine
+                    )
             );
 <span class="nc" id="L77">        } catch (ProducerException e) {</span>
 <span class="nc" id="L78">            this.errorReporter.report(e);</span>

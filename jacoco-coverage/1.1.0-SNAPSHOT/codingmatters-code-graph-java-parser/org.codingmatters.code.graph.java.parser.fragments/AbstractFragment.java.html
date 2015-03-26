@@ -94,5 +94,28 @@ public class AbstractFragment implements SourceFragment {
                 &quot;, end=&quot; + end +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L101" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+
+<span class="nc" id="L103">        AbstractFragment that = (AbstractFragment) o;</span>
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (start != that.start) return false;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (end != that.end) return false;</span>
+<span class="nc bnc" id="L107" title="All 6 branches missed.">        if (text != null ? !text.equals(that.text) : that.text != null) return false;</span>
+<span class="nc bnc" id="L108" title="All 6 branches missed.">        return !(qualifiedName != null ? !qualifiedName.equals(that.qualifiedName) : that.qualifiedName != null);</span>
+
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        int result = text != null ? text.hashCode() : 0;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        result = 31 * result + (qualifiedName != null ? qualifiedName.hashCode() : 0);</span>
+<span class="nc" id="L116">        result = 31 * result + start;</span>
+<span class="nc" id="L117">        result = 31 * result + end;</span>
+<span class="nc" id="L118">        return result;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span></div></body></html>

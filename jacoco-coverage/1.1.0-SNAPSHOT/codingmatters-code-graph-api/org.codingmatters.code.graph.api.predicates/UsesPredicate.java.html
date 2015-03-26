@@ -13,44 +13,48 @@ import org.codingmatters.code.graph.api.references.UsableRef;
 public class UsesPredicate {
     private final MethodRef user;
     private final UsableRef used;
+    private final Integer atLine;
 
-<span class="fc" id="L17">    public UsesPredicate(MethodRef user, UsableRef used) {</span>
-<span class="fc" id="L18">        this.user = user;</span>
-<span class="fc" id="L19">        this.used = used;</span>
-<span class="fc" id="L20">    }</span>
+<span class="fc" id="L18">    public UsesPredicate(MethodRef user, UsableRef used, Integer atLine) {</span>
+<span class="fc" id="L19">        this.user = user;</span>
+<span class="fc" id="L20">        this.used = used;</span>
+<span class="fc" id="L21">        this.atLine = atLine;</span>
+<span class="fc" id="L22">    }</span>
 
     public UsableRef getUsed() {
-<span class="fc" id="L23">        return used;</span>
+<span class="fc" id="L25">        return used;</span>
     }
 
     public MethodRef getUser() {
-<span class="fc" id="L27">        return user;</span>
+<span class="fc" id="L29">        return user;</span>
     }
 
     @Override
     public boolean equals(Object o) {
-<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (this == o) return true;</span>
-<span class="pc bpc" id="L33" title="1 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L35" title="1 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
 
-<span class="fc" id="L35">        UsesPredicate that = (UsesPredicate) o;</span>
+<span class="fc" id="L37">        UsesPredicate that = (UsesPredicate) o;</span>
 
-<span class="pc bpc" id="L37" title="3 of 6 branches missed.">        if (used != null ? !used.equals(that.used) : that.used != null) return false;</span>
-<span class="pc bpc" id="L38" title="4 of 6 branches missed.">        if (user != null ? !user.equals(that.user) : that.user != null) return false;</span>
+<span class="pc bpc" id="L39" title="3 of 6 branches missed.">        if (user != null ? !user.equals(that.user) : that.user != null) return false;</span>
+<span class="pc bpc" id="L40" title="3 of 6 branches missed.">        if (used != null ? !used.equals(that.used) : that.used != null) return false;</span>
+<span class="pc bpc" id="L41" title="3 of 6 branches missed.">        return !(atLine != null ? !atLine.equals(that.atLine) : that.atLine != null);</span>
 
-<span class="fc" id="L40">        return true;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        int result = user != null ? user.hashCode() : 0;</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        result = 31 * result + (used != null ? used.hashCode() : 0);</span>
-<span class="fc" id="L47">        return result;</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        int result = user != null ? user.hashCode() : 0;</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        result = 31 * result + (used != null ? used.hashCode() : 0);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        result = 31 * result + (atLine != null ? atLine.hashCode() : 0);</span>
+<span class="fc" id="L50">        return result;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L52">        return &quot;UsesPredicate{&quot; +</span>
-                &quot;user=&quot; + user +
+<span class="fc" id="L55">        return &quot;UsesPredicate{&quot; +</span>
+                &quot;atLine=&quot; + atLine +
+                &quot;, user=&quot; + user +
                 &quot;, used=&quot; + used +
                 '}';
     }

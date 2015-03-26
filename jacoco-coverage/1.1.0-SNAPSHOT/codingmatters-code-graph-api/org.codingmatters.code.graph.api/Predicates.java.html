@@ -25,11 +25,11 @@ import org.codingmatters.code.graph.api.references.MethodRef;
     static public ExtendsPredicate extendsClass(ClassRef cls, ClassRef superClass) {
 <span class="fc" id="L26">        return new ExtendsPredicate(cls, superClass);</span>
     }
-    static public UsesPredicate uses(MethodRef user, MethodRef used) {
-<span class="fc" id="L29">        return new UsesPredicate(user, used);</span>
+    static public UsesPredicate uses(MethodRef user, MethodRef used, Integer atLine) {
+<span class="fc" id="L29">        return new UsesPredicate(user, used, atLine);</span>
     }
-    static public UsesPredicate uses(MethodRef user, FieldRef used) {
-<span class="fc" id="L32">        return new UsesPredicate(user, used);</span>
+    static public UsesPredicate uses(MethodRef user, FieldRef used, Integer atLine) {
+<span class="fc" id="L32">        return new UsesPredicate(user, used, atLine);</span>
     }
     static public ImplementsPredicate implementsInterface(ClassRef implementer, ClassRef implemented) {
 <span class="fc" id="L35">        return new ImplementsPredicate(implementer, implemented);</span>
